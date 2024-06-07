@@ -1,5 +1,5 @@
 ﻿namespace Domain.Entities;
-public class SupplierModel
+public class SupplierModel : BaseEntity
 {
     public Guid SupplierID { get; set; }
     public string? SupplierName { get; set; }
