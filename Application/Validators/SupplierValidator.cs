@@ -13,12 +13,12 @@ public class SupplierValidator : AbstractValidator<SupplierModel>
             ;
 
         RuleFor(supplier => supplier.PhoneNumber)
-            .NotEmpty()
+            //.NotEmpty()
             .MaximumLength(50)
             ;
 
         RuleFor(supplier => supplier.Email)
-           .NotEmpty()
+           //.NotEmpty()
            .MaximumLength(100)
            .EmailAddress()
            ;

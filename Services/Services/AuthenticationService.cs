@@ -42,7 +42,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<IdentityResult> RegisterUser(UserRegistrationDTO userForRegistration)
     {
-        var validator = new UserDtoValidator();
+        var validator = new UserValidator();
         validator.ValidateInput(userForRegistration);
 
         var user = _mapper.Map<UserModel>(userForRegistration);

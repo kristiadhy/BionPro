@@ -35,16 +35,11 @@
                                             <RadzenFormField Text="Phone" Variant="@fieldVariant">
                                                 <RadzenTextBox Name="Phone"
                                                                @bind-Value="SupplierState.Supplier.PhoneNumber" />
-                                                <RadzenRequiredValidator Component="Phone"
-                                                                         Text="Phone is required"
-                                                                         Popup=true />
+
                                             </RadzenFormField>
                                             <RadzenFormField Text="Email" Variant="@fieldVariant">
                                                 <RadzenTextBox Name="Email"
                                                                @bind-Value="SupplierState.Supplier.Email" />
-                                                <RadzenRequiredValidator Component="Email"
-                                                                         Text="Email is required"
-                                                                         Popup=true />
                                                 <RadzenEmailValidator Component="Email"
                                                                       Text="Provide a valid email address"
                                                                       Popup=true />
@@ -90,5 +85,5 @@
 
 @code
 {
-    Variant fieldVariant = Variant.Outlined;
+    Variant fieldVariant = Variant.Text;
 }

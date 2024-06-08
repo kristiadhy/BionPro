@@ -1,11 +1,6 @@
 ﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Configurations;
 internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
@@ -20,6 +15,14 @@ internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(255);
+
+        builder.Property(e => e.SKU)
+            .IsRequired()
+            .HasMaxLength(20);
+
+        builder.Property(e => e.PriceAmount)
+            .IsRequired()
+            .HasColumnType("decimal(10, 2)");
 
         builder.Property(e => e.Description)
             .IsRequired(false)

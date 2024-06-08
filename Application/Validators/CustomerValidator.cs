@@ -13,12 +13,12 @@ public class CustomerValidator : AbstractValidator<CustomerModel>
             ;
 
         RuleFor(customer => customer.PhoneNumber)
-            .NotEmpty()
+            //.NotEmpty()
             .MaximumLength(50)
             ;
 
         RuleFor(customer => customer.Email)
-           .NotEmpty()
+           //.NotEmpty()
            .MaximumLength(100)
            .EmailAddress()
            //.MustAsync(async (email, _) => await IsUniqueAsync(email))

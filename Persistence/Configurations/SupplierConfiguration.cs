@@ -7,7 +7,7 @@ internal sealed class SupplierConfiguration : IEntityTypeConfiguration<SupplierM
 {
     public void Configure(EntityTypeBuilder<SupplierModel> builder)
     {
-        builder.ToTable("M02SUPPLIERS");
+        builder.ToTable("M02Suppliers");
 
         builder.HasKey(c => c.SupplierID);
         builder.Property(c => c.SupplierID).HasDefaultValueSql("NEWID()");

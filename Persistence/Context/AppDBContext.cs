@@ -12,8 +12,6 @@ public class AppDBContext : IdentityDbContext<UserModel>
     {
     }
 
-    public DbSet<CustomerModel> Customers { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //We call the OnModelCreating method from the base class because we use Asp.NET Core Identity and it required to let Microsoft Identity do its stuff.

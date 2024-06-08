@@ -1,5 +1,37 @@
 ﻿@page "/product"
 
-@code {
 
+<h1>Blazored FluentValidation Sample</h1>
+
+<hr class="mb-5" />
+
+<EditForm Model="@_person" OnSubmit="@SubmitFormAsync">
+    <FluentValidationValidator @ref="_fluentValidationValidator" />
+
+    <p>
+        <label>First Name: </label>
+        <InputText @bind-Value="@_person.CustomerName" />
+        <ValidationMessage For="@(() => _person.CustomerName)" />
+    </p>
+
+    <button type="submit">Save</button>
+
+</EditForm>
+<br />
+<button @onclick="PartialValidate">Partial Validation</button>
+
+@code {
+    private readonly CustomerModel _person = new();
+    private FluentValidationValidator? _fluentValidationValidator;
+
+    private async Task SubmitFormAsync()
+    {
+        if (await _fluentValidationValidator!.ValidateAsync())
+        {
+            Console.WriteLine("Form Submitted Successfully!");
+        }
+    }
+
+    private void PartialValidate()
+        => Console.WriteLine($"Partial validation result : {_fluentValidationValidator?.Validate(options => options.IncludeRuleSets("Names"))}");
 }

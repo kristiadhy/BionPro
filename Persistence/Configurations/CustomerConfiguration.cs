@@ -8,7 +8,7 @@ internal sealed class CustomerConfiguration : IEntityTypeConfiguration<CustomerM
 {
     public void Configure(EntityTypeBuilder<CustomerModel> builder)
     {
-        builder.ToTable("M01CUSTOMERS");
+        builder.ToTable("M01Customers");
 
         builder.HasKey(c => c.CustomerID);
         builder.Property(c => c.CustomerID).HasDefaultValueSql("NEWID()");

@@ -18,6 +18,8 @@
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-py-5">
         <RadzenCard class="my-2">
             <RadzenTemplateForm Data="@CustomerState.Customer" Submit="@(async (CustomerDTO args) => { await SubmitAsync(args); })">
+                <FluentValidationValidator @ref="customerValidator" />
+
                 <RadzenStack>
                     <RadzenFieldset Text="@FormHeaderText">
                         <RadzenStack Gap="1rem">
@@ -25,59 +27,47 @@
                                 <Tabs>
                                     <RadzenTabsItem Text="Basic Info">
                                         <RadzenStack>
-                                            <RadzenFormField Text="Name" Variant="@fieldVariant">
-                                                <RadzenTextBox Name="Name"
-                                                               @bind-Value="CustomerState.Customer.CustomerName" />
-                                                <RadzenRequiredValidator Component="Name"
-                                                                         Text="Name is required"
-                                                                         Popup=true />
-                                            </RadzenFormField>
-                                            <RadzenFormField Text="Phone" Variant="@fieldVariant">
-                                                <RadzenTextBox Name="Phone"
-                                                               @bind-Value="CustomerState.Customer.PhoneNumber" />
-                                                <RadzenRequiredValidator Component="Phone"
-                                                                         Text="Phone is required"
-                                                                         Popup=true />
-                                            </RadzenFormField>
-                                            <RadzenFormField Text="Email" Variant="@fieldVariant">
-                                                <RadzenTextBox Name="Email"
-                                                               @bind-Value="CustomerState.Customer.Email" />
-                                                <RadzenRequiredValidator Component="Email"
-                                                                         Text="Email is required"
-                                                                         Popup=true />
-                                                <RadzenEmailValidator Component="Email"
-                                                                      Text="Provide a valid email address"
-                                                                      Popup=true />
-                                            </RadzenFormField>
-                                            <RadzenFormField Text="Address" Variant="@fieldVariant">
-                                                <RadzenTextArea class="w-100"
-                                                                aria-label="TextArea"
-                                                                @bind-Value="CustomerState.Customer.Address" />
-                                            </RadzenFormField>
-                                            <RadzenFormField Text="Note" Variant="@fieldVariant">
-                                                <RadzenTextArea class="w-100"
-                                                                aria-label="TextArea"
-                                                                @bind-Value="CustomerState.Customer.Note" />
-                                            </RadzenFormField>
+                                            <RadzenTextBox Name="Name"
+                                                           Placeholder="Name"
+                                                           @bind-Value="CustomerState.Customer.CustomerName" />
+
+                                            <RadzenTextBox Name="Phone"
+                                                           Placeholder="PhoneNumber"
+                                                           @bind-Value="CustomerState.Customer.PhoneNumber" />
+
+                                            <RadzenTextBox Name="Email"
+                                                           Placeholder="Email"
+                                                           @bind-Value="CustomerState.Customer.Email" />
+
+                                            <RadzenTextArea Placeholder="Address"
+                                                            class="w-100"
+                                                            aria-label="TextArea"
+                                                            @bind-Value="CustomerState.Customer.Address" />
+
+                                            <RadzenTextArea Placeholder="Note"
+                                                            class="w-100"
+                                                            aria-label="TextArea"
+                                                            @bind-Value="CustomerState.Customer.Note" />
                                         </RadzenStack>
                                     </RadzenTabsItem>
 
                                     <RadzenTabsItem Text="Contact Person">
                                         <RadzenStack>
-                                            <RadzenFormField Text="Name" Variant="@fieldVariant">
-                                                <RadzenTextBox Name="CPName"
-                                                               @bind-Value="CustomerState.Customer.ContactPerson" />
-                                            </RadzenFormField>
-                                            <RadzenFormField Text="Phone" Variant="@fieldVariant">
-                                                <RadzenTextBox Name="CPPhone"
-                                                               @bind-Value="CustomerState.Customer.CPPhone" />
-                                            </RadzenFormField>
+                                            <RadzenTextBox Name="CPName"
+                                                           Placeholder="Contact Person"
+                                                           @bind-Value="CustomerState.Customer.ContactPerson" />
+
+                                            <RadzenTextBox Name="CPPhone"
+                                                           Placeholder="Contact Person's Phone'"
+                                                           @bind-Value="CustomerState.Customer.CPPhone" />
                                         </RadzenStack>
                                     </RadzenTabsItem>
                                 </Tabs>
                             </RadzenTabs>
                         </RadzenStack>
                     </RadzenFieldset>
+                    <ValidationSummary />
+
                 </RadzenStack>
 
                 <SaveTransactionButton OnButtonClear="ClearField"
@@ -87,8 +77,3 @@
         </RadzenCard>
     </RadzenColumn>
 </RadzenRow>
-
-@code
-{
-    Variant fieldVariant = Variant.Outlined;
-}

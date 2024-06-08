@@ -1,4 +1,5 @@
-﻿using Domain.DTO;
+﻿using Blazored.FluentValidation;
+using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Services.IRepositories;
@@ -21,7 +22,7 @@ public partial class CustomerTransaction
     CustomerState CustomerState { get; set; } = default!;
 
     [Parameter] public Guid? ParamCustomerID { get; set; }
-
+    protected FluentValidationValidator? customerValidator;
     protected string PagePathText = string.Empty;
     protected string FormHeaderText = string.Empty;
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
@@ -53,6 +54,10 @@ public partial class CustomerTransaction
 
     public async Task SubmitAsync(CustomerDTO customer)
     {
+        //var validationResult = await customerValidator!.ValidateAsync();
+        //if (!validationResult)
+        //    return;
+
         bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Customer");
         if (!confirmationStatus)
             return;
