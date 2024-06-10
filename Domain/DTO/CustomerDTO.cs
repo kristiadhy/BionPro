@@ -10,5 +10,5 @@ public class CustomerDTO
     public string? ContactPerson { get; set; }
     public string? CPPhone { get; set; }
     public string? Note { get; set; }
-    public bool? Active { get; set; }
+    public bool? Active { get; set; } = true;
 }

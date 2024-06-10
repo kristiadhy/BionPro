@@ -27,24 +27,26 @@
                                 <Tabs>
                                     <RadzenTabsItem Text="Basic Info">
                                         <RadzenStack>
-                                            <RadzenTextBox Name="Name"
+                                            <RadzenTextBox Name="@nameof(CustomerState.Customer.CustomerName)"
                                                            Placeholder="Name"
                                                            @bind-Value="CustomerState.Customer.CustomerName" />
 
-                                            <RadzenTextBox Name="Phone"
-                                                           Placeholder="PhoneNumber"
+                                            <RadzenTextBox Name="@nameof(CustomerState.Customer.PhoneNumber)"
+                                                           Placeholder="Phone Number"
                                                            @bind-Value="CustomerState.Customer.PhoneNumber" />
 
-                                            <RadzenTextBox Name="Email"
+                                            <RadzenTextBox Name="@nameof(CustomerState.Customer.Email)"
                                                            Placeholder="Email"
                                                            @bind-Value="CustomerState.Customer.Email" />
 
-                                            <RadzenTextArea Placeholder="Address"
+                                            <RadzenTextArea Name="@nameof(CustomerState.Customer.Address)"
+                                                            Placeholder="Address"
                                                             class="w-100"
                                                             aria-label="TextArea"
                                                             @bind-Value="CustomerState.Customer.Address" />
 
-                                            <RadzenTextArea Placeholder="Note"
+                                            <RadzenTextArea Name="@nameof(CustomerState.Customer.Note)"
+                                                            Placeholder="Note"
                                                             class="w-100"
                                                             aria-label="TextArea"
                                                             @bind-Value="CustomerState.Customer.Note" />
@@ -53,11 +55,11 @@
 
                                     <RadzenTabsItem Text="Contact Person">
                                         <RadzenStack>
-                                            <RadzenTextBox Name="CPName"
+                                            <RadzenTextBox Name="@nameof(CustomerState.Customer.ContactPerson)"
                                                            Placeholder="Contact Person"
                                                            @bind-Value="CustomerState.Customer.ContactPerson" />
 
-                                            <RadzenTextBox Name="CPPhone"
+                                            <RadzenTextBox Name="@nameof(CustomerState.Customer.CPPhone)"
                                                            Placeholder="Contact Person's Phone'"
                                                            @bind-Value="CustomerState.Customer.CPPhone" />
                                         </RadzenStack>

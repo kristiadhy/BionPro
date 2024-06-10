@@ -1,4 +1,5 @@
-﻿using Domain.DTO;
+﻿using Blazored.FluentValidation;
+using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Services.IRepositories;
@@ -21,6 +22,7 @@ public partial class SupplierTransaction
     SupplierState SupplierState { get; set; } = default!;
 
     [Parameter] public Guid? ParamSupplierID { get; set; }
+    protected FluentValidationValidator? supplierValidator;
 
     protected string PagePathText = string.Empty;
     protected string FormHeaderText = string.Empty;

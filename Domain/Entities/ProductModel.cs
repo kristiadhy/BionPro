@@ -6,9 +6,9 @@ public class ProductModel : BaseEntity
     public string SKU { get; set; } = string.Empty;
     public decimal PriceAmount { get; set; }
     public string? Description { get; set; }
-    public int? CategoryID { get; set; }
     public string? ImageUrl { get; set; }
 
-    public ProductCategoryModel Category { get; set; } = new();
-    public ICollection<ProductStockModel> Stocks { get; set; } = [];
+    public int? CategoryID { get; set; }
+    public ProductCategoryModel? Category { get; set; }
+    public ICollection<ProductStockModel>? Stocks { get; set; }
 }

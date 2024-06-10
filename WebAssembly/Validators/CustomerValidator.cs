@@ -7,24 +7,21 @@ public class CustomerDtoValidator : AbstractValidator<CustomerDTO>
 {
     public CustomerDtoValidator()
     {
-        RuleFor(customer => customer.CustomerName)
+        RuleFor(prop => prop.CustomerName)
             .NotEmpty()
             .MaximumLength(200)
             ;
 
-        RuleFor(customer => customer.PhoneNumber)
-             .NotEmpty()
+        RuleFor(prop => prop.PhoneNumber)
             .MaximumLength(50)
             ;
 
-        RuleFor(customer => customer.Email)
-             .NotEmpty()
+        RuleFor(prop => prop.Email)
            .MaximumLength(100)
            .EmailAddress()
            ;
 
-        RuleFor(customer => customer.ContactPerson)
-             .NotEmpty()
+        RuleFor(prop => prop.ContactPerson)
            .MaximumLength(100)
            ;
     }

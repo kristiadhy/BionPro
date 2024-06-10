@@ -7,13 +7,13 @@ public class UserValidator : AbstractValidator<UserRegistrationDTO>
 {
     public UserValidator()
     {
-        RuleFor(user => user.Roles)
+        RuleFor(prop => prop.Roles)
             .NotEmpty();
 
-        RuleFor(user => user.Password)
+        RuleFor(prop => prop.Password)
             .NotEmpty();
 
-        RuleFor(user => user.Email)
+        RuleFor(prop => prop.Email)
           .NotEmpty()
           .EmailAddress();
     }

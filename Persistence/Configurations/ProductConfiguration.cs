@@ -28,11 +28,18 @@ internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
             .IsRequired(false)
             .HasMaxLength(int.MaxValue);
 
-        builder.Property(e => e.CategoryID)
+        builder.HasOne(e => e.Category)
+            .WithMany(e => e.Products)
+            .HasForeignKey(e => e.CategoryID)
             .IsRequired(false);
 
+        builder.HasMany(e => e.Stocks)
+            .WithOne(e => e.Product)
+            .HasForeignKey(e => e.ProductID)
+            .IsRequired(true);
+
         builder.Property(e => e.ImageUrl)
-            .IsRequired(false)
-            .HasMaxLength(255);
+            .HasMaxLength(255)
+            .IsRequired(false);
     }
 }

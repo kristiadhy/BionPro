@@ -7,24 +7,24 @@ public class CustomerValidator : AbstractValidator<CustomerModel>
 {
     public CustomerValidator()
     {
-        RuleFor(customer => customer.CustomerName)
+        RuleFor(prop => prop.CustomerName)
             .NotEmpty()
             .MaximumLength(200)
             ;
 
-        RuleFor(customer => customer.PhoneNumber)
+        RuleFor(prop => prop.PhoneNumber)
             //.NotEmpty()
             .MaximumLength(50)
             ;
 
-        RuleFor(customer => customer.Email)
+        RuleFor(prop => prop.Email)
            //.NotEmpty()
            .MaximumLength(100)
            .EmailAddress()
            //.MustAsync(async (email, _) => await IsUniqueAsync(email))
            ;
 
-        RuleFor(customer => customer.ContactPerson)
+        RuleFor(prop => prop.ContactPerson)
            .MaximumLength(100)
            ;
     }

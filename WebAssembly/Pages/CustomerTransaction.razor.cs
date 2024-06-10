@@ -89,6 +89,6 @@ public partial class CustomerTransaction
 
     public void ClearField()
     {
-        Console.WriteLine("Clear fields");
+        CustomerState.Customer = new();
     }
 }

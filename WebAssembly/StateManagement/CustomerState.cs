@@ -7,7 +7,7 @@ namespace WebAssembly.StateManagement;
 public class CustomerState
 {
     private IServiceManager _serviceManager;
-    public List<CustomerDTO> CustomerList { get; set; } = new();
+    public List<CustomerDTO> CustomerList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public CustomerParam CustomerParameter { get; set; } = new();
     public CustomerDTO Customer { get; set; } = new();

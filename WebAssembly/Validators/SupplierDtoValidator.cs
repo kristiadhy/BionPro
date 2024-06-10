@@ -1,11 +1,11 @@
-﻿using Domain.Entities;
+﻿using Domain.DTO;
 using FluentValidation;
 
-namespace Application.Validators;
+namespace WebAssembly.Validators;
 
-public class SupplierValidator : AbstractValidator<SupplierModel>
+public class SupplierDtoValidator : AbstractValidator<SupplierDto>
 {
-    public SupplierValidator()
+    public SupplierDtoValidator()
     {
         RuleFor(prop => prop.SupplierName)
             .NotEmpty()
@@ -13,12 +13,10 @@ public class SupplierValidator : AbstractValidator<SupplierModel>
             ;
 
         RuleFor(prop => prop.PhoneNumber)
-            //.NotEmpty()
             .MaximumLength(50)
             ;
 
         RuleFor(prop => prop.Email)
-           //.NotEmpty()
            .MaximumLength(100)
            .EmailAddress()
            ;
@@ -26,12 +24,5 @@ public class SupplierValidator : AbstractValidator<SupplierModel>
         RuleFor(prop => prop.ContactPerson)
            .MaximumLength(100)
            ;
-    }
-
-    public void ValidateInput(SupplierModel supplierModel)
-    {
-        var validationResult = Validate(supplierModel);
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
     }
 }
