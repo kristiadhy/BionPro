@@ -12,34 +12,25 @@ internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
         builder.HasKey(e => e.ProductID);
         builder.Property(c => c.ProductID).HasDefaultValueSql("NEWID()");
 
-        builder.Property(e => e.Name)
-            .IsRequired()
-            .HasMaxLength(255);
+        builder.Property(e => e.Name).HasMaxLength(255);
 
-        builder.Property(e => e.SKU)
-            .IsRequired()
-            .HasMaxLength(20);
+        builder.Property(e => e.SKU).HasMaxLength(20);
 
-        builder.Property(e => e.PriceAmount)
-            .IsRequired()
-            .HasColumnType("decimal(10, 2)");
+        builder.Property(e => e.PriceAmount).HasColumnType("decimal(10, 2)");
 
-        builder.Property(e => e.Description)
-            .IsRequired(false)
-            .HasMaxLength(int.MaxValue);
+        builder.Property(e => e.Description).HasMaxLength(int.MaxValue);
 
-        builder.HasOne(e => e.Category)
-            .WithMany(e => e.Products)
-            .HasForeignKey(e => e.CategoryID)
-            .IsRequired(false);
+        //builder.HasOne(e => e.Category)
+        //    .WithMany(e => e.Products)
+        //    .HasForeignKey(e => e.CategoryID)
+        //    .IsRequired(false);
 
-        builder.HasMany(e => e.Stocks)
-            .WithOne(e => e.Product)
-            .HasForeignKey(e => e.ProductID)
-            .IsRequired(true);
+        //builder.HasMany(e => e.Stocks)
+        //    .WithOne(e => e.Product)
+        //    .HasForeignKey(e => e.ProductID)
+        //    .IsRequired(true);
 
         builder.Property(e => e.ImageUrl)
-            .HasMaxLength(255)
-            .IsRequired(false);
+            .HasMaxLength(255);
     }
 }

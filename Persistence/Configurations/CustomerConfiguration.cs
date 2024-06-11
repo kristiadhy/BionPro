@@ -12,7 +12,7 @@ internal sealed class CustomerConfiguration : IEntityTypeConfiguration<CustomerM
 
         builder.HasKey(c => c.CustomerID);
         builder.Property(c => c.CustomerID).HasDefaultValueSql("NEWID()");
-        builder.Property(c => c.CustomerName).IsRequired().HasMaxLength(200);
+        builder.Property(c => c.CustomerName).HasMaxLength(200);
         builder.Property(c => c.PhoneNumber).HasMaxLength(50);
         builder.Property(c => c.Email).HasMaxLength(100);
         builder.Property(c => c.ContactPerson).HasMaxLength(100);

@@ -10,9 +10,11 @@ internal class ProductLocationConfiguration : IEntityTypeConfiguration<ProductLo
         builder.ToTable("M03ProductLocation");
 
         builder.HasKey(c => c.LocationID);
-        builder.Property(c => c.LocationID).ValueGeneratedOnAdd();
-        builder.Property(c => c.Name).IsRequired().HasMaxLength(200);
-        builder.Property(c => c.Description).IsRequired().HasMaxLength(int.MaxValue);
-        builder.HasMany(c => c.Stocks).WithOne(c => c.Location).HasForeignKey(c => c.LocationID).IsRequired(false);
+        builder.Property(c => c.LocationID)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(c => c.Name).HasMaxLength(200);
+        builder.Property(c => c.Description).HasMaxLength(int.MaxValue);
+        //builder.HasMany(c => c.Stocks).WithOne(c => c.Location).HasForeignKey(c => c.LocationID).IsRequired(false);
     }
 }

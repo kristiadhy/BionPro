@@ -16,6 +16,5 @@ internal class ProductStockConfiguration : IEntityTypeConfiguration<ProductStock
 
         builder.HasKey(c => c.StockId);
         builder.Property(c => c.StockId).ValueGeneratedOnAdd();
-        builder.Property(c => c.Quantity).IsRequired(true);
     }
 }

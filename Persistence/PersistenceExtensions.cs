@@ -11,12 +11,13 @@ namespace Persistence;
 
 public static class PersistenceExtensions
 {
-    public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
     {
         services.AddDbContext<AppDBContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DBConnection");
-            options.UseSqlServer(connectionString);
+            //We don't register the DB connection here, we set the database connection in the OnConfiguring() method inside the app db context instead
+            //var connectionString = configuration.GetConnectionString("DBConnection");
+            //options.UseSqlServer(connectionString);
         });
 
         services.AddScoped<IRepositoryManager, RepositoryManager>();

@@ -11,6 +11,6 @@ internal class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCa
 
         builder.HasKey(c => c.CategoryID);
         builder.Property(c => c.CategoryID).ValueGeneratedOnAdd();
-        builder.Property(c => c.Name).IsRequired().HasMaxLength(200);
+        builder.Property(c => c.Name).HasMaxLength(200);
     }
 }

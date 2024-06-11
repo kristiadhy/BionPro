@@ -33,7 +33,7 @@ public static class Startup
 
         //Configure service on another layers
         services.ConfigureApplicationServices();
-        services.ConfigureInfrastructureServices(configuration);
+        services.ConfigureInfrastructureServices();
         services.ConfigureServiceServices();
 
         //Local function for patch
