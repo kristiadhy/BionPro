@@ -86,6 +86,6 @@ public partial class SupplierTransaction
 
     public void ClearField()
     {
-        Console.WriteLine("Clear fields");
+        SupplierState.Supplier = new();
     }
 }

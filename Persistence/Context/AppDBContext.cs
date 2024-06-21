@@ -28,8 +28,12 @@ public class AppDBContext : IdentityDbContext<UserModel>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = _configuration.GetConnectionString("DBConnection");
-        optionsBuilder.UseSqlServer(connectionString 
-            //o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+        optionsBuilder.UseSqlServer(connectionString, option =>
+            {
+                //option.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                option.CommandTimeout(60);
+            }
+
             );
     }
 

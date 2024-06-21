@@ -29,7 +29,8 @@
                                         <RadzenStack>
                                             <RadzenTextBox Name="@nameof(CustomerState.Customer.CustomerName)"
                                                            Placeholder="Name"
-                                                           @bind-Value="CustomerState.Customer.CustomerName" />
+                                                           @bind-Value="CustomerState.Customer.CustomerName"
+                                                           @ref="@txtNameForFocus" />
 
                                             <RadzenTextBox Name="@nameof(CustomerState.Customer.PhoneNumber)"
                                                            Placeholder="Phone Number"

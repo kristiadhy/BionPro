@@ -2,6 +2,7 @@
 using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
+using Radzen.Blazor;
 using Services.IRepositories;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
@@ -28,6 +29,7 @@ public partial class CustomerTransaction
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     protected bool IsSaving = false;
     protected CustomerParam CustomerParameter = new();
+    private RadzenTextBox? txtNameForFocus;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -87,8 +89,9 @@ public partial class CustomerTransaction
         IsSaving = false;
     }
 
-    public void ClearField()
+    public async Task ClearField()
     {
         CustomerState.Customer = new();
+        await txtNameForFocus!.FocusAsync();
     }
 }
