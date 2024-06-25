@@ -7,7 +7,7 @@ internal class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCa
 {
     public void Configure(EntityTypeBuilder<ProductCategoryModel> builder)
     {
-        builder.ToTable("M03ProductCategory");
+        builder.ToTable("M03ProductCategories");
 
         builder.HasKey(c => c.CategoryID);
         builder.Property(c => c.CategoryID).ValueGeneratedOnAdd();

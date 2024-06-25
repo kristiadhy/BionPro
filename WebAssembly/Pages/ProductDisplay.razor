@@ -2,11 +2,20 @@
 
 <PageTitle>@($"{GlobalVariable.AppName} | Product")</PageTitle>
 
-<div class="rz-mb-6">
-    <RadzenBreadCrumb>
-        <RadzenBreadCrumbItem Path="/product"
-                              Text="Product" />
-        <RadzenBreadCrumbItem Text="List" />
-    </RadzenBreadCrumb>
-</div>
+<MainMenuContainer>
+    <RadzenText TextStyle="TextStyle.H5">Products</RadzenText>
+
+    <MainMenuButton LoadDataClicked="EvReloadData"
+                    CreateNewClicked="EvCreateNew" />
+
+@*     <RadzenSelectBar TValue="int"
+                     class="ms-auto">
+        <Items>
+            <RadzenSelectBarItem Text="Products"
+                                 Value="1" />
+            <RadzenSelectBarItem Text="Categories"
+                                 Value="2" />
+        </Items>
+    </RadzenSelectBar> *@
+</MainMenuContainer>
 

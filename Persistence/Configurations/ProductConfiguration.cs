@@ -7,7 +7,7 @@ internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
 {
     public void Configure(EntityTypeBuilder<ProductModel> builder)
     {
-        builder.ToTable("M03Product");
+        builder.ToTable("M03Products");
 
         builder.HasKey(e => e.ProductID);
         builder.Property(c => c.ProductID).HasDefaultValueSql("NEWID()");

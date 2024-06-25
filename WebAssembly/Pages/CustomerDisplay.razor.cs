@@ -1,7 +1,7 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
-using Services.IRepositories;
+using Web.Services.IHttpRepository;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
 

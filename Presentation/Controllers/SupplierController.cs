@@ -48,7 +48,7 @@ public class SupplierController(IServiceManager serviceManager) : ControllerBase
     }
 
     [HttpPatch("{id:guid}", Name = "PartiallyUpdateSupplier")]
-    public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid id, [FromBody] JsonPatchDocument<SupplierDto> patchDoc)
+    public async Task<IActionResult> PartiallyUpdateSupplier(Guid id, [FromBody] JsonPatchDocument<SupplierDto> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");

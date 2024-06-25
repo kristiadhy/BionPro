@@ -1,7 +1,7 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using Services.IRepositories;
+using Web.Services.IHttpRepository;
 
 namespace WebAssembly.Pages;
 

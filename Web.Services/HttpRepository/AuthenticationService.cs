@@ -4,9 +4,9 @@ using Extension.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using Services.Extensions;
-using Services.IRepositories;
+using Web.Services.IHttpRepository;
 
-namespace Services.Repositories;
+namespace Web.Services.HttpRepository;
 
 public class AuthenticationService : IAuthenticationService
 {

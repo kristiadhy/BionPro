@@ -1,6 +1,6 @@
 ﻿using Domain.DTO;
 
-namespace Services.IRepositories;
+namespace Web.Services.IHttpRepository;
 
 public interface IAuthenticationService
 {

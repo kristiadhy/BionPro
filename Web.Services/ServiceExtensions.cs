@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Services.Extensions;
-using Services.IRepositories;
-using Services.Repositories;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Web.Services.HttpRepository;
+using Web.Services.IHttpRepository;
 
 namespace Services;
 

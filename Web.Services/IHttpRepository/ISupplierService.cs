@@ -1,8 +1,7 @@
 ﻿using Domain.DTO;
 using Domain.Parameters;
-using Features;
-
-namespace Services.IRepositories;
+using Web.Services.Features;
+namespace Web.Services.IHttpRepository;
 
 public interface ISupplierService
 {

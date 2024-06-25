@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using Toolbelt.Blazor;
 
-namespace Services.Repositories;
+namespace Web.Services.HttpRepository;
 
 public class HttpInterceptorService
 {

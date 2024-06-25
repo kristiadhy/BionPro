@@ -7,25 +7,25 @@ using Web.Services.Features;
 using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
-public class CustomerService : ICustomerService
+internal class ProductCategoryService : IProductCategoryService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
-    private readonly string additionalResourceName = "customers";
+    private readonly string additionalResourceName = "productCategories";
 
-    public CustomerService(CustomHttpClient client, JsonSerializerSettings options)
+    public ProductCategoryService(CustomHttpClient client, JsonSerializerSettings options)
     {
         _client = client;
         _options = options;
     }
 
-    public async Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter)
+    public async Task<PagingResponse<ProductCategoryDto>> GetProductCategories(ProductCategoryParam productCategoryParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
-            ["pageNumber"] = customerParameter.PageNumber.ToString(),
-            ["searchTerm"] = customerParameter.srcByName == null ? "" : customerParameter.srcByName,
-            ["orderBy"] = customerParameter.OrderBy!
+            ["pageNumber"] = productCategoryParam.PageNumber.ToString(),
+            ["searchTerm"] = productCategoryParam.srcByName == null ? "" : productCategoryParam.srcByName,
+            ["orderBy"] = productCategoryParam.OrderBy!
         };
 
         var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
@@ -33,44 +33,44 @@ public class CustomerService : ICustomerService
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForGetMethod(response);
 
-        var pagingResponse = new PagingResponse<CustomerDTO>()
+        var pagingResponse = new PagingResponse<ProductCategoryDto>()
         {
-            Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content, _options)!,
+            Items = JsonConvert.DeserializeObject<List<ProductCategoryDto>>(content, _options)!,
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
         };
 
         return pagingResponse;
     }
 
-    public async Task<CustomerDTO> GetCustomerByID(Guid customerID)
+    public async Task<ProductCategoryDto> GetProductCategoryByID(int categoryID)
     {
-        var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{customerID}");
-        var result = JsonConvert.DeserializeObject<CustomerDTO>(content, _options);
+        var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{categoryID}");
+        var result = JsonConvert.DeserializeObject<ProductCategoryDto>(content, _options);
         if (!string.IsNullOrEmpty(content))
             return result!;
         else
             return new();
     }
 
-    public async Task<HttpResponseMessage> Create(CustomerDTO customerDTO)
+    public async Task<HttpResponseMessage> Create(ProductCategoryDto productCategoryDto)
     {
-        var response = await _client.PostAsync(additionalResourceName, customerDTO);
+        var response = await _client.PostAsync(additionalResourceName, productCategoryDto);
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForPostMethod(response, content, _options);
         return response;
     }
 
-    public async Task<HttpResponseMessage> Update(CustomerDTO customerDTO)
+    public async Task<HttpResponseMessage> Update(ProductCategoryDto productCategoryDto)
     {
-        var response = await _client.PutAsync(additionalResourceName, customerDTO);
+        var response = await _client.PutAsync(additionalResourceName, productCategoryDto);
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForPostMethod(response, content, _options);
         return response;
     }
 
-    public async Task<HttpResponseMessage> Delete(Guid customerID)
+    public async Task<HttpResponseMessage> Delete(int categoryID)
     {
-        var response = await _client.DeleteAsync($"{additionalResourceName}/{customerID}");
+        var response = await _client.DeleteAsync($"{additionalResourceName}/{categoryID}");
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForPostMethod(response, content, _options);
         return response;

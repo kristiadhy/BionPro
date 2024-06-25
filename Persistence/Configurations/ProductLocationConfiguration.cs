@@ -7,7 +7,7 @@ internal class ProductLocationConfiguration : IEntityTypeConfiguration<ProductLo
 {
     public void Configure(EntityTypeBuilder<ProductLocationModel> builder)
     {
-        builder.ToTable("M03ProductLocation");
+        builder.ToTable("M03ProductLocations");
 
         builder.HasKey(c => c.LocationID);
         builder.Property(c => c.LocationID)

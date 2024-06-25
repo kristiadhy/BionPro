@@ -1,0 +1,11 @@
+﻿<RadzenStack Orientation="Orientation.Horizontal"
+             AlignItems="AlignItems.Start"
+             Wrap="FlexWrap.Wrap"
+             Gap="4px">
+    @ChildContent
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

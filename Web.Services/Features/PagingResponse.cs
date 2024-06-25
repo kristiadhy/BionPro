@@ -1,6 +1,6 @@
 ﻿using Domain.Parameters;
 
-namespace Features;
+namespace Web.Services.Features;
 
 public class PagingResponse<T> where T : class
 {

@@ -2,22 +2,28 @@
 
 <PageTitle>@($"{GlobalVariable.AppName} | Customer")</PageTitle>
 
-<div class="rz-mb-6">
+@* <div class="rz-mb-6">
     <RadzenBreadCrumb>
         <RadzenBreadCrumbItem Path="/customer"
                               Text="Customer" />
         <RadzenBreadCrumbItem Text="List" />
     </RadzenBreadCrumb>
-</div>
+</div> *@
 
-<MainMenuButton LoadDataClicked="EvReloadData"
-                CreateNewClicked="EvCreateNew" />
+
+
+<MainMenuContainer>
+    <RadzenText TextStyle="TextStyle.H5">Customers</RadzenText>
+
+    <MainMenuButton LoadDataClicked="EvReloadData"
+                    CreateNewClicked="EvCreateNew" />
+</MainMenuContainer>
 
 <RadzenDataGrid @ref="CustomerGrid"
                 IsLoading=@isLoading
                 Count="@CustomerState.MetaData.TotalCount"
                 Data="@CustomerState.CustomerList"
-                SelectionMode="DataGridSelectionMode.Single" 
+                SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
                 AllowPaging="true"

@@ -13,7 +13,7 @@ public sealed class SupplierRepo : MethodBase<SupplierModel>, ISupplierRepo
 
     public async Task<PagedList<SupplierModel>> GetAllAsync(SupplierParam supplierParam, bool trackChanges)
     {
-        var customers = await FindAll(trackChanges)
+        var suppliers = await FindAll(trackChanges)
             .Sort(supplierParam.OrderBy) //It's a local method
             .Skip((supplierParam.PageNumber - 1) * supplierParam.PageSize)
             .Take(supplierParam.PageSize)
@@ -21,12 +21,12 @@ public sealed class SupplierRepo : MethodBase<SupplierModel>, ISupplierRepo
 
         var count = await FindAll(trackChanges).CountAsync();
 
-        return new PagedList<SupplierModel>(customers, count, supplierParam.PageNumber, supplierParam.PageSize);
+        return new PagedList<SupplierModel>(suppliers, count, supplierParam.PageNumber, supplierParam.PageSize);
     }
 
     public async Task<PagedList<SupplierModel>> GetByParametersAsync(SupplierParam supplierParam, bool trackChanges)
     {
-        var customers = await FindAll(trackChanges)
+        var suppliers = await FindAll(trackChanges)
             .SearchByName(supplierParam.srcByName) //It's a local method
             .Sort(supplierParam.OrderBy) //It's a local method
             .Skip((supplierParam.PageNumber - 1) * supplierParam.PageSize)
@@ -37,14 +37,14 @@ public sealed class SupplierRepo : MethodBase<SupplierModel>, ISupplierRepo
             .SearchByName(supplierParam.srcByName)
             .CountAsync();
 
-        return new PagedList<SupplierModel>(customers, count, supplierParam.PageNumber, supplierParam.PageSize);
+        return new PagedList<SupplierModel>(suppliers, count, supplierParam.PageNumber, supplierParam.PageSize);
     }
 
-    public async Task<SupplierModel?> GetByIDAsync(Guid customerID, bool trackChanges)
+    public async Task<SupplierModel?> GetByIDAsync(Guid supplierID, bool trackChanges)
     {
-        var customer = await FindByCondition(x => x.SupplierID == customerID, trackChanges).FirstOrDefaultAsync();
-        if (customer is not null)
-            return customer;
+        var supplier = await FindByCondition(x => x.SupplierID == supplierID, trackChanges).FirstOrDefaultAsync();
+        if (supplier is not null)
+            return supplier;
         else
             return null;
     }

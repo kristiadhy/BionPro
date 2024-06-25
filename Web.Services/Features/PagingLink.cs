@@ -1,4 +1,4 @@
-﻿namespace Services.Features;
+﻿namespace Web.Services.Features;
 public class PagingLink
 {
     public string Text { get; set; }

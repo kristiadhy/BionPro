@@ -17,14 +17,15 @@
             <RadzenSidebar @bind-Expanded="@sidebarExpanded">
                 <RadzenPanelMenu Multiple="true">
                     <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" IconColor="@iconColor" Path="/" />
-                    <RadzenPanelMenuItem Text="Master" Icon="wysiwyg" IconColor="@iconColor" Expanded="true">
-                        <RadzenPanelMenuItem Text="Customers" Icon="people_alt" Path="customer" />
-                        <RadzenPanelMenuItem Text="Suppliers" Icon="people_outline" Path="supplier" />
-                        <RadzenPanelMenuItem Text="Products" Icon="inventory" Path="product" />
+                    <RadzenPanelMenuItem Text="Customers" Icon="people_alt" Path="customer" />
+                    <RadzenPanelMenuItem Text="Suppliers" Icon="people_outline" Path="supplier" />
+                    <RadzenPanelMenuItem Text="Products" Icon="inventory" IconColor="@iconColor" Expanded="false">
+                        <RadzenPanelMenuItem Text="Categories" Icon="list" Path="product-categories" />
+                        <RadzenPanelMenuItem Text="Product List" Icon="wysiwyg" Path="product" />
                     </RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Inventory" Icon="storefront" IconColor="@iconColor" />
                     <RadzenPanelMenuItem Text="Purchases" Icon="shopping_cart" IconColor="@iconColor" Path="counter" />
                     <RadzenPanelMenuItem Text="Sales" Icon="shopping_bag" IconColor="@iconColor" />
-                    <RadzenPanelMenuItem Text="Inventory" Icon="storefront" IconColor="@iconColor" />
                 </RadzenPanelMenu>
                 @*<div class="rz-p-4">
                 Sidebar

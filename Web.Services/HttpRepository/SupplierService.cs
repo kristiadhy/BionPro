@@ -1,12 +1,12 @@
 ﻿using Domain.DTO;
 using Domain.Parameters;
-using Features;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Services.Extensions;
-using Services.IRepositories;
+using Web.Services.Features;
+using Web.Services.IHttpRepository;
 
-namespace Services.Repositories;
+namespace Web.Services.HttpRepository;
 public class SupplierService : ISupplierService
 {
     private readonly CustomHttpClient _client;
@@ -68,9 +68,9 @@ public class SupplierService : ISupplierService
         return response;
     }
 
-    public async Task<HttpResponseMessage> Delete(Guid customerID)
+    public async Task<HttpResponseMessage> Delete(Guid supplierID)
     {
-        var response = await _client.DeleteAsync($"{additionalResourceName}/{customerID}");
+        var response = await _client.DeleteAsync($"{additionalResourceName}/{supplierID}");
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForPostMethod(response, content, _options);
         return response;

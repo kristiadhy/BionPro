@@ -1,6 +1,6 @@
 ﻿using Domain.DTO;
 using Domain.Parameters;
-using Services.IRepositories;
+using Web.Services.IHttpRepository;
 
 namespace WebAssembly.StateManagement;
 

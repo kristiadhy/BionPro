@@ -2,7 +2,7 @@
 using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
-using Services.IRepositories;
+using Web.Services.IHttpRepository;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
 

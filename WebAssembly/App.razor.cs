@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Services.IRepositories;
+using Web.Services.IHttpRepository;
 
 namespace WebAssembly;
 
