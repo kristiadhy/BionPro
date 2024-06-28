@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
 
@@ -22,7 +23,19 @@ public partial class SupplierDisplay
 
     internal static RadzenDataGrid<SupplierDto> SupplierGrid { get; set; } = default!;
 
-    protected bool isLoading = false;
+    private bool isLoading = false;
+    private PageModel? SupplierPageModel { get; set; }
+    private IEnumerable<PageModel> BreadCrumbs { get; set; }
+
+    public SupplierDisplay()
+    {
+        SupplierPageModel = GlobalState.PageModels.Where(s => s.ID == 2).FirstOrDefault();
+        BreadCrumbs =
+        [
+            new PageModel { Path = SupplierPageModel?.Path, Title= SupplierPageModel?.Title },
+            new PageModel { Path = null, Title = "List" }
+        ];
+    }
 
     protected async Task EvReloadData()
     {
@@ -43,7 +56,7 @@ public partial class SupplierDisplay
 
     protected void EvEditRow(SupplierDto supplier)
     {
-        NavigationManager.NavigateTo($"supplier/edit/{supplier.SupplierID}");
+        NavigationManager.NavigateTo($"{SupplierPageModel?.Path}/edit/{supplier.SupplierID}");
     }
 
     protected async Task EvDeleteRow(SupplierDto supplier)
@@ -67,6 +80,6 @@ public partial class SupplierDisplay
 
     protected void EvCreateNew()
     {
-        NavigationManager.NavigateTo($"supplier/create");
+        NavigationManager.NavigateTo($"{SupplierPageModel?.Path}/create");
     }
 }

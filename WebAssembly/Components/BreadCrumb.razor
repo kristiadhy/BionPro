@@ -1,0 +1,19 @@
+﻿<div class="ms-auto">
+    @if (BreadCrumbs is not null)
+    {
+        @if (BreadCrumbs is not null)
+        {
+            <RadzenBreadCrumb>
+                @foreach (PageModel breadCrumbModel in BreadCrumbs)
+                {
+                    <RadzenBreadCrumbItem Path=@(breadCrumbModel.Path != null ? $"/{breadCrumbModel.Path}" : null) Text="@breadCrumbModel.Title" />
+                }
+            </RadzenBreadCrumb>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<PageModel>? BreadCrumbs { get; set; }
+}

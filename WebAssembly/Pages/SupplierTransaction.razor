@@ -1,18 +1,12 @@
-﻿@page "/supplier/create"
-@page "/supplier/edit"
-@page "/supplier/edit/{ParamSupplierID:guid}"
+﻿@page "/suppliers/create"
+@page "/suppliers/edit"
+@page "/suppliers/edit/{ParamSupplierID:guid}"
 
-<PageTitle>@($"{GlobalVariable.AppName} | Supplier")</PageTitle>
+<PageTitle>@($"{GlobalState.AppName} | {SupplierPageModel?.Title}")</PageTitle>
 
-<div class="rz-mb-6">
-    <RadzenBreadCrumb>
-        <RadzenBreadCrumbItem Path="/supplier"
-                              Text="Supplier" />
-        <RadzenBreadCrumbItem Text="@PagePathText" />
-    </RadzenBreadCrumb>
-</div>
-
-<MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />
+<MainMenuContainer>
+    <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />
+</MainMenuContainer>
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-py-5">

@@ -1,21 +1,15 @@
-﻿@page "/product"
+﻿@page "/products"
 
-<PageTitle>@($"{GlobalVariable.AppName} | Product")</PageTitle>
+<PageTitle>@($"{GlobalState.AppName} | {ProductsPageModel?.Title}")</PageTitle>
+
+<ProductSubButtons />
 
 <MainMenuContainer>
-    <RadzenText TextStyle="TextStyle.H5">Products</RadzenText>
-
-    <MainMenuButton LoadDataClicked="EvReloadData"
-                    CreateNewClicked="EvCreateNew" />
-
-@*     <RadzenSelectBar TValue="int"
-                     class="ms-auto">
-        <Items>
-            <RadzenSelectBarItem Text="Products"
-                                 Value="1" />
-            <RadzenSelectBarItem Text="Categories"
-                                 Value="2" />
-        </Items>
-    </RadzenSelectBar> *@
+    <RadzenText TextStyle="TextStyle.H5">@ProductsPageModel?.Title</RadzenText>
+    <BreadCrumb breadCrumbs="@BreadCrumbs" />
 </MainMenuContainer>
 
+<MainMenuContainer>
+    <MainMenuButton LoadDataClicked="EvReloadData"
+                    CreateNewClicked="EvCreateNew" />
+</MainMenuContainer>

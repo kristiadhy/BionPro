@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
 
@@ -22,7 +23,19 @@ public partial class CustomerDisplay
 
     internal static RadzenDataGrid<CustomerDTO> CustomerGrid { get; set; } = default!;
 
-    protected bool isLoading = false;
+    private bool isLoading = false;
+    private PageModel? CustomerPageModel { get; set; }
+    private IEnumerable<PageModel> BreadCrumbs { get; set; }
+
+    public CustomerDisplay()
+    {
+        CustomerPageModel = GlobalState.PageModels.Where(s => s.ID == 1).FirstOrDefault();
+        BreadCrumbs =
+        [
+            new PageModel { Path = CustomerPageModel?.Path, Title= CustomerPageModel?.Title },
+            new PageModel { Path = null, Title = "List" }
+        ];
+    }
 
     protected async Task EvReloadData()
     {
@@ -43,7 +56,7 @@ public partial class CustomerDisplay
 
     protected void EvEditRow(CustomerDTO customer)
     {
-        NavigationManager.NavigateTo($"customer/edit/{customer.CustomerID}");
+        NavigationManager.NavigateTo($"{CustomerPageModel?.Path}/edit/{customer.CustomerID}");
     }
 
     protected async Task EvDeleteRow(CustomerDTO customer)
@@ -67,6 +80,6 @@ public partial class CustomerDisplay
 
     protected void EvCreateNew()
     {
-        NavigationManager.NavigateTo($"customer/create");
+        NavigationManager.NavigateTo($"{CustomerPageModel?.Path}/create");
     }
 }

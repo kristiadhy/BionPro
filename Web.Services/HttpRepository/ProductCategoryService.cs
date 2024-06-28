@@ -11,7 +11,7 @@ internal class ProductCategoryService : IProductCategoryService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
-    private readonly string additionalResourceName = "productCategories";
+    private readonly string additionalResourceName = "product-categories";
 
     public ProductCategoryService(CustomHttpClient client, JsonSerializerSettings options)
     {

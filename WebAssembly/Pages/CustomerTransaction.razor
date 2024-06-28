@@ -1,18 +1,12 @@
-﻿@page "/customer/create"
-@page "/customer/edit"
-@page "/customer/edit/{ParamCustomerID:guid}"
+﻿@page "/customers/create"
+@page "/customers/edit"
+@page "/customers/edit/{ParamCustomerID:guid}"
 
-<PageTitle>@($"{GlobalVariable.AppName} | Customer")</PageTitle>
+<PageTitle>@($"{GlobalState.AppName} | {CustomerPageModel?.Title}")</PageTitle>
 
-<div class="rz-mb-6">
-    <RadzenBreadCrumb>
-        <RadzenBreadCrumbItem Path="/customer"
-                              Text="Customer" />
-        <RadzenBreadCrumbItem Text="@PagePathText" />
-    </RadzenBreadCrumb>
-</div>
-
-<MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />
+<MainMenuContainer>
+    <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />
+</MainMenuContainer>
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-py-5">

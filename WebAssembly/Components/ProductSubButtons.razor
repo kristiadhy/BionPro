@@ -1,0 +1,37 @@
+﻿<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap" Gap="6px" class="rz-mb-4">
+    <RadzenButton Variant="_buttonVariant1"
+                  Click=@(args => ToProductPage())
+                  Text="Products"
+                  Icon="inventory"
+                  ButtonStyle="ButtonStyle.Dark"
+                  Size="ButtonSize.Small" />
+
+    <RadzenButton Variant="_buttonVariant1"
+                  Click=@(args => ToProductCategoryPage())
+                  Text="Categories"
+                  Icon="list"
+                  ButtonStyle="ButtonStyle.Dark"
+                  Size="ButtonSize.Small" />
+
+</RadzenStack>
+
+@code {
+    [Inject]
+    NavigationManager NavigationManager { get; set; } = default!;
+
+    Variant _buttonVariant1 = Variant.Outlined;
+    Variant _buttonVariant2 = Variant.Filled;
+
+    private PageModel? ProductsPageModel { get; set; } = GlobalState.PageModels.Where(s => s.ID == 3).FirstOrDefault();
+    private PageModel? ProductsCategoriesPageModel { get; set; } = GlobalState.PageModels.Where(s => s.ID == 4).FirstOrDefault();
+
+    private void ToProductPage()
+    {
+        NavigationManager.NavigateTo($"{ProductsPageModel?.Path}");
+    }
+
+    private void ToProductCategoryPage()
+    {
+        NavigationManager.NavigateTo($"{ProductsCategoriesPageModel?.Path}");
+    }
+}

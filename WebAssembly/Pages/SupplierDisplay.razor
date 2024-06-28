@@ -1,18 +1,13 @@
-﻿@page "/supplier"
+﻿@page "/suppliers"
 
-<PageTitle>@($"{GlobalVariable.AppName} | Supplier")</PageTitle>
-
-@* <div class="rz-mb-6">
-    <RadzenBreadCrumb>
-        <RadzenBreadCrumbItem Path="/supplier"
-                              Text="Supplier" />
-        <RadzenBreadCrumbItem Text="List" />
-    </RadzenBreadCrumb>
-</div> *@
+<PageTitle>@($"{GlobalState.AppName} | {SupplierPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
-    <RadzenText TextStyle="TextStyle.H5">Suppliers</RadzenText>
+    <RadzenText TextStyle="TextStyle.H5">@SupplierPageModel?.Title</RadzenText>
+    <BreadCrumb breadCrumbs="@BreadCrumbs" />
+</MainMenuContainer>
 
+<MainMenuContainer>
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>

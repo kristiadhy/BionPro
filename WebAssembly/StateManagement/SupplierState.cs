@@ -7,7 +7,7 @@ namespace WebAssembly.StateManagement;
 public class SupplierState
 {
     private IServiceManager _serviceManager;
-    public List<SupplierDto> SupplierList { get; set; } = new();
+    public List<SupplierDto> SupplierList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public SupplierParam SupplierParameter { get; set; } = new();
     public SupplierDto Supplier { get; set; } = new();

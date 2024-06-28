@@ -10,12 +10,12 @@ namespace Presentation.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
-[Route("api/productCategories")]
+[Route("api/product-categories")]
 public class ProductCategoryController(IServiceManager serviceManager) : ControllerBase
 {
     private readonly IServiceManager _serviceManager = serviceManager;
 
-    [HttpGet(Name = "ProductCategorys")]
+    [HttpGet(Name = "ProductCategories")]
     public async Task<IActionResult> GetByParameters(int productCategoryID, [FromQuery] ProductCategoryParam productCategoryParam, CancellationToken cancellationToken)
     {
         var pagedResult = await _serviceManager.ProductCategoryService.GetByParametersAsync(productCategoryID, productCategoryParam, false, cancellationToken);
@@ -24,7 +24,7 @@ public class ProductCategoryController(IServiceManager serviceManager) : Control
     }
 
 
-    [HttpGet("{id:guid}", Name = "ProductCategoryByID")]
+    [HttpGet("{id:int}", Name = "ProductCategoryByID")]
     public async Task<IActionResult> GetByID(int id, CancellationToken cancellationToken)
     {
         var supplier = await _serviceManager.ProductCategoryService.GetByProductCategoryIDAsync(id, false, cancellationToken);

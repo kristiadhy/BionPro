@@ -1,0 +1,38 @@
+﻿@page "/products/categories/create"
+@page "/products/categories/edit"
+@page "/products/categories/edit/{ParamProductCategoryID:int}"
+
+<PageTitle>@($"{GlobalState.AppName} | {ProductCategoryPageModel?.Title}")</PageTitle>
+
+<MainMenuContainer>
+    <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />
+</MainMenuContainer>
+
+<RadzenRow Gap="0.5rem" RowGap="0.5rem">
+    <RadzenColumn SizeLG="6" SizeMD="12" class="rz-py-5">
+        <RadzenCard class="my-2">
+            <RadzenTemplateForm Data="@ProductCategoryState.ProductCategory" Submit="@(async (ProductCategoryDto args) => { await SubmitAsync(args); })">
+                <FluentValidationValidator @ref="productCategoryValidator" />
+
+                <RadzenStack>
+                    <RadzenFieldset Text="@FormHeaderText">
+                        <RadzenStack Gap="1rem">
+                            <RadzenStack>
+                                <RadzenTextBox Name="@nameof(ProductCategoryState.ProductCategory.Name)"
+                                               Placeholder="Name"
+                                               @bind-Value="ProductCategoryState.ProductCategory.Name"
+                                               @ref="@txtNameForFocus" />
+                            </RadzenStack>
+                        </RadzenStack>
+                    </RadzenFieldset>
+                    <ValidationSummary />
+
+                </RadzenStack>
+
+                <SaveTransactionButton OnButtonClear="ClearField"
+                                       IsBusy="@IsSaving" />
+
+            </RadzenTemplateForm>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>

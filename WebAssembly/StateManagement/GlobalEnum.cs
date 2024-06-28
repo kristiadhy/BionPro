@@ -1,4 +1,4 @@
-﻿namespace WebAssembly.Services;
+﻿namespace WebAssembly.StateManagement;
 
 public class GlobalEnum
 {

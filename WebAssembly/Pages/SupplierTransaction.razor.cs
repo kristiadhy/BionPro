@@ -3,6 +3,7 @@ using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Web.Services.IHttpRepository;
+using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
 
@@ -30,6 +31,13 @@ public partial class SupplierTransaction
     protected bool IsSaving = false;
     protected SupplierParam SupplierParameter = new();
 
+    private PageModel? SupplierPageModel { get; set; }
+
+    public SupplierTransaction()
+    {
+        SupplierPageModel = GlobalState.PageModels.Where(s => s.ID == 2).FirstOrDefault();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         if (ParamSupplierID is not null)
@@ -50,7 +58,7 @@ public partial class SupplierTransaction
 
     public void EvBackToPrevious()
     {
-        NavigationManager.NavigateTo($"supplier");
+        NavigationManager.NavigateTo($"{SupplierPageModel?.Path}");
     }
 
     public async Task SubmitAsync(SupplierDto supplier)

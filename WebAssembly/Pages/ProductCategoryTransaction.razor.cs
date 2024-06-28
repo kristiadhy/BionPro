@@ -10,7 +10,7 @@ using WebAssembly.StateManagement;
 
 namespace WebAssembly.Pages;
 
-public partial class CustomerTransaction
+public partial class ProductCategoryTransaction
 {
     [Inject]
     NavigationManager NavigationManager { get; set; } = default!;
@@ -21,54 +21,50 @@ public partial class CustomerTransaction
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    CustomerState CustomerState { get; set; } = default!;
+    ProductCategoryState ProductCategoryState { get; set; } = default!;
 
-    [Parameter] public Guid? ParamCustomerID { get; set; }
-    protected FluentValidationValidator? customerValidator;
+    [Parameter] public int? ParamProductCategoryID { get; set; }
+    protected FluentValidationValidator? productCategoryValidator;
     protected string PagePathText = string.Empty;
     protected string FormHeaderText = string.Empty;
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     protected bool IsSaving = false;
-    protected CustomerParam CustomerParameter = new();
+    protected ProductCategoryParam ProductCategoryParameter = new();
     private RadzenTextBox? txtNameForFocus;
 
-    private PageModel? CustomerPageModel { get; set; }
+    private PageModel? ProductCategoryPageModel { get; set; }
 
-    public CustomerTransaction()
+    public ProductCategoryTransaction()
     {
-        CustomerPageModel = GlobalState.PageModels.Where(s => s.ID == 1).FirstOrDefault();
+        ProductCategoryPageModel = GlobalState.PageModels.Where(s => s.ID == 4).FirstOrDefault();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (ParamCustomerID is not null)
+        if (ParamProductCategoryID is not null)
         {
-            CustomerState.Customer = await ServiceManager.CustomerService.GetCustomerByID((Guid)ParamCustomerID);
+            ProductCategoryState.ProductCategory = await ServiceManager.ProductCategoryService.GetProductCategoryByID((int)ParamProductCategoryID);
 
             PagePathText = GlobalEnum.FormStatus.Edit.ToString();
-            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing Customer";
+            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing Product Category";
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
             PagePathText = GlobalEnum.FormStatus.New.ToString();
-            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Customer";
+            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Product Category";
             FormStatus = GlobalEnum.FormStatus.New;
         }
     }
 
     public void EvBackToPrevious()
     {
-        NavigationManager.NavigateTo($"{CustomerPageModel?.Path}");
+        NavigationManager.NavigateTo($"{ProductCategoryPageModel?.Path}");
     }
 
-    public async Task SubmitAsync(CustomerDTO customer)
+    public async Task SubmitAsync(ProductCategoryDto productCategory)
     {
-        //var validationResult = await customerValidator!.ValidateAsync();
-        //if (!validationResult)
-        //    return;
-
-        bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Customer");
+        bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Product Category");
         if (!confirmationStatus)
             return;
 
@@ -77,29 +73,28 @@ public partial class CustomerTransaction
 
         if (FormStatus == GlobalEnum.FormStatus.New)
         {
-            customer.CustomerID = null;
-            var response = await ServiceManager.CustomerService.Create(customer);
+            var response = await ServiceManager.ProductCategoryService.Create(productCategory);
             if (response.IsSuccessStatusCode)
-                NotificationService.SaveNotification("A new customer added");
+                NotificationService.SaveNotification("A new Product Category added");
         }
         else if (FormStatus == GlobalEnum.FormStatus.Edit)
         {
-            var response = await ServiceManager.CustomerService.Update(customer);
+            var response = await ServiceManager.ProductCategoryService.Update(productCategory);
             if (response.IsSuccessStatusCode)
             {
-                NotificationService.SaveNotification("Customer updated");
+                NotificationService.SaveNotification("Product Category updated");
             }
         }
 
-        //Load customer state after making changes
-        await CustomerState.LoadCustomers();
+        //Load productCategory state after making changes
+        await ProductCategoryState.LoadProductCategories();
 
         IsSaving = false;
     }
 
     public async Task ClearField()
     {
-        CustomerState.Customer = new();
+        ProductCategoryState.ProductCategory = new();
         await txtNameForFocus!.FocusAsync();
     }
 }
