@@ -10,6 +10,7 @@ internal class MappingProfile : Profile
         CreateMap<CustomerModel, CustomerDTO>().ReverseMap();
         CreateMap<SupplierModel, SupplierDto>().ReverseMap();
         CreateMap<ProductCategoryModel, ProductCategoryDto>().ReverseMap();
+        CreateMap<ProductModel, ProductDto>().ReverseMap();
         CreateMap<UserRegistrationDTO, UserModel>();
     }
 }

@@ -2,7 +2,8 @@
 
 <PageTitle>@($"{GlobalState.AppName} | {ProductsPageModel?.Title}")</PageTitle>
 
-<ProductSubButtons />
+@* <ProductSubButtons PageModel="ProductsPageModel" /> *@
+<ProductSubMenu />
 
 <MainMenuContainer>
     <RadzenText TextStyle="TextStyle.H5">@ProductsPageModel?.Title</RadzenText>

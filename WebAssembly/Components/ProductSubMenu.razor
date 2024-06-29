@@ -1,0 +1,9 @@
+﻿<RadzenMenu class="rz-mb-3">
+    <RadzenMenuItem Text="Products" Path="@ProductsPageModel?.Path" Icon="inventory"></RadzenMenuItem>
+    <RadzenMenuItem Text="Categories" Path="@ProductsCategoriesPageModel?.Path" Icon="list"></RadzenMenuItem>
+</RadzenMenu>
+
+@code {
+    private PageModel? ProductsPageModel { get; set; } = GlobalState.PageModels.Where(s => s.ID == 3).FirstOrDefault();
+    private PageModel? ProductsCategoriesPageModel { get; set; } = GlobalState.PageModels.Where(s => s.ID == 4).FirstOrDefault();
+}

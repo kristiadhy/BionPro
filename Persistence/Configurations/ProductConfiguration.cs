@@ -16,7 +16,7 @@ internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
 
         builder.Property(e => e.SKU).HasMaxLength(20);
 
-        builder.Property(e => e.PriceAmount).HasColumnType("decimal(10, 2)");
+        builder.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
         builder.Property(e => e.Description).HasMaxLength(int.MaxValue);
 

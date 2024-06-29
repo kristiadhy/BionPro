@@ -9,7 +9,7 @@
 </MainMenuContainer>
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
-    <RadzenColumn SizeLG="6" SizeMD="12" class="rz-py-5">
+    <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
         <RadzenCard class="my-2">
             <RadzenTemplateForm Data="@SupplierState.Supplier" Submit="@(async (SupplierDto args) => { await SubmitAsync(args); })">
                  <FluentValidationValidator @ref="supplierValidator" />
