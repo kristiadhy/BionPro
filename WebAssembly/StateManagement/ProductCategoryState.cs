@@ -8,6 +8,7 @@ public class ProductCategoryState
 {
     private readonly IServiceManager _serviceManager;
     public List<ProductCategoryDto> ProductCategoryList { get; set; } = [];
+    public IEnumerable<ProductCategoryDto> ProductCategoryListDropdown { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public ProductCategoryParam ProductCategoryParameter { get; set; } = new();
     public ProductCategoryDto ProductCategory { get; set; } = new();
@@ -22,5 +23,19 @@ public class ProductCategoryState
         var pagingResponse = await _serviceManager.ProductCategoryService.GetProductCategories(ProductCategoryParameter);
         ProductCategoryList = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
+        CopyProductCategoryToDropDown();
+    }
+
+    public async Task LoadProductCategoriesDropDown()
+    {
+        ProductCategoryParam ProductCategoryParameter = new();
+        var pagingResponse = await _serviceManager.ProductCategoryService.GetProductCategories(ProductCategoryParameter);
+        ProductCategoryListDropdown = pagingResponse.Items;
+        MetaData = pagingResponse.MetaData;
+    }
+
+    public void CopyProductCategoryToDropDown()
+    {
+        ProductCategoryListDropdown = ProductCategoryList;
     }
 }

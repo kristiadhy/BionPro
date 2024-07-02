@@ -12,6 +12,7 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<ICustomerService> _lazyCustomerService;
     private readonly Lazy<ISupplierService> _lazySupplierService;
     private readonly Lazy<IProductCategoryService> _lazyProductCategoryService;
+    private readonly Lazy<IProductService> _lazyProductService;
     private readonly Lazy<IAuthenticationService> _lazyAuthService;
     private readonly Lazy<RefreshTokenService> _lazyRefreshTokenService;
     private readonly Lazy<HttpInterceptorService> _lazyInterceptorService;
@@ -21,6 +22,7 @@ public sealed class ServiceManager : IServiceManager
         _lazyCustomerService = new Lazy<ICustomerService>(() => new CustomerService(apiService, settings));
         _lazySupplierService = new Lazy<ISupplierService>(() => new SupplierService(apiService, settings));
         _lazyProductCategoryService = new Lazy<IProductCategoryService>(() => new ProductCategoryService(apiService, settings));
+        _lazyProductService = new Lazy<IProductService>(() => new ProductService(apiService, settings));
         _lazyAuthService = new Lazy<IAuthenticationService>(() => new AuthenticationService(apiService, authStateProvider, localStorage, settings));
         _lazyRefreshTokenService = new Lazy<RefreshTokenService>(() => new RefreshTokenService(authStateProvider, AuthService));
         _lazyInterceptorService = new Lazy<HttpInterceptorService>(() => new HttpInterceptorService(httpClientInterceptor, RefreshTokenService));
@@ -32,4 +34,5 @@ public sealed class ServiceManager : IServiceManager
     public RefreshTokenService RefreshTokenService => _lazyRefreshTokenService.Value;
     public HttpInterceptorService InterceptorService => _lazyInterceptorService.Value;
     public IProductCategoryService ProductCategoryService => _lazyProductCategoryService.Value;
+    public IProductService ProductService => _lazyProductService.Value;
 }

@@ -23,7 +23,6 @@ public partial class SupplierTransaction
     SupplierState SupplierState { get; set; } = default!;
 
     [Parameter] public Guid? ParamSupplierID { get; set; }
-    protected FluentValidationValidator? supplierValidator;
 
     protected string PagePathText = string.Empty;
     protected string FormHeaderText = string.Empty;

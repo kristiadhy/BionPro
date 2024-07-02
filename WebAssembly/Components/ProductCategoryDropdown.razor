@@ -1,0 +1,51 @@
+﻿<RadzenDropDown TValue="int?"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                FilterOperator="StringFilterOperator.StartsWith"
+                AllowFiltering="true"
+                Placeholder="Product Category"
+                Data=@ProductCategoryState.ProductCategoryListDropdown
+                TextProperty="@nameof(ProductCategoryDto.Name)"
+                ValueProperty="@nameof(ProductCategoryDto.CategoryID)"
+                AllowClear="true"
+                AllowVirtualization="true"
+                Change="(args=> OnValueChanged(args))"
+                Style="width: 100%; max-width: 400px;"
+                Name="ProductCategory" />
+@code {
+    //@bind-Value="@SelectedValue"
+
+    [Inject]
+    ProductCategoryState ProductCategoryState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ProductCategoryState.ProductCategoryListDropdown.Any())
+            await ProductCategoryState.LoadProductCategoriesDropDown();
+
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public EventCallback<int?> SelectedValueChanged { get; set; }
+
+    // private int? _selectedValue;
+    // [Parameter]
+    // public int? SelectedValue
+    // {
+    //     get => _selectedValue;
+    //     set
+    //     {
+    //         if (_selectedValue != value)
+    //         {
+    //             _selectedValue = value;
+    //             SelectedValueChanged.InvokeAsync(value);
+    //         }
+    //     }
+    // }
+
+    private async Task OnValueChanged(object e)
+    {
+        int? SelectedValue = e is not null ? (int)Convert.ChangeType(e, typeof(int)) : null;
+        await SelectedValueChanged.InvokeAsync(SelectedValue);
+    }
+}

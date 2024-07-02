@@ -9,6 +9,7 @@ public static class StateManagementServices
         services.AddScoped<CustomerState>();
         services.AddScoped<SupplierState>();
         services.AddScoped<ProductCategoryState>();
+        services.AddScoped<ProductState>();
 
         return services;
     }

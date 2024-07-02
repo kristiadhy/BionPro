@@ -12,7 +12,7 @@
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
         <RadzenCard class="my-2">
             <RadzenTemplateForm Data="@SupplierState.Supplier" Submit="@(async (SupplierDto args) => { await SubmitAsync(args); })">
-                 <FluentValidationValidator @ref="supplierValidator" />
+                 <FluentValidationValidator />
 
                 <RadzenStack>
                     <RadzenFieldset Text="@FormHeaderText">

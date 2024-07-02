@@ -12,5 +12,6 @@ public static class GlobalState
         new PageModel { ID =2, Title ="Suppliers", Path="/suppliers" },
         new PageModel { ID =3, Title ="Products", Path="/products" },
         new PageModel { ID =4, Title ="Product Categories", Path="/products/categories" },
+        new PageModel { ID =5, Title ="Products", Path="/products" },
     };
 }

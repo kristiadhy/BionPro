@@ -10,7 +10,7 @@ namespace Presentation.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
-[Route("api/product-categories")]
+[Route("api/products/categories")]
 public class ProductCategoryController(IServiceManager serviceManager) : ControllerBase
 {
     private readonly IServiceManager _serviceManager = serviceManager;
@@ -59,7 +59,7 @@ public class ProductCategoryController(IServiceManager serviceManager) : Control
         return NoContent();
     }
 
-    [HttpDelete("{id:guid}", Name = "DeleteProductCategory")]
+    [HttpDelete("{id:int}", Name = "DeleteProductCategory")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         await _serviceManager.ProductCategoryService.DeleteAsync(id, false, cancellationToken);

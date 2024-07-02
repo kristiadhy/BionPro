@@ -24,7 +24,6 @@ public partial class CustomerTransaction
     CustomerState CustomerState { get; set; } = default!;
 
     [Parameter] public Guid? ParamCustomerID { get; set; }
-    protected FluentValidationValidator? customerValidator;
     protected string PagePathText = string.Empty;
     protected string FormHeaderText = string.Empty;
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;

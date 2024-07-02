@@ -24,7 +24,6 @@ public partial class ProductCategoryTransaction
     ProductCategoryState ProductCategoryState { get; set; } = default!;
 
     [Parameter] public int? ParamProductCategoryID { get; set; }
-    protected FluentValidationValidator? productCategoryValidator;
     protected string PagePathText = string.Empty;
     protected string FormHeaderText = string.Empty;
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
