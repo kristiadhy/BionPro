@@ -16,7 +16,8 @@
 
                 <RadzenFieldset Text="@FormHeaderText">
                     <RadzenStack Gap="1rem">
-                        <ProductCategoryDropdown SelectedValueChanged="OnProductCategoryChanged" />
+                        <ProductCategoryDropdown SelectedValue="ProductState.Product.CategoryID"
+                                                 SelectedValueChanged="OnProductCategoryChanged" />
 
                         <RadzenTextBox Name="@nameof(ProductState.Product.Name)"
                                        Placeholder="Name"
@@ -32,15 +33,7 @@
                                        Placeholder="Price"
                                        InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 
-                        <RadzenUpload id="ddUpload"
-                                      @ref="uploadDD"
-                                      ChooseText="Drag and drop here or click to choose files"
-                                      Auto="false"
-                                      Multiple="true"
-                                      Url="upload/multiple"
-                                      InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
-                                      Progress=@(args => OnProgressUpload(args, "Drag and drop files to upload")) class="w-100" />
-                        <RadzenButton Text="Upload" Click=@(args => uploadDD.Upload()) class="d-block mt-4" />
+                        <ProductImageUpload @ref="ProductImageUploadRef" FileChanged="OnUploadFileChanged" />
 
                         <RadzenTextArea Name="@nameof(ProductState.Product.Description)"
                                         Placeholder="Description"

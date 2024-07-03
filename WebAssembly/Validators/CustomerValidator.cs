@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace WebAssembly.Validators;
 
-public class CustomerDtoValidator : AbstractValidator<CustomerDTO>
+public class CustomerValidator : AbstractValidator<CustomerDTO>
 {
-    public CustomerDtoValidator()
+    public CustomerValidator()
     {
         RuleFor(prop => prop.CustomerName)
             .NotEmpty()

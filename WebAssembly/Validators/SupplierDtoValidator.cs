@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace WebAssembly.Validators;
 
-public class SupplierDtoValidator : AbstractValidator<SupplierDto>
+public class SupplierValidator : AbstractValidator<SupplierDto>
 {
-    public SupplierDtoValidator()
+    public SupplierValidator()
     {
         RuleFor(prop => prop.SupplierName)
             .NotEmpty()

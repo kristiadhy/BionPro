@@ -75,4 +75,13 @@ internal class ProductService : IProductService
         _client.CheckErrorResponseForPostMethod(response, content, _options);
         return response;
     }
+
+    public async Task<string> UploadProductImage(MultipartFormDataContent content)
+    {
+        var response = await _client.PostAsync($"{additionalResourceName}/upload", content);
+        var postContent = await response.Content.ReadAsStringAsync();
+        var imgUrl = Path.Combine(_client.GetBaseAddress(), postContent);
+
+        return imgUrl;
+    }
 }

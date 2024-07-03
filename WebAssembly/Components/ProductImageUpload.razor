@@ -1,0 +1,80 @@
+﻿<RadzenUpload id="ddUpload"
+              @ref="uploadDD"
+              ChooseText="Drag and drop here or click to choose files"
+              Auto="false"
+              Multiple="false"
+              Url="api/products/upload"
+              Accept="image/*"
+              InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})"
+              Progress=@TrackProgress
+              Complete=@CompleteUpload
+              Change=@(args => FileChange(args))
+              class="w-100" />
+<RadzenProgressBar Value=@progress class="mt-4" Visible=@showProgress />
+@* <RadzenButton Text="Upload" Click=@(args => StartUpload()) class="d-block mt-4" /> *@
+
+@code {
+    private RadzenUpload uploadDD = default!;
+    private int progress = 0;
+    private bool showProgress = false;
+    private bool showComplete = false;
+    private string completionMessage = string.Empty;
+    private bool cancelUpload = false;
+    private string? fileName;
+
+    [Parameter]
+    public EventCallback<string?> FileChanged { get; set; }
+
+    private void CompleteUpload(UploadCompleteEventArgs args)
+    {
+        if (!args.Cancelled)
+            completionMessage = "Upload Complete!";
+        else
+            completionMessage = "Upload Cancelled!";
+
+        showProgress = false;
+        showComplete = true;
+    }
+
+    private void TrackProgress(UploadProgressArgs args)
+    {
+        showProgress = true;
+        showComplete = false;
+        progress = args.Progress;
+
+        // cancel upload
+        args.Cancel = cancelUpload;
+
+        // reset cancel flag
+        cancelUpload = false;
+    }
+
+    private void FileChange(UploadChangeEventArgs args)
+    {
+        fileName = args.Files?.FirstOrDefault()?.Name;
+        FileChanged.InvokeAsync(fileName);
+    }
+
+    public void CancelUpload()
+    {
+        cancelUpload = true;
+    }
+
+    public async Task StartUpload()
+    {
+        await uploadDD.Upload();
+    }
+}
+
+<style>
+    #ddUpload {
+        left: 0;
+    }
+
+        #ddUpload .rz-fileupload-buttonbar .rz-fileupload-choose {
+            width: 100%;
+            text-align: center;
+            padding: 100px 0;
+            border-radius: 0;
+        }
+</style>

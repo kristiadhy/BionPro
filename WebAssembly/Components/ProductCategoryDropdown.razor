@@ -9,6 +9,7 @@
                 AllowClear="true"
                 AllowVirtualization="true"
                 Change="(args=> OnValueChanged(args))"
+                @bind-Value="@SelectedValue"
                 Style="width: 100%; max-width: 400px;"
                 Name="ProductCategory" />
 @code {
@@ -25,8 +26,14 @@
         await base.OnInitializedAsync();
     }
 
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+
     [Parameter]
     public EventCallback<int?> SelectedValueChanged { get; set; }
+
+    [Parameter]
+    public int? SelectedValue { get; set; }
 
     // private int? _selectedValue;
     // [Parameter]
@@ -45,7 +52,8 @@
 
     private async Task OnValueChanged(object e)
     {
-        int? SelectedValue = e is not null ? (int)Convert.ChangeType(e, typeof(int)) : null;
+        SelectedValue = e is not null ? (int)Convert.ChangeType(e, typeof(int)) : null;
         await SelectedValueChanged.InvokeAsync(SelectedValue);
+        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(ProductCategoryDto.CategoryID)));
     }
 }

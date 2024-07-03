@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Components;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
@@ -32,9 +33,7 @@ public partial class ProductTransaction
     private bool IsSaving = false;
     private ProductParam? ProductParameter = new();
     private RadzenTextBox? txtNameForFocus;
-    private RadzenUpload? uploadDD;
-    private RadzenDropDown<int>? radzenDropDown;
-    private int? SelectedCategoryID = null;
+    private ProductImageUpload? ProductImageUploadRef;
 
     private PageModel? ProductPageModel { get; set; }
 
@@ -69,6 +68,9 @@ public partial class ProductTransaction
 
     public async Task SubmitAsync(ProductDto product)
     {
+        if (await ProductValidator!.ValidateAsync() == false)
+            return;
+
         bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Product");
         if (!confirmationStatus)
             return;
@@ -86,17 +88,22 @@ public partial class ProductTransaction
         {
             var response = await ServiceManager.ProductService.Update(product);
             if (response.IsSuccessStatusCode)
-            {
                 NotificationService.SaveNotification("Product updated");
-            }
         }
+
+        await ProductImageUploadRef!.StartUpload();
 
         await ProductState.LoadProductCategories();
 
         IsSaving = false;
     }
 
-    public async Task ClearField()
+    private void OnUploadFileChanged(string fileName)
+    {
+        ProductState.Product.ImageUrl = fileName;
+    }
+
+    private async Task ClearField()
     {
         ProductState.Product = new();
         await txtNameForFocus!.FocusAsync();
@@ -105,17 +112,5 @@ public partial class ProductTransaction
     private void OnProductCategoryChanged(int? value)
     {
         ProductState.Product.CategoryID = value;
-        ProductValidator.Validate();
-    }
-
-    private void OnProgressUpload(UploadProgressArgs args, string name)
-    {
-        if (args.Progress == 100)
-        {
-            foreach (var file in args.Files)
-            {
-
-            }
-        }
     }
 }

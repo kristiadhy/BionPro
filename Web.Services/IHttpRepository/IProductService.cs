@@ -10,4 +10,5 @@ public interface IProductService
     public Task<HttpResponseMessage> Create(ProductDto productDto);
     public Task<HttpResponseMessage> Update(ProductDto productDto);
     public Task<HttpResponseMessage> Delete(Guid productID);
+    public Task<string> UploadProductImage(MultipartFormDataContent content);
 }

@@ -113,4 +113,9 @@ public class CustomHttpClient
             throw new ApplicationException($"{errorResponse}");
         }
     }
+
+    public string GetBaseAddress()
+    {
+        return HttpClient.BaseAddress!.ToString();
+    }
 }

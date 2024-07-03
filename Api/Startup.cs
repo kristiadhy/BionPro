@@ -3,6 +3,7 @@ using Api.ServiceInstallers;
 using Application;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Persistence;
 using Presentation.ActionFilters;
@@ -90,6 +91,12 @@ public static class Startup
         //We use below configuration to hosted the blazor webassembly in our asp net core project
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),
+                @"StaticFiles")),
+            RequestPath = new PathString("/StaticFiles")
+        });
 
         app.UseCors("CorsPolicy");
 
@@ -103,6 +110,8 @@ public static class Startup
         //By using .RequireAuthorization() we don't need to put [Authorize] on every controller, it's implemented by default.
         //If you want to allow controller to be access publicly, you can set [AllowAnonymous] on controller.
         app.MapControllers().RequireAuthorization();
+
+        app.MapRazorPages();
 
         app.MapFallbackToFile("index.html");
 
