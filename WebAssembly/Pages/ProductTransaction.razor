@@ -33,7 +33,7 @@
                                        Placeholder="Price"
                                        InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 
-                        <ProductImageUpload @ref="ProductImageUploadRef" FileChanged="OnUploadFileChanged" />
+                        <ProductImageUpload @ref="ProductImageUploadRef" FileChanged="OnUploadFileChanged" ImageFileName=@ProductState.Product.ImageUrl />
 
                         <RadzenTextArea Name="@nameof(ProductState.Product.Description)"
                                         Placeholder="Description"

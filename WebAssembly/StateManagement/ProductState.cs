@@ -19,7 +19,7 @@ public class ProductState
 
     public async Task LoadProductCategories()
     {
-        var pagingResponse = await _serviceManager.ProductService.GetProductCategories(ProductParameter);
+        var pagingResponse = await _serviceManager.ProductService.GetProducts(ProductParameter);
         ProductList = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
     }

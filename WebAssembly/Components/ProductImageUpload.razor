@@ -1,4 +1,14 @@
-﻿<RadzenUpload id="ddUpload"
+﻿@using System.Net.Http.Headers
+@using Web.Services.IHttpRepository
+
+@if (ImageUrl is not null)
+{
+    <img src=@ImageUrl alt="Product Image" class="rounded-1 w-50" />
+}
+
+<InputFile OnChange="@HandleSelected" id="file-upload" />
+
+@* <RadzenUpload id="ddUpload"
               @ref="uploadDD"
               ChooseText="Drag and drop here or click to choose files"
               Auto="false"
@@ -9,64 +19,120 @@
               Progress=@TrackProgress
               Complete=@CompleteUpload
               Change=@(args => FileChange(args))
-              class="w-100" />
-<RadzenProgressBar Value=@progress class="mt-4" Visible=@showProgress />
-@* <RadzenButton Text="Upload" Click=@(args => StartUpload()) class="d-block mt-4" /> *@
+              class="w-100" /> *@
+@* <RadzenProgressBar Value=@progress class="mt-4" Visible=@showProgress /> *@
 
 @code {
-    private RadzenUpload uploadDD = default!;
-    private int progress = 0;
-    private bool showProgress = false;
-    private bool showComplete = false;
-    private string completionMessage = string.Empty;
-    private bool cancelUpload = false;
-    private string? fileName;
+    private IBrowserFile? imageFile;
+    private string? ImageUrl;
+
+    [Inject]
+    IServiceManager ServiceManager { get; set; } = default!;
+
+    [Parameter]
+    public string? ImageFileName { get; set; }
 
     [Parameter]
     public EventCallback<string?> FileChanged { get; set; }
 
-    private void CompleteUpload(UploadCompleteEventArgs args)
+    protected override async Task OnInitializedAsync()
     {
-        if (!args.Cancelled)
-            completionMessage = "Upload Complete!";
-        else
-            completionMessage = "Upload Cancelled!";
+        if (!string.IsNullOrEmpty(ImageFileName))
+        {
+            byte[]? byteImage = await ServiceManager.ProductService.GetProductImage(ImageFileName);
+            if (byteImage != null)
+            {
+                var base64Image = Convert.ToBase64String(byteImage);
+                ImageUrl = $"data:image/png;base64,{base64Image}";
+            }
+        }
 
-        showProgress = false;
-        showComplete = true;
+        await base.OnInitializedAsync();
     }
 
-    private void TrackProgress(UploadProgressArgs args)
+    private async Task HandleSelected(InputFileChangeEventArgs e)
     {
-        showProgress = true;
-        showComplete = false;
-        progress = args.Progress;
+        imageFile = e.File;
 
-        // cancel upload
-        args.Cancel = cancelUpload;
+        if (imageFile is null)
+            return;
 
-        // reset cancel flag
-        cancelUpload = false;
-    }
+        var base64Image = await ImageProcessService.DisplayImage(imageFile);
+        ImageUrl = $"data:image/png;base64,{base64Image}";
 
-    private void FileChange(UploadChangeEventArgs args)
-    {
-        fileName = args.Files?.FirstOrDefault()?.Name;
-        FileChanged.InvokeAsync(fileName);
-    }
-
-    public void CancelUpload()
-    {
-        cancelUpload = true;
+        await FileChanged.InvokeAsync(imageFile.Name);
     }
 
     public async Task StartUpload()
     {
-        await uploadDD.Upload();
+        if (imageFile == null)
+            return;
+
+        var resizedFile = await imageFile.RequestImageFileAsync("image/png", 300, 500);
+
+        using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
+        {
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "image", imageFile.Name);
+
+            var ImageFromServer = await ServiceManager.ProductService.UploadProductImage(content);
+        }
     }
+
+    // private RadzenUpload uploadDD = default!;
+    // private int progress = 0;
+    // private bool showProgress = false;
+    // private bool showComplete = false;
+    // private string completionMessage = string.Empty;
+    // private bool cancelUpload = false;
+    // private string? fileName;
+
+    // private void CompleteUpload(UploadCompleteEventArgs args)
+    // {
+    //     if (!args.Cancelled)
+    //         completionMessage = "Upload Complete!";
+    //     else
+    //         completionMessage = "Upload Cancelled!";
+
+    //     showProgress = false;
+    //     showComplete = true;
+    // }
+
+    // private void TrackProgress(UploadProgressArgs args)
+    // {
+    //     showProgress = true;
+    //     showComplete = false;
+    //     progress = args.Progress;
+
+    //     // cancel upload
+    //     args.Cancel = cancelUpload;
+
+    //     // reset cancel flag
+    //     cancelUpload = false;
+    // }
+
+    // private void FileChange(UploadChangeEventArgs args)
+    // {
+    //     imageFile = args.Files?.FirstOrDefault();
+
+    //     fileName = imageFile?.Name;
+    //     FileChanged.InvokeAsync(fileName);
+    // }
+
+    // public void CancelUpload()
+    // {
+    //     cancelUpload = true;
+    // }
+
+    // public async Task StartUpload()
+    // {
+    //     await uploadDD.Upload();
+    // }
 }
 
-<style>
+
+@* <style>
     #ddUpload {
         left: 0;
     }
@@ -77,4 +143,4 @@
             padding: 100px 0;
             border-radius: 0;
         }
-</style>
+</style> *@

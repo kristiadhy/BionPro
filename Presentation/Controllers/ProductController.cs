@@ -27,8 +27,8 @@ public class ProductController(IServiceManager serviceManager) : ControllerBase
     [HttpGet("{id:Guid}", Name = "ProductByID")]
     public async Task<IActionResult> GetByID(Guid id, CancellationToken cancellationToken)
     {
-        var supplier = await _serviceManager.ProductService.GetByProductIDAsync(id, false, cancellationToken);
-        return Ok(supplier);
+        var product = await _serviceManager.ProductService.GetByProductIDAsync(id, false, cancellationToken);
+        return Ok(product);
     }
 
     [HttpPost(Name = "CreateProduct")]

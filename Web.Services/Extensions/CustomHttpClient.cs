@@ -67,6 +67,19 @@ public class CustomHttpClient
         return response;
     }
 
+    public async Task<HttpResponseMessage> PostContentAsync<T>(string uriRequest, HttpContent content)
+    {
+        HttpResponseMessage response = await HttpClient.PostAsync(uriRequest, content);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage> PostMultiContentAsync(string uriRequest, MultipartFormDataContent multiContent)
+    {
+        HttpResponseMessage response = await HttpClient.PostAsync(uriRequest, multiContent);
+        return response;
+    }
+
+
     public async Task<HttpResponseMessage> PutAsync<T>(string uriRequest, T bodyContent)
     {
         HttpResponseMessage response = await HttpClient.PutAsJsonAsync(uriRequest, bodyContent);

@@ -19,7 +19,7 @@ internal class ProductService : IProductService
         _options = options;
     }
 
-    public async Task<PagingResponse<ProductDto>> GetProductCategories(ProductParam productParam)
+    public async Task<PagingResponse<ProductDto>> GetProducts(ProductParam productParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -76,12 +76,27 @@ internal class ProductService : IProductService
         return response;
     }
 
-    public async Task<string> UploadProductImage(MultipartFormDataContent content)
+    public async Task<string> UploadProductImage(MultipartFormDataContent multiContent)
     {
-        var response = await _client.PostAsync($"{additionalResourceName}/upload", content);
+        var response = await _client.PostMultiContentAsync($"{additionalResourceName}/upload", multiContent);
         var postContent = await response.Content.ReadAsStringAsync();
-        var imgUrl = Path.Combine(_client.GetBaseAddress(), postContent);
+        //var imgUrl = Path.Combine(_client.GetBaseAddress(), postContent);
 
-        return imgUrl;
+        return postContent;
+    }
+
+    public async Task<byte[]?> GetProductImage(string fileName)
+    {
+        var responseMessage = await _client.GetResponseAsync($"{additionalResourceName}/upload/{fileName}");
+        bool responseStatus = _client.CheckErrorResponseForGetMethod(responseMessage);
+        if (responseStatus)
+        {
+            var fileBytes = await responseMessage.Content.ReadAsByteArrayAsync();
+            return fileBytes;
+        }
+        else
+        {
+            return null;
+        }
     }
 }
