@@ -1,5 +1,4 @@
-﻿using Blazored.FluentValidation;
-using Domain.DTO;
+﻿using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Web.Services.IHttpRepository;
@@ -69,26 +68,28 @@ public partial class SupplierTransaction
         IsSaving = true;
         StateHasChanged();
 
-        if (FormStatus == GlobalEnum.FormStatus.New)
+        try
         {
-            supplier.SupplierID = null;
-            var response = await ServiceManager.SupplierService.Create(supplier);
-            if (response.IsSuccessStatusCode)
-                NotificationService.SaveNotification("A new supplier added");
-        }
-        else if (FormStatus == GlobalEnum.FormStatus.Edit)
-        {
-            var response = await ServiceManager.SupplierService.Update(supplier);
+            HttpResponseMessage response;
+            if (FormStatus == GlobalEnum.FormStatus.New)
+            {
+                supplier.SupplierID = null;
+                response = await ServiceManager.SupplierService.Create(supplier);
+            }
+            else
+                response = await ServiceManager.SupplierService.Update(supplier);
+
             if (response.IsSuccessStatusCode)
             {
-                NotificationService.SaveNotification("Supplier updated");
+                string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new supplier added" : "Supplier updated";
+                NotificationService.SaveNotification(notificationMessage);
             }
         }
-
-        //Load customer state after making changes
-        await SupplierState.LoadSuppliers();
-
-        IsSaving = false;
+        finally
+        {
+            IsSaving = false;
+            StateHasChanged();
+        }
     }
 
     public void ClearField()

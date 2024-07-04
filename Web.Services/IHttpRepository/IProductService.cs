@@ -12,4 +12,5 @@ public interface IProductService
     public Task<HttpResponseMessage> Delete(Guid productID);
     public Task<string> UploadProductImage(MultipartFormDataContent content);
     public Task<byte[]?> GetProductImage(string fileName);
+    public Task<HttpResponseMessage> DeleteProductImage(string imageUrl);
 }

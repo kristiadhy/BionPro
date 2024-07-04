@@ -19,6 +19,7 @@
                 IsLoading=@isLoading
                 Count="@ProductState.MetaData.TotalCount"
                 Data="@ProductState.ProductList"
+                TItem="ProductDtoForProductQueries"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -65,6 +66,16 @@
 
         <RadzenDataGridColumn Property="Description"
                               Title="Description" />
+
+        <RadzenDataGridColumn Property="ImageUrl"
+                              Title="Image"
+                              Width="80px">
+            <Template Context="Product">
+                <RadzenImage Path="@Product.ImageUrl" 
+                AlternateText="@Path.GetFileName(Product.ImageUrl)"
+                class="img-thumbnail"/>
+            </Template>
+        </RadzenDataGridColumn>
 
         <RadzenDataGridColumn Context="ProductAction"
                               Title="Action"

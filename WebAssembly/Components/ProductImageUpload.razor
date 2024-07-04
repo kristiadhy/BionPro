@@ -3,7 +3,7 @@
 
 @if (ImageUrl is not null)
 {
-    <img src=@ImageUrl alt="Product Image" class="rounded-1 w-50" />
+    <RadzenImage Path=@ImageUrl AlternateText="Product Image" class="rounded-1 w-50" />
 }
 
 <InputFile OnChange="@HandleSelected" id="file-upload" />
@@ -30,21 +30,25 @@
     IServiceManager ServiceManager { get; set; } = default!;
 
     [Parameter]
-    public string? ImageFileName { get; set; }
+    public string? ImageFromServer { get; set; }
 
-    [Parameter]
-    public EventCallback<string?> FileChanged { get; set; }
+    public bool IsImageChanged { get; set; } = false;
+
+    // [Parameter]
+    // public EventCallback<string?> FileChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrEmpty(ImageFileName))
+        if (!string.IsNullOrEmpty(ImageFromServer))
         {
-            byte[]? byteImage = await ServiceManager.ProductService.GetProductImage(ImageFileName);
-            if (byteImage != null)
-            {
-                var base64Image = Convert.ToBase64String(byteImage);
-                ImageUrl = $"data:image/png;base64,{base64Image}";
-            }
+            // byte[]? byteImage = await ServiceManager.ProductService.GetProductImage(ImageFileName);
+            // if (byteImage != null)
+            // {
+            //     var base64Image = Convert.ToBase64String(byteImage);
+            //     ImageUrl = $"data:image/png;base64,{base64Image}";
+            // }
+
+            ImageUrl = ImageFromServer;
         }
 
         await base.OnInitializedAsync();
@@ -57,10 +61,13 @@
         if (imageFile is null)
             return;
 
+        //Display image from local path
         var base64Image = await ImageProcessService.DisplayImage(imageFile);
         ImageUrl = $"data:image/png;base64,{base64Image}";
 
-        await FileChanged.InvokeAsync(imageFile.Name);
+        IsImageChanged = true;
+
+        // await FileChanged.InvokeAsync(imageFile.Name);
     }
 
     public async Task<string?> StartUpload()
@@ -76,7 +83,7 @@
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
             content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "image", imageFile.Name);
 
-            var ImageFromServer = await ServiceManager.ProductService.UploadProductImage(content);
+            ImageFromServer = await ServiceManager.ProductService.UploadProductImage(content);
             return ImageFromServer;
         }
     }

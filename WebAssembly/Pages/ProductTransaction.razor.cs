@@ -68,42 +68,51 @@ public partial class ProductTransaction
 
     public async Task SubmitAsync(ProductDto product)
     {
-        if (await ProductValidator!.ValidateAsync() == false)
+        if (!await ProductValidator!.ValidateAsync())
             return;
 
-        bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Product");
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.SavingConfirmation("Product"))
             return;
 
         IsSaving = true;
         StateHasChanged();
 
-        string? newImageUpload = await ProductImageUploadRef!.StartUpload();
-
-        if (FormStatus == GlobalEnum.FormStatus.New)
+        try
         {
-            ProductState.Product.ImageUrl = newImageUpload;
+            // Handle image upload or deletion only if there's a change
+            if (ProductImageUploadRef!.IsImageChanged)
+            {
+                if (FormStatus == GlobalEnum.FormStatus.Edit && product.ImageUrl is not null)
+                    await ServiceManager.ProductService.DeleteProductImage(product.ImageUrl);
 
-            var response = await ServiceManager.ProductService.Create(product);
+                product.ImageUrl = await ProductImageUploadRef!.StartUpload();
+            }
+
+            HttpResponseMessage response;
+            if (FormStatus == GlobalEnum.FormStatus.New)
+                response = await ServiceManager.ProductService.Create(product);
+            else
+                response = await ServiceManager.ProductService.Update(product);
+
             if (response.IsSuccessStatusCode)
-                NotificationService.SaveNotification("A new Product added");
+            {
+                var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new Product added" : "Product updated";
+                NotificationService.SaveNotification(notificationMessage);
+            }
+
+            await ProductState.LoadProducts();
         }
-        else if (FormStatus == GlobalEnum.FormStatus.Edit)
+        finally
         {
-            var response = await ServiceManager.ProductService.Update(product);
-            if (response.IsSuccessStatusCode)
-                NotificationService.SaveNotification("Product updated");
+            IsSaving = false;
+            StateHasChanged();
         }
-
-        await ProductState.LoadProducts();
-
-        IsSaving = false;
     }
 
-    private void OnUploadFileChanged(string fileName)
-    {
-        ProductState.Product.ImageUrl = fileName;
-    }
+    //private void OnUploadFileChanged(string fileName)
+    //{
+    //    ProductState.Product.ImageUrl = fileName;
+    //}
 
     private async Task ClearField()
     {

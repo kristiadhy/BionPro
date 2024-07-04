@@ -1,5 +1,4 @@
-﻿using Blazored.FluentValidation;
-using Domain.DTO;
+﻿using Domain.DTO;
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
@@ -63,37 +62,34 @@ public partial class CustomerTransaction
 
     public async Task SubmitAsync(CustomerDTO customer)
     {
-        //var validationResult = await customerValidator!.ValidateAsync();
-        //if (!validationResult)
-        //    return;
-
-        bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Customer");
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.SavingConfirmation("Customer"))
             return;
 
         IsSaving = true;
-        StateHasChanged();
+        try
+        {
+            HttpResponseMessage response;
+            if (FormStatus == GlobalEnum.FormStatus.New)
+            {
+                customer.CustomerID = null;
+                response = await ServiceManager.CustomerService.Create(customer);
+            }
+            else
+                response = await ServiceManager.CustomerService.Update(customer);
 
-        if (FormStatus == GlobalEnum.FormStatus.New)
-        {
-            customer.CustomerID = null;
-            var response = await ServiceManager.CustomerService.Create(customer);
-            if (response.IsSuccessStatusCode)
-                NotificationService.SaveNotification("A new customer added");
-        }
-        else if (FormStatus == GlobalEnum.FormStatus.Edit)
-        {
-            var response = await ServiceManager.CustomerService.Update(customer);
             if (response.IsSuccessStatusCode)
             {
-                NotificationService.SaveNotification("Customer updated");
+                string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new customer added" : "Customer updated";
+                NotificationService.SaveNotification(notificationMessage);
             }
+
+            await CustomerState.LoadCustomers();
         }
-
-        //Load customer state after making changes
-        await CustomerState.LoadCustomers();
-
-        IsSaving = false;
+        finally
+        {
+            IsSaving = false;
+            StateHasChanged();
+        }
     }
 
     public async Task ClearField()

@@ -80,9 +80,9 @@ internal class ProductService : IProductService
     {
         var response = await _client.PostMultiContentAsync($"{additionalResourceName}/upload", multiContent);
         var postContent = await response.Content.ReadAsStringAsync();
-        //var imgUrl = Path.Combine(_client.GetBaseAddress(), postContent);
+        _client.CheckErrorResponseForPostMethod(response, postContent, _options);
 
-        return postContent;
+        return postContent.Trim('"');
     }
 
     public async Task<byte[]?> GetProductImage(string fileName)
@@ -98,5 +98,14 @@ internal class ProductService : IProductService
         {
             return null;
         }
+    }
+
+    public async Task<HttpResponseMessage> DeleteProductImage(string imageUrl)
+    {
+        string fileName = Path.GetFileName(imageUrl);
+        var response = await _client.DeleteAsync($"{additionalResourceName}/upload/{fileName}");
+        var content = await response.Content.ReadAsStringAsync();
+        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        return response;
     }
 }
