@@ -14,3 +14,84 @@
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
+
+<RadzenDataGrid @ref="ProductGrid"
+                IsLoading=@isLoading
+                Count="@ProductState.MetaData.TotalCount"
+                Data="@ProductState.ProductList"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowSorting="true"
+                AllowFiltering="false"
+                AllowPaging="true"
+                PageSize="@ProductState.MetaData.PageSize"
+                PagerHorizontalAlign="HorizontalAlign.Center"
+                AllowColumnResize="true"
+                AllowColumnReorder="false"
+                GridLines="DataGridGridLines.Both"
+                ColumnWidth="150px"
+                class="my-4">
+    <Columns>
+        <RadzenDataGridColumn Width="50px"
+                              Title="#" Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @(ProductState.ProductList.IndexOf(data) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="ProductID"
+                              Visible=false
+                              Filterable="false"
+                              Title="ID"
+                              Frozen="true"
+                              TextAlign="TextAlign.Center">
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="CategoryName"
+                              Title="Category"
+                              Frozen="true" />
+
+        <RadzenDataGridColumn Property="Name"
+                              Title="Name"
+                              Frozen="true" />
+
+        <RadzenDataGridColumn Property="SKU"
+                              Title="SKU" />
+
+        <RadzenDataGridColumn Property="Price"
+                              Title="Price"
+                              FormatString="{0:c}" />
+
+        <RadzenDataGridColumn Property="Description"
+                              Title="Description" />
+
+        <RadzenDataGridColumn Context="ProductAction"
+                              Title="Action"
+                              Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Left"
+                              Frozen="true"
+                              FrozenPosition="FrozenColumnPosition.Right">
+
+            <Template Context="ProductDtoForProductQueries">
+                <RadzenButton Icon="edit"
+                              ButtonStyle="ButtonStyle.Light"
+                              Variant="Variant.Flat"
+                              Size="ButtonSize.Medium"
+                              Click="@(args => EvEditRow(ProductDtoForProductQueries))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                              Icon="delete"
+                              Variant="Variant.Flat"
+                              Shade="Shade.Lighter"
+                              Size="ButtonSize.Medium"
+                              class="my-1 ms-1"
+                              Click="@(async args => await EvDeleteRow(ProductDtoForProductQueries))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

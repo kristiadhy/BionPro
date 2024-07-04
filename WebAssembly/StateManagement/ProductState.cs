@@ -7,7 +7,7 @@ namespace WebAssembly.StateManagement;
 public class ProductState
 {
     private readonly IServiceManager _serviceManager;
-    public List<ProductDto> ProductList { get; set; } = [];
+    public List<ProductDtoForProductQueries> ProductList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public ProductParam ProductParameter { get; set; } = new();
     public ProductDto Product { get; set; } = new();
@@ -17,7 +17,7 @@ public class ProductState
         _serviceManager = serviceManager;
     }
 
-    public async Task LoadProductCategories()
+    public async Task LoadProducts()
     {
         var pagingResponse = await _serviceManager.ProductService.GetProducts(ProductParameter);
         ProductList = pagingResponse.Items;

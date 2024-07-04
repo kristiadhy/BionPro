@@ -78,8 +78,12 @@ public partial class ProductTransaction
         IsSaving = true;
         StateHasChanged();
 
+        string? newImageUpload = await ProductImageUploadRef!.StartUpload();
+
         if (FormStatus == GlobalEnum.FormStatus.New)
         {
+            ProductState.Product.ImageUrl = newImageUpload;
+
             var response = await ServiceManager.ProductService.Create(product);
             if (response.IsSuccessStatusCode)
                 NotificationService.SaveNotification("A new Product added");
@@ -91,9 +95,7 @@ public partial class ProductTransaction
                 NotificationService.SaveNotification("Product updated");
         }
 
-        await ProductImageUploadRef!.StartUpload();
-
-        await ProductState.LoadProductCategories();
+        await ProductState.LoadProducts();
 
         IsSaving = false;
     }

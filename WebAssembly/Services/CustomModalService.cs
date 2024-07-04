@@ -23,7 +23,7 @@ public class CustomModalService
 
     public async Task<bool> DeleteConfirmation(string transactionName, string entityName)
     {
-        bool? confirmationStatus = await DialogService.Confirm($"{entityName} will be deleted. Are you sure want to do this?", $"Delete {transactionName}", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+        bool? confirmationStatus = await DialogService.Confirm($"'{entityName}' will be deleted. Are you sure want to do this?", $"Delete {transactionName}", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
         if (confirmationStatus is not null)
             if ((bool)confirmationStatus)
                 return true;

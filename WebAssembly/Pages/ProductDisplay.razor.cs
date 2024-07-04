@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Domain.DTO;
+using Microsoft.AspNetCore.Components;
+using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Model;
 using WebAssembly.Services;
@@ -19,6 +21,10 @@ public partial class ProductDisplay
     [Inject]
     ProductState ProductState { get; set; } = default!;
 
+    internal static RadzenDataGrid<ProductDtoForProductQueries> ProductGrid { get; set; } = default!;
+
+    private bool isLoading = false;
+
     private PageModel? ProductsPageModel { get; set; }
     private IEnumerable<PageModel> BreadCrumbs { get; set; }
 
@@ -34,12 +40,43 @@ public partial class ProductDisplay
 
     protected async Task EvReloadData()
     {
-
+        await EvLoadData();
+        await ProductGrid.Reload();
     }
 
     protected async Task EvLoadData()
     {
+        isLoading = true;
 
+        await Task.Yield();
+
+        await ProductState.LoadProducts();
+
+        isLoading = false;
+    }
+
+    protected void EvEditRow(ProductDtoForProductQueries products)
+    {
+        NavigationManager.NavigateTo($"{ProductsPageModel?.Path}/edit/{products.ProductID}");
+    }
+
+    protected async Task EvDeleteRow(ProductDtoForProductQueries products)
+    {
+        if (products is null)
+            return;
+
+        string productName = products.Name ?? string.Empty;
+        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Product", productName);
+        if (!confirmationStatus)
+            return;
+
+        Guid productID = (Guid)products.ProductID!;
+        var response = await ServiceManager.ProductService.Delete(productID);
+        if (!response.IsSuccessStatusCode)
+            return;
+
+        NotificationService.DeleteNotification("Product has been deleted");
+        await ProductState.LoadProducts();
     }
 
     protected void EvCreateNew()

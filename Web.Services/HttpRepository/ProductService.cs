@@ -19,7 +19,7 @@ internal class ProductService : IProductService
         _options = options;
     }
 
-    public async Task<PagingResponse<ProductDto>> GetProducts(ProductParam productParam)
+    public async Task<PagingResponse<ProductDtoForProductQueries>> GetProducts(ProductParam productParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -33,9 +33,9 @@ internal class ProductService : IProductService
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForGetMethod(response);
 
-        var pagingResponse = new PagingResponse<ProductDto>()
+        var pagingResponse = new PagingResponse<ProductDtoForProductQueries>()
         {
-            Items = JsonConvert.DeserializeObject<List<ProductDto>>(content, _options)!,
+            Items = JsonConvert.DeserializeObject<List<ProductDtoForProductQueries>>(content, _options)!,
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
         };
 

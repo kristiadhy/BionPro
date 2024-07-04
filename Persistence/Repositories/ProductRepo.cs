@@ -14,6 +14,7 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
     public async Task<PagedList<ProductModel>> GetAllAsync(ProductParam productParam, bool trackChanges)
     {
         var productCategories = await FindAll(trackChanges)
+            .Include(x => x.Category)
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
             .Take(productParam.PageSize)
             .ToListAsync();
@@ -26,6 +27,7 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
     public async Task<PagedList<ProductModel>> GetByParametersAsync(ProductParam productParam, bool trackChanges)
     {
         var productCategories = await FindAll(trackChanges)
+            .Include(x => x.Category)
             .SearchByName(productParam.srcByName) //It's a local method
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
             .Take(productParam.PageSize)

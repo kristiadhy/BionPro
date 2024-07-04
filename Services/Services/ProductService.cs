@@ -21,13 +21,13 @@ public class ProductService : IProductService
         _logger = logger;
     }
 
-    public async Task<(IEnumerable<ProductDto> productDto, MetaData metaData)> GetByParametersAsync(Guid productID, ProductParam productParam, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<(IEnumerable<ProductDtoForProductQueries> productDto, MetaData metaData)> GetByParametersAsync(Guid productID, ProductParam productParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         _logger.Information($"Get product");
 
         var productCategories = await _repositoryManager.ProductRepo.GetByParametersAsync(productParam, trackChanges);
 
-        var productCategoriesToReturn = _mapper.Map<IEnumerable<ProductDto>>(productCategories);
+        var productCategoriesToReturn = _mapper.Map<IEnumerable<ProductDtoForProductQueries>>(productCategories);
 
         return (productCategoriesToReturn, productCategories.MetaData);
     }

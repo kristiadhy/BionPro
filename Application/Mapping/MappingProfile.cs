@@ -11,6 +11,7 @@ internal class MappingProfile : Profile
         CreateMap<SupplierModel, SupplierDto>().ReverseMap();
         CreateMap<ProductCategoryModel, ProductCategoryDto>().ReverseMap();
         CreateMap<ProductModel, ProductDto>().ReverseMap();
+        CreateMap<ProductModel, ProductDtoForProductQueries>();
         CreateMap<UserRegistrationDTO, UserModel>();
     }
 }

@@ -63,10 +63,10 @@
         await FileChanged.InvokeAsync(imageFile.Name);
     }
 
-    public async Task StartUpload()
+    public async Task<string?> StartUpload()
     {
         if (imageFile == null)
-            return;
+            return null;
 
         var resizedFile = await imageFile.RequestImageFileAsync("image/png", 300, 500);
 
@@ -77,6 +77,7 @@
             content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "image", imageFile.Name);
 
             var ImageFromServer = await ServiceManager.ProductService.UploadProductImage(content);
+            return ImageFromServer;
         }
     }
 
