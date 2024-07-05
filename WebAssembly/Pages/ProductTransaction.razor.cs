@@ -75,7 +75,6 @@ public partial class ProductTransaction
             return;
 
         IsSaving = true;
-        StateHasChanged();
 
         try
         {
@@ -96,7 +95,7 @@ public partial class ProductTransaction
 
             if (response.IsSuccessStatusCode)
             {
-                var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new Product added" : "Product updated";
+                var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product added" : "Product updated";
                 NotificationService.SaveNotification(notificationMessage);
             }
 

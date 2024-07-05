@@ -54,9 +54,9 @@ public class CustomerController(IServiceManager serviceManager) : ControllerBase
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
 
-        var result = await _serviceManager.CustomerService.GetCustomerForPatchAsync(id, true);
-        patchDoc.ApplyTo(result.customerToPatch);
-        await _serviceManager.CustomerService.SaveChangesForPatchAsync(result.customerToPatch, result.customer);
+        var (customerToPatch, customer) = await _serviceManager.CustomerService.GetCustomerForPatchAsync(id, true);
+        patchDoc.ApplyTo(customerToPatch);
+        await _serviceManager.CustomerService.SaveChangesForPatchAsync(customerToPatch, customer);
         return NoContent();
     }
 

@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using System.Net.Http.Headers;
 
 namespace Presentation.Controllers;
 
@@ -32,69 +30,28 @@ public class ProductUploadController(IServiceManager serviceManager) : Controlle
     //}
 
     [HttpGet("{fileName}", Name = "GetProductImage")]
-    public IActionResult GetProductImage(string fileName)
+    public async Task<IActionResult> GetProductImage(string fileName)
     {
-        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderPathOnServer, fileName);
-
-        if (System.IO.File.Exists(fullPath))
-        {
-            var fileBytes = System.IO.File.ReadAllBytes(fullPath);
+        var fileBytes = await _serviceManager.ProductService.GetProductImage(fileName);
+        if (fileBytes is not null)
             return File(fileBytes, "image/png");
-        }
         else
-        {
             return NotFound();
-        }
     }
 
 
     [HttpPost(Name = "UploadProductImage")]
-    public IActionResult UploadProductImage()
+    public async Task<IActionResult> UploadProductImage()
     {
         var file = Request.Form.Files[0];
-
-        var fullPathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderPathOnServer);
-
-        if (file.Length > 0)
-        {
-            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition)!.FileName!.Trim('"');
-
-            var fullImagePathToSave = Path.Combine(fullPathToSave, fileName);
-
-            using (var stream = new FileStream(fullImagePathToSave, FileMode.Create))
-                file.CopyTo(stream);
-
-            // Construct the URL to access the image
-            var request = HttpContext.Request;
-            var imageUrl = $"{folderUrlToServer}/{fileName}";
-
-            return Ok(imageUrl);
-        }
-        else
-        {
-            return BadRequest();
-        }
+        var imageUrl = await _serviceManager.ProductService.UploadProductImage(file);
+        return Ok(imageUrl);
     }
 
     [HttpDelete("{fileName}", Name = "DeleteProductImage")]
-    public IActionResult DeleteProductImage(string fileName)
+    public async Task<IActionResult> DeleteProductImage(string fileName)
     {
-        // Construct the full path to the image file on the server
-        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderPathOnServer, fileName);
-
-        // Check if the file exists
-        if (System.IO.File.Exists(fullPath))
-        {
-            // Delete the file
-            System.IO.File.Delete(fullPath);
-
-            // Return a success response
-            return Ok();
-        }
-        else
-        {
-            // If the file does not exist, return a Not Found response
-            return NotFound();
-        }
+        await _serviceManager.ProductService.DeleteProductImage(fileName);
+        return NoContent();
     }
 }

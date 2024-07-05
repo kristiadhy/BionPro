@@ -81,7 +81,6 @@ internal class ProductService : IProductService
         var response = await _client.PostMultiContentAsync($"{additionalResourceName}/upload", multiContent);
         var postContent = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForPostMethod(response, postContent, _options);
-
         return postContent.Trim('"');
     }
 
@@ -95,9 +94,7 @@ internal class ProductService : IProductService
             return fileBytes;
         }
         else
-        {
             return null;
-        }
     }
 
     public async Task<HttpResponseMessage> DeleteProductImage(string imageUrl)

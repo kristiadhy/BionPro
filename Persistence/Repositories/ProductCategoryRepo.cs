@@ -11,36 +11,36 @@ public sealed class ProductCategoryRepo : MethodBase<ProductCategoryModel>, IPro
 {
     public ProductCategoryRepo(AppDBContext dbContext) : base(dbContext) { }
 
-    public async Task<PagedList<ProductCategoryModel>> GetAllAsync(ProductCategoryParam productCategoryParam, bool trackChanges)
+    public async Task<PagedList<ProductCategoryModel>> GetAllAsync(ProductCategoryParam productCategoryParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var productCategories = await FindAll(trackChanges)
             .Skip((productCategoryParam.PageNumber - 1) * productCategoryParam.PageSize)
             .Take(productCategoryParam.PageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
-        var count = await FindAll(trackChanges).CountAsync();
+        var count = await FindAll(trackChanges).CountAsync(cancellationToken);
 
         return new PagedList<ProductCategoryModel>(productCategories, count, productCategoryParam.PageNumber, productCategoryParam.PageSize);
     }
 
-    public async Task<PagedList<ProductCategoryModel>> GetByParametersAsync(ProductCategoryParam productCategoryParam, bool trackChanges)
+    public async Task<PagedList<ProductCategoryModel>> GetByParametersAsync(ProductCategoryParam productCategoryParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var productCategories = await FindAll(trackChanges)
             .SearchByName(productCategoryParam.srcByName) //It's a local method
             .Skip((productCategoryParam.PageNumber - 1) * productCategoryParam.PageSize)
             .Take(productCategoryParam.PageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
             .SearchByName(productCategoryParam.srcByName)
-            .CountAsync();
+            .CountAsync(cancellationToken);
 
         return new PagedList<ProductCategoryModel>(productCategories, count, productCategoryParam.PageNumber, productCategoryParam.PageSize);
     }
 
-    public async Task<ProductCategoryModel?> GetByIDAsync(int categoryID, bool trackChanges)
+    public async Task<ProductCategoryModel?> GetByIDAsync(int categoryID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategory = await FindByCondition(x => x.CategoryID == categoryID, trackChanges).FirstOrDefaultAsync();
+        var productCategory = await FindByCondition(x => x.CategoryID == categoryID, trackChanges).FirstOrDefaultAsync(cancellationToken);
         if (productCategory is not null)
             return productCategory;
         else

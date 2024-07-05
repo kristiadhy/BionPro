@@ -10,6 +10,6 @@ public static class ProductQueryExtension
 
         var lowerCaseTerm = searchTerm.Trim().ToLower();
 
-        return productCategories.Where(e => e.Name!.ToLower().Contains(lowerCaseTerm));
+        return productCategories.Where(e => e.Name.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
     }
 }

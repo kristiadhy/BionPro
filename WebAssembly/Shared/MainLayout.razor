@@ -1,20 +1,23 @@
-﻿@inherits LayoutComponentBase
+﻿@inject IJSRuntime JSRuntime
+
+@inherits LayoutComponentBase
 
 <AuthorizeView>
     <Authorized>
-        <RadzenLayout>
+        <RadzenLayout style="@(IsSmallScreen ? "position: relative" : "")">
             <RadzenHeader>
                 <RadzenStack Orientation="Orientation.Horizontal"
                              AlignItems="AlignItems.Center"
                              Gap="2"
                              class="d-flex">
-                    <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+                    <RadzenSidebarToggle Click="@(args => SideBarClicked())" />
                     <RadzenLabel Text="BionPro" class="fw-bold" />
                     <AuthLink />
                 </RadzenStack>
             </RadzenHeader>
 
-            <RadzenSidebar @bind-Expanded="@sidebarExpanded">
+            <RadzenSidebar @bind-Expanded="@sidebarExpanded"
+                           style="@(IsSmallScreen ? "position: absolute" : "")">
                 <RadzenPanelMenu Multiple="true">
                     <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" IconColor="@iconColor" Path="/" />
                     <RadzenPanelMenuItem Text="Customers" Icon="people_alt" Path="customers" />
@@ -25,6 +28,7 @@
                     <RadzenPanelMenuItem Text="Sales" Icon="shopping_bag" IconColor="@iconColor" />
                     <RadzenPanelMenuItem Text="Authorization" Icon="lock_open" IconColor="@iconColor" />
                     <RadzenPanelMenuItem Text="Settings" Icon="build" IconColor="@iconColor" />
+
                     @* <RadzenPanelMenuItem Text="Products" Icon="inventory" IconColor="@iconColor" Expanded="false">
                     <RadzenPanelMenuItem Text="Categories" Icon="list" Path="product-categories" />
                     <RadzenPanelMenuItem Text="Product List" Icon="wysiwyg" Path="product" />
@@ -66,10 +70,27 @@
 <RadzenComponents />
 
 @code {
+    bool IsSmallScreen = false;
     bool sidebarExpanded = true;
     string iconColor = string.Empty;
-
     ErrorBoundary? errorBoundary;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateScreenSizeInfo();
+    }
+
+    private async Task SideBarClicked()
+    {
+        sidebarExpanded = !sidebarExpanded;
+        await UpdateScreenSizeInfo();
+    }
+
+    private async Task UpdateScreenSizeInfo()
+    {
+        var screenWidth = await JSRuntime.InvokeAsync<int>("getScreenWidth");
+        IsSmallScreen = screenWidth <= 768; // Assuming 768px as the breakpoint for small screens
+    }
 
     protected override void OnParametersSet() => errorBoundary?.Recover();
 }

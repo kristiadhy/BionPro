@@ -11,38 +11,38 @@ public sealed class SupplierRepo : MethodBase<SupplierModel>, ISupplierRepo
 {
     public SupplierRepo(AppDBContext dbContext) : base(dbContext) { }
 
-    public async Task<PagedList<SupplierModel>> GetAllAsync(SupplierParam supplierParam, bool trackChanges)
+    public async Task<PagedList<SupplierModel>> GetAllAsync(SupplierParam supplierParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var suppliers = await FindAll(trackChanges)
             .Sort(supplierParam.OrderBy) //It's a local method
             .Skip((supplierParam.PageNumber - 1) * supplierParam.PageSize)
             .Take(supplierParam.PageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
-        var count = await FindAll(trackChanges).CountAsync();
+        var count = await FindAll(trackChanges).CountAsync(cancellationToken);
 
         return new PagedList<SupplierModel>(suppliers, count, supplierParam.PageNumber, supplierParam.PageSize);
     }
 
-    public async Task<PagedList<SupplierModel>> GetByParametersAsync(SupplierParam supplierParam, bool trackChanges)
+    public async Task<PagedList<SupplierModel>> GetByParametersAsync(SupplierParam supplierParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var suppliers = await FindAll(trackChanges)
             .SearchByName(supplierParam.srcByName) //It's a local method
             .Sort(supplierParam.OrderBy) //It's a local method
             .Skip((supplierParam.PageNumber - 1) * supplierParam.PageSize)
             .Take(supplierParam.PageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
             .SearchByName(supplierParam.srcByName)
-            .CountAsync();
+            .CountAsync(cancellationToken);
 
         return new PagedList<SupplierModel>(suppliers, count, supplierParam.PageNumber, supplierParam.PageSize);
     }
 
-    public async Task<SupplierModel?> GetByIDAsync(Guid supplierID, bool trackChanges)
+    public async Task<SupplierModel?> GetByIDAsync(Guid supplierID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var supplier = await FindByCondition(x => x.SupplierID == supplierID, trackChanges).FirstOrDefaultAsync();
+        var supplier = await FindByCondition(x => x.SupplierID == supplierID, trackChanges).FirstOrDefaultAsync(cancellationToken);
         if (supplier is not null)
             return supplier;
         else

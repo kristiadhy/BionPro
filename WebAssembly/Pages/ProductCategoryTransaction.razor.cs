@@ -63,32 +63,31 @@ public partial class ProductCategoryTransaction
     public async Task SubmitAsync(ProductCategoryDto productCategory)
     {
         bool confirmationStatus = await ConfirmationModalService.SavingConfirmation("Product Category");
-        if (!confirmationStatus)
-            return;
+        if (!confirmationStatus) return;
 
         IsSaving = true;
-        StateHasChanged();
+        try
+        {
 
-        if (FormStatus == GlobalEnum.FormStatus.New)
-        {
-            var response = await ServiceManager.ProductCategoryService.Create(productCategory);
-            if (response.IsSuccessStatusCode)
-                NotificationService.SaveNotification("A new Product Category added");
-        }
-        else if (FormStatus == GlobalEnum.FormStatus.Edit)
-        {
-            var response = await ServiceManager.ProductCategoryService.Update(productCategory);
+            var response = FormStatus == GlobalEnum.FormStatus.New
+            ? await ServiceManager.ProductCategoryService.Create(productCategory)
+            : await ServiceManager.ProductCategoryService.Update(productCategory);
+
             if (response.IsSuccessStatusCode)
             {
-                NotificationService.SaveNotification("Product Category updated");
+                string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product category added" : "Product category updated";
+                NotificationService.SaveNotification(notificationMessage);
             }
+
+            await ProductCategoryState.LoadProductCategories();
         }
-
-        //Load productCategory state after making changes
-        await ProductCategoryState.LoadProductCategories();
-
-        IsSaving = false;
+        finally
+        {
+            IsSaving = false;
+            StateHasChanged();
+        }
     }
+
 
     public async Task ClearField()
     {

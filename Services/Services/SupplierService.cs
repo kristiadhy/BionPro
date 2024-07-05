@@ -27,7 +27,9 @@ internal sealed class SupplierService : ISupplierService
     {
         _logger.Information($"Get suppliers");
 
-        var suppliers = await _repositoryManager.SupplierRepo.GetByParametersAsync(supplierParam, trackChanges);
+        var suppliers = await _repositoryManager.SupplierRepo.GetByParametersAsync(supplierParam, trackChanges, cancellationToken);
+
+        _logger.Information("Suppliers retrieved");
 
         var suppliersToReturn = _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
 
@@ -38,25 +40,28 @@ internal sealed class SupplierService : ISupplierService
     {
         _logger.Information($"Get supplier with ID : {supplierID}");
 
-        var suppliers = await _repositoryManager.SupplierRepo.GetByIDAsync(supplierID, trackChanges);
+        var suppliers = await _repositoryManager.SupplierRepo.GetByIDAsync(supplierID, trackChanges, cancellationToken);
         if (suppliers is null)
             throw new SupplierIDNotFoundException(supplierID);
+
+        _logger.Information("Supplier {supplierName} retrieved", suppliers.SupplierName);
 
         var suppliersToReturn = _mapper.Map<SupplierDto>(suppliers);
         return suppliersToReturn;
     }
 
-    public async Task<SupplierDto> CreateAsync(SupplierDto suppliersDto, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<SupplierDto> CreateAsync(SupplierDto supplierDto, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var supplierForValidation = _mapper.Map<SupplierModel>(suppliersDto);
+        var supplierModel = _mapper.Map<SupplierModel>(supplierDto);
         var validator = new SupplierValidator();
-        validator.ValidateInput(supplierForValidation);
+        validator.ValidateInput(supplierModel);
 
-        _logger.Information("Insert new suppliers : {suppliersName}", suppliersDto.SupplierName);
+        _logger.Information("Insert new supplier {supplierName}", supplierDto.SupplierName);
 
-        var supplierModel = _mapper.Map<SupplierModel>(suppliersDto);
         _repositoryManager.SupplierRepo.CreateEntity(supplierModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Supplier {supplierName} added", supplierDto.SupplierName);
 
         var suppliersToReturn = _mapper.Map<SupplierDto>(supplierModel);
 
@@ -65,34 +70,41 @@ internal sealed class SupplierService : ISupplierService
 
     public async Task UpdateAsync(SupplierDto supplierDto, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var supplierForValidation = _mapper.Map<SupplierModel>(supplierDto);
+        var suppliersToUpdate = _mapper.Map<SupplierModel>(supplierDto);
         var validator = new SupplierValidator();
-        validator.ValidateInput(supplierForValidation);
+        validator.ValidateInput(suppliersToUpdate);
 
-        _logger.Information("Update suppliers : {suppliersName}", supplierDto.SupplierName);
+        _logger.Information("Update supplier {suppliersName}", supplierDto.SupplierName);
 
-        SupplierModel suppliersToUpdate = _mapper.Map<SupplierModel>(supplierDto);
         _repositoryManager.SupplierRepo.UpdateEntity(suppliersToUpdate, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Supplier {supplierName} updated", supplierDto.SupplierName);
     }
 
     public async Task DeleteAsync(Guid suppliersID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var supplierForDelete = await _repositoryManager.SupplierRepo.GetByIDAsync(suppliersID, trackChanges);
-        if (supplierForDelete is null)
+        var supplierToDelete = await _repositoryManager.SupplierRepo.GetByIDAsync(suppliersID, trackChanges, cancellationToken);
+        if (supplierToDelete is null)
             throw new SupplierIDNotFoundException(suppliersID);
 
-        _logger.Information("Delete suppliers : {supplierName}", supplierForDelete.SupplierName);
+        _logger.Information("Delete suppliers : {supplierName}", supplierToDelete.SupplierName);
 
-        _repositoryManager.SupplierRepo.DeleteEntity(supplierForDelete, trackChanges);
+        _repositoryManager.SupplierRepo.DeleteEntity(supplierToDelete, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Supplier {supplierName} deleted", supplierToDelete.SupplierName);
     }
 
-    public async Task<(SupplierDto supplierToPatch, SupplierModel supplier)> GetSupplierForPatchAsync(Guid suppliersID, bool empTrackChanges, CancellationToken cancellationToken = default)
+    public async Task<(SupplierDto supplierToPatch, SupplierModel supplier)> GetSupplierForPatchAsync(Guid supplierID, bool empTrackChanges, CancellationToken cancellationToken = default)
     {
-        var supplier = await _repositoryManager.SupplierRepo.GetByIDAsync(suppliersID, empTrackChanges);
+        _logger.Information("Get supplier with ID : {supplierID}", supplierID);
+
+        var supplier = await _repositoryManager.SupplierRepo.GetByIDAsync(supplierID, empTrackChanges, cancellationToken);
         if (supplier is null)
-            throw new SupplierIDNotFoundException(suppliersID);
+            throw new SupplierIDNotFoundException(supplierID);
+
+        _logger.Information("Supplier {supplierName} retrieved", supplier.SupplierName);
 
         var supplierToPatch = _mapper.Map<SupplierDto>(supplier);
 
@@ -103,5 +115,7 @@ internal sealed class SupplierService : ISupplierService
     {
         _mapper.Map(supplierToPatch, supplier);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Supplier {supplierName} updated", supplierToPatch.SupplierName);
     }
 }

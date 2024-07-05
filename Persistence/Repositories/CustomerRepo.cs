@@ -11,38 +11,38 @@ public sealed class CustomerRepo : MethodBase<CustomerModel>, ICustomerRepo
 {
     public CustomerRepo(AppDBContext dbContext) : base(dbContext) { }
 
-    public async Task<PagedList<CustomerModel>> GetAllAsync(CustomerParam customerParam, bool trackChanges)
+    public async Task<PagedList<CustomerModel>> GetAllAsync(CustomerParam customerParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var customers = await FindAll(trackChanges)
             .Sort(customerParam.OrderBy) //It's a local method
             .Skip((customerParam.PageNumber - 1) * customerParam.PageSize)
             .Take(customerParam.PageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
-        var count = await FindAll(trackChanges).CountAsync();
+        var count = await FindAll(trackChanges).CountAsync(cancellationToken);
 
         return new PagedList<CustomerModel>(customers, count, customerParam.PageNumber, customerParam.PageSize);
     }
 
-    public async Task<PagedList<CustomerModel>> GetByParametersAsync(CustomerParam customerParam, bool trackChanges)
+    public async Task<PagedList<CustomerModel>> GetByParametersAsync(CustomerParam customerParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var customers = await FindAll(trackChanges)
             .SearchByName(customerParam.srcByName) //It's a local method
             .Sort(customerParam.OrderBy) //It's a local method
             .Skip((customerParam.PageNumber - 1) * customerParam.PageSize)
             .Take(customerParam.PageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
             .SearchByName(customerParam.srcByName)
-            .CountAsync();
+            .CountAsync(cancellationToken);
 
         return new PagedList<CustomerModel>(customers, count, customerParam.PageNumber, customerParam.PageSize);
     }
 
-    public async Task<CustomerModel?> GetByIDAsync(Guid customerID, bool trackChanges)
+    public async Task<CustomerModel?> GetByIDAsync(Guid customerID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var customer = await FindByCondition(x => x.CustomerID == customerID, trackChanges).FirstOrDefaultAsync();
+        var customer = await FindByCondition(x => x.CustomerID == customerID, trackChanges).FirstOrDefaultAsync(cancellationToken);
         if (customer is not null)
             return customer;
         else

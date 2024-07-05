@@ -23,9 +23,11 @@ public class ProductCategoryService : IProductCategoryService
 
     public async Task<(IEnumerable<ProductCategoryDto> productCategoryDto, MetaData metaData)> GetByParametersAsync(int categoryID, ProductCategoryParam productCategoryParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information($"Get product categories");
+        _logger.Information("Get product categories");
 
-        var productCategories = await _repositoryManager.ProductCategoryRepo.GetByParametersAsync(productCategoryParam, trackChanges);
+        var productCategories = await _repositoryManager.ProductCategoryRepo.GetByParametersAsync(productCategoryParam, trackChanges, cancellationToken);
+
+        _logger.Information("Product categories retrieved");
 
         var productCategoriesToReturn = _mapper.Map<IEnumerable<ProductCategoryDto>>(productCategories);
 
@@ -34,72 +36,87 @@ public class ProductCategoryService : IProductCategoryService
 
     public async Task<ProductCategoryDto> GetByProductCategoryIDAsync(int categoryID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information($"Get product category with ID : {categoryID}");
+        _logger.Information("Get product category with ID : {categoryID}", categoryID);
 
-        var productCategories = await _repositoryManager.ProductCategoryRepo.GetByIDAsync(categoryID, trackChanges);
-        if (productCategories is null)
+        var productCategory = await _repositoryManager.ProductCategoryRepo.GetByIDAsync(categoryID, trackChanges, cancellationToken);
+        if (productCategory is null)
             throw new ProductCategoryNotFoundException(categoryID);
 
-        var productCategoriesToReturn = _mapper.Map<ProductCategoryDto>(productCategories);
-        return productCategoriesToReturn;
+        _logger.Information("Product category {categoryName} retrieved", productCategory.Name);
+
+        var productCategoryToReturn = _mapper.Map<ProductCategoryDto>(productCategory);
+        return productCategoryToReturn;
     }
 
-    public async Task<ProductCategoryDto> CreateAsync(ProductCategoryDto entity, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<ProductCategoryDto> CreateAsync(ProductCategoryDto productCategoryDto, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategoryForValidation = _mapper.Map<ProductCategoryModel>(entity);
+        var productCategoryModel = _mapper.Map<ProductCategoryModel>(productCategoryDto);
         var validator = new ProductCategoryValidator();
-        validator.ValidateInput(productCategoryForValidation);
+        validator.ValidateInput(productCategoryModel);
 
-        _logger.Information("Insert new product category : {productCategoryName}", entity.Name);
+        _logger.Information("Insert new product category {productCategoryName}", productCategoryDto.Name);
 
-        var productCategoryModel = _mapper.Map<ProductCategoryModel>(entity);
         _repositoryManager.ProductCategoryRepo.CreateEntity(productCategoryModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Product category {productCategory} added", productCategoryModel.Name);
 
         var productCategoriesToReturn = _mapper.Map<ProductCategoryDto>(productCategoryModel);
 
         return productCategoriesToReturn;
     }
 
-    public async Task UpdateAsync(ProductCategoryDto entity, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(ProductCategoryDto productCategoryDto, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategoryForValidation = _mapper.Map<ProductCategoryModel>(entity);
+        var productCategoryToUpdate = _mapper.Map<ProductCategoryModel>(productCategoryDto);
         var validator = new ProductCategoryValidator();
-        validator.ValidateInput(productCategoryForValidation);
+        validator.ValidateInput(productCategoryToUpdate);
 
-        _logger.Information("Update product category : {productCategoryName}", entity.Name);
+        _logger.Information("Update product category {productCategoryName}", productCategoryDto.Name);
 
-        ProductCategoryModel productCategoryToUpdate = _mapper.Map<ProductCategoryModel>(entity);
         _repositoryManager.ProductCategoryRepo.UpdateEntity(productCategoryToUpdate, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Product category {productCategory} updated", productCategoryToUpdate.Name);
     }
 
     public async Task DeleteAsync(int categoryID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategoryForDelete = await _repositoryManager.ProductCategoryRepo.GetByIDAsync(categoryID, trackChanges);
-        if (productCategoryForDelete is null)
+        var productCategoryToDelete = await _repositoryManager.ProductCategoryRepo.GetByIDAsync(categoryID, trackChanges, cancellationToken);
+        if (productCategoryToDelete is null)
             throw new ProductCategoryNotFoundException(categoryID);
 
-        _logger.Information("Delete product Category : {productCategoryName}", productCategoryForDelete.Name);
+        _logger.Information("Delete product Category {productCategoryName}", productCategoryToDelete.Name);
 
-        _repositoryManager.ProductCategoryRepo.DeleteEntity(productCategoryForDelete, trackChanges);
+        _repositoryManager.ProductCategoryRepo.DeleteEntity(productCategoryToDelete, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Product category {productCategory} deleted", productCategoryToDelete.Name);
     }
 
     public async Task<(ProductCategoryDto productCategoryToPatch, ProductCategoryModel productCategory)> GetProductCategoryForPatchAsync(int categoryID, bool empTrackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategories = await _repositoryManager.ProductCategoryRepo.GetByIDAsync(categoryID, empTrackChanges);
-        if (productCategories is null)
+        _logger.Information("Get product category with ID : {categoryID}", categoryID);
+
+        var productCategory = await _repositoryManager.ProductCategoryRepo.GetByIDAsync(categoryID, empTrackChanges, cancellationToken);
+        if (productCategory is null)
             throw new ProductCategoryNotFoundException(categoryID);
 
-        var productCategoriesToPatch = _mapper.Map<ProductCategoryDto>(productCategories);
+        _logger.Information("Product category {categoryName} retrieved", productCategory.Name);
 
-        return (productCategoriesToPatch, productCategories);
+        var productCategoriesToPatch = _mapper.Map<ProductCategoryDto>(productCategory);
+
+        return (productCategoriesToPatch, productCategory);
     }
 
     public async Task SaveChangesForPatchAsync(ProductCategoryDto productCategoryDto, ProductCategoryModel productCategoryModel, CancellationToken cancellationToken = default)
     {
         _mapper.Map(productCategoryDto, productCategoryModel);
+
+        _logger.Information("Update product category {productCategoryName}", productCategoryDto.Name);
+
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+
+        _logger.Information("Product category {productCategory} updated", productCategoryDto.Name);
     }
 }

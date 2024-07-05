@@ -45,13 +45,11 @@
                               Visible=false
                               Filterable="false"
                               Title="ID"
-                              Frozen="true"
                               TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn Property="CategoryName"
-                              Title="Category"
-                              Frozen="true" />
+                              Title="Category" />
 
         <RadzenDataGridColumn Property="Name"
                               Title="Name"
@@ -71,9 +69,9 @@
                               Title="Image"
                               Width="80px">
             <Template Context="Product">
-                <RadzenImage Path="@Product.ImageUrl" 
-                AlternateText="@Path.GetFileName(Product.ImageUrl)"
-                class="img-thumbnail"/>
+                <RadzenImage Path="@Product.ImageUrl"
+                             AlternateText="@Path.GetFileName(Product.ImageUrl)"
+                             class="img-thumbnail" />
             </Template>
         </RadzenDataGridColumn>
 
