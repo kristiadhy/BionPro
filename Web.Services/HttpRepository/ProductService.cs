@@ -24,7 +24,7 @@ internal class ProductService : IProductService
         var queryStringParam = new Dictionary<string, string>
         {
             ["pageNumber"] = productParam.PageNumber.ToString(),
-            ["searchTerm"] = productParam.srcByName == null ? "" : productParam.srcByName,
+            ["searchTerm"] = productParam.srcByName ?? "",
             ["orderBy"] = productParam.OrderBy!
         };
 

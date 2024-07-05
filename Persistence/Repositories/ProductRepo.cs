@@ -15,6 +15,7 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
     {
         var productCategories = await FindAll(trackChanges)
             .Include(x => x.Category)
+            .Sort(productParam.OrderBy)
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
             .Take(productParam.PageSize)
             .ToListAsync(cancellationToken);
@@ -29,6 +30,7 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
         var productCategories = await FindAll(trackChanges)
             .Include(x => x.Category)
             .SearchByName(productParam.srcByName) //It's a local method
+            .Sort(productParam.OrderBy)
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
             .Take(productParam.PageSize)
             .ToListAsync(cancellationToken);

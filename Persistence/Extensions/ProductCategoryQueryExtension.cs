@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using System.Linq.Dynamic.Core;
 
 namespace Persistence.Extensions;
 public static class ProductCategoryQueryExtension
@@ -10,6 +11,19 @@ public static class ProductCategoryQueryExtension
 
         var lowerCaseTerm = searchTerm.Trim().ToLower();
 
-        return productCategories.Where(e => e.Name!.ToLower().Contains(lowerCaseTerm));
+        return productCategories.Where(e => e.Name!.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
+    }
+
+    public static IQueryable<ProductCategoryModel> Sort(this IQueryable<ProductCategoryModel> productCategories, string? orderByQueryString)
+    {
+        if (string.IsNullOrWhiteSpace(orderByQueryString))
+            return productCategories.OrderBy(e => e.Name);
+
+        var orderQuery = OrderQueryBuilder.CreateOrderQuery<SupplierModel>(orderByQueryString);
+
+        if (string.IsNullOrWhiteSpace(orderQuery))
+            return productCategories.OrderBy(e => e.Name);
+
+        return productCategories.OrderBy(orderQuery);
     }
 }
