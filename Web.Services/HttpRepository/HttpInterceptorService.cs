@@ -10,25 +10,27 @@ public class HttpInterceptorService
 
     public HttpInterceptorService(HttpClientInterceptor interceptor, RefreshTokenService refreshTokenService)
     {
-        _interceptor = interceptor;
-        _refreshTokenService = refreshTokenService;
+        _interceptor = interceptor ?? throw new ArgumentNullException(nameof(interceptor));
+        _refreshTokenService = refreshTokenService ?? throw new ArgumentNullException(nameof(refreshTokenService));
     }
 
     public void RegisterEvent() => _interceptor.BeforeSendAsync += InsertNewRefreshTokenOnRequestHeader;
 
     public async Task InsertNewRefreshTokenOnRequestHeader(object sender, HttpClientInterceptorEventArgs e)
     {
-        var absPath = e.Request.RequestUri!.AbsolutePath;
-
         //IMPORTANT : How refresh token work.
         //1. We must include the JWT token bearer every time we make a call to the web API service; The token should be active, it means we can't use an expired token.
         //2. TryRefreshToken() is checking whether the token is expired or not (We know it because we save the expiry time in the JWT token)
         //3. When the token is nearly expired, then extend the expiration time (In this method, we extend token expiry time when the expiration time remaining is < 5 minutes).
 
-        if (!absPath.Contains("authentication"))
+        var absPath = e.Request.RequestUri?.AbsolutePath;
+
+        if (absPath is null || absPath.Contains("authentication")) return;
+
+        var accessToken = await _refreshTokenService.TryRefreshToken();
+        if (!string.IsNullOrEmpty(accessToken))
         {
-            var accessToken = await _refreshTokenService.TryRefreshToken();
-            e.Request.Headers.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+            e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
     }
 

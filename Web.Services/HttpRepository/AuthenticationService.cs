@@ -26,7 +26,7 @@ public class AuthenticationService : IAuthenticationService
     public async Task<string> GetCurrentTokenFromLocalStorage()
     {
         var accessToken = await _localStorage.GetItemAsync<string>("authToken");
-        if (accessToken is not null)
+        if (!string.IsNullOrEmpty(accessToken))
             return accessToken;
         else
             return string.Empty;

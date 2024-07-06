@@ -1,5 +1,6 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Model;
@@ -46,11 +47,7 @@ public partial class CustomerDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-
-        await Task.Yield();
-
         await CustomerState.LoadCustomers();
-
         isLoading = false;
     }
 
@@ -75,11 +72,17 @@ public partial class CustomerDisplay
             return;
 
         NotificationService.DeleteNotification("Customer has been deleted");
-        await CustomerState.LoadCustomers();
+        await EvReloadData();
     }
 
     protected void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{CustomerPageModel?.Path}/create");
+    }
+
+    private async Task PageChanged(PagerEventArgs args)
+    {
+        CustomerState.CustomerParameter.PageNumber = args.PageIndex + 1;
+        await EvReloadData();
     }
 }

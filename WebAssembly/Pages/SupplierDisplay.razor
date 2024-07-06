@@ -14,14 +14,10 @@
 
 <RadzenDataGrid @ref="SupplierGrid"
                 IsLoading=@isLoading
-                Count="@SupplierState.MetaData.TotalCount"
                 Data="@SupplierState.SupplierList"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
-                AllowPaging="true"
-                PageSize="@SupplierState.MetaData.PageSize"
-                PagerHorizontalAlign="HorizontalAlign.Center"
                 AllowColumnResize="true"
                 AllowColumnReorder="false"
                 GridLines="DataGridGridLines.Both"
@@ -94,3 +90,7 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
+<Pager PageSize="@SupplierState.MetaData.PageSize"
+       TotalCount="@SupplierState.MetaData.TotalCount"
+       PageChanged="@(args => PageChanged(args))" />

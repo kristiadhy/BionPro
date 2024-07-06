@@ -15,17 +15,18 @@
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
+@*                 Count="@ProductState.MetaData.TotalCount"
+                AllowPaging="true"
+                PageSize="@ProductState.MetaData.PageSize"
+                PagerHorizontalAlign="HorizontalAlign.Center" *@
+
 <RadzenDataGrid @ref="ProductGrid"
                 IsLoading=@isLoading
-                Count="@ProductState.MetaData.TotalCount"
                 Data="@ProductState.ProductList"
                 TItem="ProductDtoForProductQueries"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
-                AllowPaging="true"
-                PageSize="@ProductState.MetaData.PageSize"
-                PagerHorizontalAlign="HorizontalAlign.Center"
                 AllowColumnResize="true"
                 AllowColumnReorder="false"
                 GridLines="DataGridGridLines.Both"
@@ -104,3 +105,7 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
+<Pager PageSize="@ProductState.MetaData.PageSize"
+       TotalCount="@ProductState.MetaData.TotalCount"
+       PageChanged="@(args => PageChanged(args))" />

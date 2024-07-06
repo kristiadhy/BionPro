@@ -17,14 +17,10 @@
 
 <RadzenDataGrid @ref="ProductCategoryGrid"
                 IsLoading=@isLoading
-                Count="@ProductCategoryState.MetaData.TotalCount"
                 Data="@ProductCategoryState.ProductCategoryList"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
-                AllowPaging="true"
-                PageSize="@ProductCategoryState.MetaData.PageSize"
-                PagerHorizontalAlign="HorizontalAlign.Center"
                 AllowColumnResize="true"
                 AllowColumnReorder="false"
                 GridLines="DataGridGridLines.Both"
@@ -79,3 +75,7 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
+<Pager PageSize="@ProductCategoryState.MetaData.PageSize"
+       TotalCount="@ProductCategoryState.MetaData.TotalCount"
+       PageChanged="@(args => PageChanged(args))" />

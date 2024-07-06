@@ -1,5 +1,6 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Model;
@@ -46,11 +47,7 @@ public partial class ProductCategoryDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-
-        await Task.Yield();
-
         await ProductCategoryState.LoadProductCategories();
-
         isLoading = false;
     }
 
@@ -75,11 +72,17 @@ public partial class ProductCategoryDisplay
             return;
 
         NotificationService.DeleteNotification("Product category has been deleted");
-        await ProductCategoryState.LoadProductCategories();
+        await EvReloadData();
     }
 
     protected void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{ProductCategoryPageModel?.Path}/create");
+    }
+
+    private async Task PageChanged(PagerEventArgs args)
+    {
+        ProductCategoryState.ProductCategoryParameter.PageNumber = args.PageIndex + 1;
+        await EvReloadData();
     }
 }

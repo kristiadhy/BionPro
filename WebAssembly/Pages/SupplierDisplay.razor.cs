@@ -1,5 +1,6 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Model;
@@ -46,11 +47,7 @@ public partial class SupplierDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-
-        await Task.Yield();
-
         await SupplierState.LoadSuppliers();
-
         isLoading = false;
     }
 
@@ -75,11 +72,17 @@ public partial class SupplierDisplay
             return;
 
         NotificationService.DeleteNotification("Supplier has been deleted");
-        await SupplierState.LoadSuppliers();
+        await EvReloadData();
     }
 
     protected void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{SupplierPageModel?.Path}/create");
+    }
+
+    private async Task PageChanged(PagerEventArgs args)
+    {
+        SupplierState.SupplierParameter.PageNumber = args.PageIndex + 1;
+        await EvReloadData();
     }
 }

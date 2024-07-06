@@ -1,0 +1,29 @@
+﻿@using Radzen
+@using Radzen.Blazor
+
+<RadzenPager ShowPagingSummary="true"
+             PagingSummaryFormat="Displaying page {0} of {1} (total {2} records)"
+             HorizontalAlign="HorizontalAlign.Right"
+             Count="@TotalCount"
+             PageSize="@PageSize"
+             PageNumbersCount="5"
+             PageChanged="OnPageChanged" />
+
+@code {
+    [Parameter]
+    public int TotalCount { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public EventCallback<PagerEventArgs> PageChanged { get; set; }
+
+    private int CurrentPage { get; set; } = 1;
+
+    private async Task OnPageChanged(PagerEventArgs args)
+    {
+        CurrentPage = args.PageIndex + 1;
+        await PageChanged.InvokeAsync(args);
+    }
+}

@@ -15,20 +15,45 @@ public class RefreshTokenService
         _authService = authService;
     }
 
+    //public async Task<string> TryRefreshToken()
+    //{
+    //    var authState = await _authStateProvider.GetAuthenticationStateAsync();
+    //    var user = authState.User;
+    //    if (user.Identity is not null)
+    //        if (user.Identity.IsAuthenticated)
+    //        {
+    //            var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
+    //            var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
+    //            var timeUTC = DateTime.UtcNow;
+    //            var diff = expTime - timeUTC;
+
+    //            if (diff.TotalMinutes <= 5)
+    //                await _authService.RefreshToken();
+    //        }
+
+    //    return await _authService.GetCurrentTokenFromLocalStorage();
+    //}
+
     public async Task<string> TryRefreshToken()
     {
         var authState = await _authStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        if (user.Identity is not null)
-            if (user.Identity.IsAuthenticated)
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            var expClaim = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
+            if (long.TryParse(expClaim, out var exp))
             {
-                var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
-                var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
-                var timeUTC = DateTime.UtcNow;
+                var expTime = DateTimeOffset.FromUnixTimeSeconds(exp);
+                var timeUTC = DateTimeOffset.UtcNow;
                 var diff = expTime - timeUTC;
+
                 if (diff.TotalMinutes <= 5)
+                {
                     await _authService.RefreshToken();
+                }
             }
+        }
 
         return await _authService.GetCurrentTokenFromLocalStorage();
     }

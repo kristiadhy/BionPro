@@ -1,5 +1,6 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Model;
@@ -38,29 +39,25 @@ public partial class ProductDisplay
         ];
     }
 
-    protected async Task EvReloadData()
+    private async Task EvReloadData()
     {
         await EvLoadData();
         await ProductGrid.Reload();
     }
 
-    protected async Task EvLoadData()
+    private async Task EvLoadData()
     {
         isLoading = true;
-
-        await Task.Yield();
-
         await ProductState.LoadProducts();
-
         isLoading = false;
     }
 
-    protected void EvEditRow(ProductDtoForProductQueries products)
+    private void EvEditRow(ProductDtoForProductQueries products)
     {
         NavigationManager.NavigateTo($"{ProductsPageModel?.Path}/edit/{products.ProductID}");
     }
 
-    protected async Task EvDeleteRow(ProductDtoForProductQueries products)
+    private async Task EvDeleteRow(ProductDtoForProductQueries products)
     {
         if (products is null)
             return;
@@ -79,11 +76,17 @@ public partial class ProductDisplay
             return;
 
         NotificationService.DeleteNotification("Product has been deleted");
-        await ProductState.LoadProducts();
+        await EvReloadData();
     }
 
-    protected void EvCreateNew()
+    private void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{ProductsPageModel?.Path}/create");
+    }
+
+    private async Task PageChanged(PagerEventArgs args)
+    {
+        ProductState.ProductParameter.PageNumber = args.PageIndex + 1;
+        await EvReloadData();
     }
 }
