@@ -30,7 +30,6 @@ internal class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
         //    .HasForeignKey(e => e.ProductID)
         //    .IsRequired(true);
 
-        builder.Property(e => e.ImageUrl)
-            .HasMaxLength(255);
+        builder.Property(e => e.ImageUrl).HasMaxLength(500);
     }
 }

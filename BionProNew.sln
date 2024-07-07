@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAssembly", "WebAssembly\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Services", "Web.Services\Web.Services.csproj", "{4A47E35F-F3CD-4B6D-B1D0-7442C3D9AE00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeService", "BarcodeService\BarcodeService.csproj", "{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{4A47E35F-F3CD-4B6D-B1D0-7442C3D9AE00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A47E35F-F3CD-4B6D-B1D0-7442C3D9AE00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A47E35F-F3CD-4B6D-B1D0-7442C3D9AE00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{56862D25-886D-4C10-9F3B-F44F2C482437} = {9D4D65BB-5B44-4F1F-83C6-0829F38ED442}
 		{789EB32B-5DFF-4CCA-B29F-22765ED29EB4} = {FBD52726-D515-42BF-BF9C-325AF3DDC23A}
 		{4A47E35F-F3CD-4B6D-B1D0-7442C3D9AE00} = {FBD52726-D515-42BF-BF9C-325AF3DDC23A}
+		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6} = {FBD52726-D515-42BF-BF9C-325AF3DDC23A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0EA62074-47FE-4661-88F3-11FAD4F2DB1E}

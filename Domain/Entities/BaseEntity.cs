@@ -18,6 +18,11 @@ public abstract class BaseEntity
         EntityStatus = EntityStatus.Active;
     }
 
+    public void SetDataUpdate()
+    {
+        DateUpdated = DateTimeOffset.Now;
+    }
+
     public void ArchiveEntity()
     {
         EntityStatus = EntityStatus.Archived;
