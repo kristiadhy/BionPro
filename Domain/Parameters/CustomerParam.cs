@@ -3,5 +3,5 @@
 public class CustomerParam : RequestParameters
 {
     public CustomerParam() => OrderBy = "CustomerName";
-    public string? srcByName { get; set; }
+    public string? SrcByName { get; set; }
 }

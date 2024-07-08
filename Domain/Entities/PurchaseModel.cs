@@ -10,5 +10,5 @@ public class PurchaseModel : BaseEntity
 
     public Guid? SupplierID { get; set; }
     public SupplierModel? Supplier { get; set; }
-    public ICollection<PurchaseDetailModel>? Details { get; set; }
+    public ICollection<PurchaseDetailModel>? PurchaseDetails { get; set; }
 }

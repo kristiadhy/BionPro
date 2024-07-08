@@ -29,12 +29,7 @@ public class ProductService : IProductService
 
     public async Task<(IEnumerable<ProductDtoForProductQueries> productDto, MetaData metaData)> GetByParametersAsync(Guid productID, ProductParam productParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information($"Get products");
-
         var products = await _repositoryManager.ProductRepo.GetByParametersAsync(productParam, trackChanges, cancellationToken);
-
-        _logger.Information("Products retrieved");
-
         var productCategoriesToReturn = _mapper.Map<IEnumerable<ProductDtoForProductQueries>>(products);
 
         return (productCategoriesToReturn, products.MetaData);
@@ -42,13 +37,9 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> GetByProductIDAsync(Guid productID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information($"Get product with ID : {productID}");
-
         var product = await _repositoryManager.ProductRepo.GetByIDAsync(productID, trackChanges, cancellationToken);
         if (product is null)
             throw new ProductNotFoundException(productID);
-
-        _logger.Information("Product {productName} retrieved", product.Name);
 
         var productCategoriesToReturn = _mapper.Map<ProductDto>(product);
         return productCategoriesToReturn;
@@ -60,12 +51,8 @@ public class ProductService : IProductService
         var validator = new ProductValidator();
         validator.ValidateInput(productModel);
 
-        _logger.Information("Insert new product {productName}", productDto.Name);
-
         _repositoryManager.ProductRepo.CreateEntity(productModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Product {productName} added", productModel.Name);
 
         var productCategoriesToReturn = _mapper.Map<ProductDto>(productModel);
 
@@ -78,12 +65,8 @@ public class ProductService : IProductService
         var validator = new ProductValidator();
         validator.ValidateInput(productModel);
 
-        _logger.Information("Update product {productName}", productDto.Name);
-
         _repositoryManager.ProductRepo.UpdateEntity(productModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Product {productName} updated", productModel.Name);
     }
 
     public async Task DeleteAsync(Guid productID, bool trackChanges, CancellationToken cancellationToken = default)
@@ -92,12 +75,8 @@ public class ProductService : IProductService
         if (productToDelete is null)
             throw new ProductNotFoundException(productID);
 
-        _logger.Information("Delete product {productName}", productToDelete.Name);
-
         _repositoryManager.ProductRepo.DeleteEntity(productToDelete, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Product {productName} deleted", productToDelete.Name);
     }
 
     public async Task<(ProductDto productToPatch, ProductModel product)> GetProductForPatchAsync(Guid productID, bool empTrackChanges, CancellationToken cancellationToken = default)
@@ -140,24 +119,16 @@ public class ProductService : IProductService
         var fileName = $"{Guid.NewGuid()}-{originalFileName}"; // Ensure unique file name
         var fullImagePathToSave = Path.Combine(fullPathToSave, fileName);
 
-        try
-        {
-            Directory.CreateDirectory(fullPathToSave); // Ensure the directory exists
+        Directory.CreateDirectory(fullPathToSave); // Ensure the directory exists
 
-            await using (var stream = new FileStream(fullImagePathToSave, FileMode.Create))
-                await file.CopyToAsync(stream, cancellationToken);
+        await using (var stream = new FileStream(fullImagePathToSave, FileMode.Create))
+            await file.CopyToAsync(stream, cancellationToken);
 
-            _logger.Information("Product image {productImage} have been copied to the server", fileName);
+        _logger.Information("Product image {productImage} have been copied to the server", fileName);
 
-            var imageUrl = $"{folderUrlToServer}/{fileName}";
+        var imageUrl = $"{folderUrlToServer}/{fileName}";
 
-            return imageUrl;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"An error occurred while uploading the image: {ex.Message}");
-            return null;
-        }
+        return imageUrl;
     }
 
     public async Task DeleteProductImage(string fileName, CancellationToken cancellationToken = default)

@@ -112,7 +112,7 @@ public class CustomHttpClient
         return true;
     }
 
-    public void CheckErrorResponseForPostMethod(HttpResponseMessage response, string content, JsonSerializerSettings options)
+    public void CheckErrorResponseWithContent(HttpResponseMessage response, string content, JsonSerializerSettings options)
     {
         if (!response.IsSuccessStatusCode)
         {

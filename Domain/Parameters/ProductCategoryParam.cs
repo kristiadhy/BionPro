@@ -2,5 +2,5 @@
 public class ProductCategoryParam : RequestParameters
 {
     public ProductCategoryParam() => OrderBy = "Name";
-    public string? srcByName { get; set; }
+    public string? SrcByName { get; set; }
 }

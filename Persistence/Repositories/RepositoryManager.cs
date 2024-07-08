@@ -10,6 +10,7 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<ISupplierRepo> _lazySupplierRepo;
     private readonly Lazy<IProductCategoryRepo> _lazyProductCategoryRepo;
     private readonly Lazy<IProductRepo> _lazyProductRepo;
+    private readonly Lazy<IPurchaseRepo> _lazyPurchaseRepo;
 
     public RepositoryManager(AppDBContext dbContext)
     {
@@ -18,6 +19,7 @@ public sealed class RepositoryManager : IRepositoryManager
         _lazySupplierRepo = new Lazy<ISupplierRepo>(() => new SupplierRepo(dbContext));
         _lazyProductCategoryRepo = new Lazy<IProductCategoryRepo>(() => new ProductCategoryRepo(dbContext));
         _lazyProductRepo = new Lazy<IProductRepo>(() => new ProductRepo(dbContext));
+        _lazyPurchaseRepo = new Lazy<IPurchaseRepo>(() => new PurchaseRepo(dbContext));
     }
 
     public ICustomerRepo CustomerRepo => _lazyCustomerRepo.Value;
@@ -25,4 +27,5 @@ public sealed class RepositoryManager : IRepositoryManager
     public ISupplierRepo SupplierRepo => _lazySupplierRepo.Value;
     public IProductCategoryRepo ProductCategoryRepo => _lazyProductCategoryRepo.Value;
     public IProductRepo ProductRepo => _lazyProductRepo.Value;
+    public IPurchaseRepo PurchaseRepo => _lazyPurchaseRepo.Value;
 }

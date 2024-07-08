@@ -27,14 +27,14 @@ public sealed class SupplierRepo : MethodBase<SupplierModel>, ISupplierRepo
     public async Task<PagedList<SupplierModel>> GetByParametersAsync(SupplierParam supplierParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var suppliers = await FindAll(trackChanges)
-            .SearchByName(supplierParam.srcByName) //It's a local method
+            .SearchByName(supplierParam.SrcByName) //It's a local method
             .Sort(supplierParam.OrderBy) //It's a local method
             .Skip((supplierParam.PageNumber - 1) * supplierParam.PageSize)
             .Take(supplierParam.PageSize)
             .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
-            .SearchByName(supplierParam.srcByName)
+            .SearchByName(supplierParam.SrcByName)
             .CountAsync(cancellationToken);
 
         return new PagedList<SupplierModel>(suppliers, count, supplierParam.PageNumber, supplierParam.PageSize);

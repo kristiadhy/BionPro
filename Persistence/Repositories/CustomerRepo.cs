@@ -27,14 +27,14 @@ public sealed class CustomerRepo : MethodBase<CustomerModel>, ICustomerRepo
     public async Task<PagedList<CustomerModel>> GetByParametersAsync(CustomerParam customerParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var customers = await FindAll(trackChanges)
-            .SearchByName(customerParam.srcByName) //It's a local method
+            .SearchByName(customerParam.SrcByName) //It's a local method
             .Sort(customerParam.OrderBy) //It's a local method
             .Skip((customerParam.PageNumber - 1) * customerParam.PageSize)
             .Take(customerParam.PageSize)
             .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
-            .SearchByName(customerParam.srcByName)
+            .SearchByName(customerParam.SrcByName)
             .CountAsync(cancellationToken);
 
         return new PagedList<CustomerModel>(customers, count, customerParam.PageNumber, customerParam.PageSize);

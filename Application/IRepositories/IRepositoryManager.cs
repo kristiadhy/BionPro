@@ -6,5 +6,6 @@ public interface IRepositoryManager
     ISupplierRepo SupplierRepo { get; }
     IProductCategoryRepo ProductCategoryRepo { get; }
     IProductRepo ProductRepo { get; }
+    IPurchaseRepo PurchaseRepo { get; }
     IUnitOfWorkRepo UnitOfWorkRepo { get; }
 }

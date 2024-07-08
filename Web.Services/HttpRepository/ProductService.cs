@@ -24,7 +24,7 @@ internal class ProductService : IProductService
         var queryStringParam = new Dictionary<string, string>
         {
             ["pageNumber"] = productParam.PageNumber.ToString(),
-            ["searchTerm"] = productParam.srcByName ?? "",
+            ["searchTerm"] = productParam.SrcByName ?? "",
             ["orderBy"] = productParam.OrderBy!
         };
 
@@ -46,8 +46,8 @@ internal class ProductService : IProductService
     {
         var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{productID}");
         var result = JsonConvert.DeserializeObject<ProductDto>(content, _options);
-        if (!string.IsNullOrEmpty(content))
-            return result!;
+        if (!string.IsNullOrEmpty(content) && result is not null)
+            return result;
         else
             return new();
     }
@@ -56,7 +56,7 @@ internal class ProductService : IProductService
     {
         var response = await _client.PostAsync(additionalResourceName, productDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 
@@ -64,7 +64,7 @@ internal class ProductService : IProductService
     {
         var response = await _client.PutAsync(additionalResourceName, productDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 
@@ -72,7 +72,7 @@ internal class ProductService : IProductService
     {
         var response = await _client.DeleteAsync($"{additionalResourceName}/{productID}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 
@@ -80,7 +80,7 @@ internal class ProductService : IProductService
     {
         var response = await _client.PostMultiContentAsync($"{additionalResourceName}/upload", multiContent);
         var postContent = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, postContent, _options);
+        _client.CheckErrorResponseWithContent(response, postContent, _options);
         return postContent.Trim('"');
     }
 
@@ -102,7 +102,7 @@ internal class ProductService : IProductService
         string fileName = Path.GetFileName(imageUrl);
         var response = await _client.DeleteAsync($"{additionalResourceName}/upload/{fileName}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 }

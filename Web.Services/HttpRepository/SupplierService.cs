@@ -24,7 +24,7 @@ public class SupplierService : ISupplierService
         var queryStringParam = new Dictionary<string, string>
         {
             ["pageNumber"] = supplierParameter.PageNumber.ToString(),
-            ["searchTerm"] = supplierParameter.srcByName == null ? "" : supplierParameter.srcByName,
+            ["searchTerm"] = supplierParameter.SrcByName == null ? "" : supplierParameter.SrcByName,
             ["orderBy"] = supplierParameter.OrderBy!
         };
 
@@ -46,8 +46,8 @@ public class SupplierService : ISupplierService
     {
         var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{supplierID}");
         var result = JsonConvert.DeserializeObject<SupplierDto>(content, _options);
-        if (!string.IsNullOrEmpty(content))
-            return result!;
+        if (!string.IsNullOrEmpty(content) && result is not null)
+            return result;
         else
             return new();
     }
@@ -56,7 +56,7 @@ public class SupplierService : ISupplierService
     {
         var response = await _client.PostAsync(additionalResourceName, supplierDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 
@@ -64,7 +64,7 @@ public class SupplierService : ISupplierService
     {
         var response = await _client.PutAsync(additionalResourceName, supplierDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 
@@ -72,7 +72,7 @@ public class SupplierService : ISupplierService
     {
         var response = await _client.DeleteAsync($"{additionalResourceName}/{supplierID}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForPostMethod(response, content, _options);
+        _client.CheckErrorResponseWithContent(response, content, _options);
         return response;
     }
 }

@@ -19,7 +19,7 @@ public static class ProductCategoryQueryExtension
         if (string.IsNullOrWhiteSpace(orderByQueryString))
             return productCategories.OrderBy(e => e.Name);
 
-        var orderQuery = OrderQueryBuilder.CreateOrderQuery<SupplierModel>(orderByQueryString);
+        var orderQuery = OrderQueryBuilder.CreateOrderQuery<ProductCategoryModel>(orderByQueryString);
 
         if (string.IsNullOrWhiteSpace(orderQuery))
             return productCategories.OrderBy(e => e.Name);

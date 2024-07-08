@@ -13,7 +13,7 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
 
     public async Task<PagedList<ProductModel>> GetAllAsync(ProductParam productParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategories = await FindAll(trackChanges)
+        var products = await FindAll(trackChanges)
             .Include(x => x.Category)
             .Sort(productParam.OrderBy)
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
@@ -22,24 +22,24 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
 
         var count = await FindAll(trackChanges).CountAsync(cancellationToken);
 
-        return new PagedList<ProductModel>(productCategories, count, productParam.PageNumber, productParam.PageSize);
+        return new PagedList<ProductModel>(products, count, productParam.PageNumber, productParam.PageSize);
     }
 
     public async Task<PagedList<ProductModel>> GetByParametersAsync(ProductParam productParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var productCategories = await FindAll(trackChanges)
+        var products = await FindAll(trackChanges)
             .Include(x => x.Category)
-            .SearchByName(productParam.srcByName) //It's a local method
+            .SearchByName(productParam.SrcByName) //It's a local method
             .Sort(productParam.OrderBy)
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
             .Take(productParam.PageSize)
             .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
-            .SearchByName(productParam.srcByName)
+            .SearchByName(productParam.SrcByName)
             .CountAsync(cancellationToken);
 
-        return new PagedList<ProductModel>(productCategories, count, productParam.PageNumber, productParam.PageSize);
+        return new PagedList<ProductModel>(products, count, productParam.PageNumber, productParam.PageSize);
     }
 
     public async Task<ProductModel?> GetByIDAsync(Guid productID, bool trackChanges, CancellationToken cancellationToken = default)

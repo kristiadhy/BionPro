@@ -27,14 +27,14 @@ public sealed class ProductCategoryRepo : MethodBase<ProductCategoryModel>, IPro
     public async Task<PagedList<ProductCategoryModel>> GetByParametersAsync(ProductCategoryParam productCategoryParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var productCategories = await FindAll(trackChanges)
-            .SearchByName(productCategoryParam.srcByName) //It's a local method
+            .SearchByName(productCategoryParam.SrcByName) //It's a local method
             .Sort(productCategoryParam.OrderBy) //It's a local method
             .Skip((productCategoryParam.PageNumber - 1) * productCategoryParam.PageSize)
             .Take(productCategoryParam.PageSize)
             .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
-            .SearchByName(productCategoryParam.srcByName)
+            .SearchByName(productCategoryParam.SrcByName)
             .CountAsync(cancellationToken);
 
         return new PagedList<ProductCategoryModel>(productCategories, count, productCategoryParam.PageNumber, productCategoryParam.PageSize);

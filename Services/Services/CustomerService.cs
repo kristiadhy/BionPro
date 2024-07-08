@@ -25,13 +25,9 @@ internal sealed class CustomerService : ICustomerService
 
     public async Task<(IEnumerable<CustomerDTO> customerDTO, MetaData metaData)> GetByParametersAsync(Guid customerID, CustomerParam customerParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information("Get customers");
-
         var customers = await _repositoryManager.CustomerRepo.GetByParametersAsync(customerParam, trackChanges, cancellationToken);
         //if (!customers.Any())
         //    throw new NoCustomerFoundException();
-
-        _logger.Information("Customers retrieved");
 
         var customersToReturn = _mapper.Map<IEnumerable<CustomerDTO>>(customers);
 
@@ -40,13 +36,9 @@ internal sealed class CustomerService : ICustomerService
 
     public async Task<CustomerDTO> GetByCustomerIDAsync(Guid customerID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information("Get customer with ID : {customerID}", customerID);
-
         var customer = await _repositoryManager.CustomerRepo.GetByIDAsync(customerID, trackChanges, cancellationToken);
         if (customer is null)
             throw new CustomerIDNotFoundException(customerID);
-
-        _logger.Information("Customer {customerName} retrieved", customer.CustomerName);
 
         var customersToReturn = _mapper.Map<CustomerDTO>(customer);
 
@@ -59,12 +51,8 @@ internal sealed class CustomerService : ICustomerService
         var validator = new CustomerValidator();
         validator.ValidateInput(customerModel);
 
-        _logger.Information("Insert new customer {customerName}", customerDto.CustomerName);
-
         _repositoryManager.CustomerRepo.CreateEntity(customerModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Customer {customerName} added", customerDto.CustomerName);
 
         var customerToReturn = _mapper.Map<CustomerDTO>(customerModel);
 
@@ -77,12 +65,8 @@ internal sealed class CustomerService : ICustomerService
         var validator = new CustomerValidator();
         validator.ValidateInput(customerModel);
 
-        _logger.Information("Update customer {customerName}", customerDto.CustomerName);
-
         _repositoryManager.CustomerRepo.UpdateEntity(customerModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Customer {customerName} updated", customerDto.CustomerName);
     }
 
     public async Task DeleteAsync(Guid customerID, bool trackChanges, CancellationToken cancellationToken = default)
@@ -97,23 +81,15 @@ internal sealed class CustomerService : ICustomerService
         if (customerToDelete is null)
             throw new CustomerIDNotFoundException(customerID);
 
-        _logger.Information("Delete customer {customerName}", customerToDelete.CustomerName);
-
         _repositoryManager.CustomerRepo.DeleteEntity(customerToDelete, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Customer {customerName} deleted", customerToDelete.CustomerName);
     }
 
     public async Task<(CustomerDTO customerToPatch, CustomerModel customer)> GetCustomerForPatchAsync(Guid customerID, bool empTrackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information("Get customer with ID : {customerID}", customerID);
-
         var customer = await _repositoryManager.CustomerRepo.GetByIDAsync(customerID, empTrackChanges, cancellationToken);
         if (customer is null)
             throw new CustomerIDNotFoundException(customerID);
-
-        _logger.Information("Customer {customerName} retrieved", customer.CustomerName);
 
         var customerToPatch = _mapper.Map<CustomerDTO>(customer);
 
@@ -124,10 +100,6 @@ internal sealed class CustomerService : ICustomerService
     {
         _mapper.Map(customerToPatch, customer);
 
-        _logger.Information("Update customer {customerName}", customerToPatch.CustomerName);
-
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Customer {customerName} updated", customerToPatch.CustomerName);
     }
 }

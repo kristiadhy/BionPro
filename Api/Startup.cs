@@ -84,6 +84,7 @@ public static class Startup
         //Use global exception handling middleware
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+        //This middleware automatically logs information about each incoming HTTP request and its corresponding response. This includes details like the HTTP method, URL, response status code, and the time taken to process the request.
         app.UseSerilogRequestLogging();
 
         app.UseHttpsRedirection();
