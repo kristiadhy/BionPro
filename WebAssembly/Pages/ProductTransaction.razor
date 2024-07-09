@@ -29,11 +29,12 @@
                                        @bind-Value="ProductState.Product.SKU" />
 
                         <RadzenNumeric TValue="decimal"
-                                       Format="c" @bind-Value="ProductState.Product.Price"
+                                       Format="" @bind-Value="ProductState.Product.Price"
                                        Placeholder="Price"
                                        InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 
-                        <ProductImageUpload @ref="ProductImageUploadRef" ImageFromServer=@ProductState.Product.ImageUrl />
+                        <ProductImageUpload @ref="ProductImageUploadRef"
+                                            ImageFromServer=@ProductState.Product.ImageUrl />
 
                         <RadzenTextArea Name="@nameof(ProductState.Product.Description)"
                                         Placeholder="Description"

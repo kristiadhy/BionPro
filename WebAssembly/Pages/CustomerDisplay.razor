@@ -62,19 +62,19 @@
         <RadzenDataGridColumn Property="Note"
                               Title="Note" />
 
-        <RadzenDataGridColumn Context="CustomerAction"
+        <RadzenDataGridColumn Context="Action"
                               Title="Action"
                               Filterable="false"
                               Sortable="false"
                               TextAlign="TextAlign.Left"
                               Frozen="true"
                               FrozenPosition="FrozenColumnPosition.Right">
-            <Template Context="CustomerDTO">
+            <Template Context="dto">
                 <RadzenButton Icon="edit"
                               ButtonStyle="ButtonStyle.Light"
                               Variant="Variant.Flat"
                               Size="ButtonSize.Medium"
-                              Click="@(args => EvEditRow(CustomerDTO))"
+                              Click="@(args => EvEditRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger"
@@ -83,7 +83,7 @@
                               Shade="Shade.Lighter"
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
-                              Click="@(async args => await EvDeleteRow(CustomerDTO))"
+                              Click="@(async args => await EvDeleteRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>

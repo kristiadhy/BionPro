@@ -14,27 +14,18 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<IProductCategoryService> _lazyProductCategoryService;
     private readonly Lazy<IProductService> _lazyProductService;
     private readonly Lazy<IPurchaseService> _lazyPurchaseService;
-    private readonly Lazy<IAuthenticationService> _lazyAuthService;
-    private readonly Lazy<RefreshTokenService> _lazyRefreshTokenService;
-    private readonly Lazy<HttpInterceptorService> _lazyInterceptorService;
 
-    public ServiceManager(CustomHttpClient apiService, JsonSerializerSettings settings, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage, HttpClientInterceptor httpClientInterceptor)
+    public ServiceManager(CustomHttpClient apiService, JsonSerializerSettings settings, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage)
     {
         _lazyCustomerService = new Lazy<ICustomerService>(() => new CustomerService(apiService, settings));
         _lazySupplierService = new Lazy<ISupplierService>(() => new SupplierService(apiService, settings));
         _lazyProductCategoryService = new Lazy<IProductCategoryService>(() => new ProductCategoryService(apiService, settings));
         _lazyProductService = new Lazy<IProductService>(() => new ProductService(apiService, settings));
         _lazyPurchaseService = new Lazy<IPurchaseService>(() => new PurchaseService(apiService, settings));
-        _lazyAuthService = new Lazy<IAuthenticationService>(() => new AuthenticationService(apiService, authStateProvider, localStorage, settings));
-        _lazyRefreshTokenService = new Lazy<RefreshTokenService>(() => new RefreshTokenService(authStateProvider, AuthService));
-        _lazyInterceptorService = new Lazy<HttpInterceptorService>(() => new HttpInterceptorService(httpClientInterceptor, RefreshTokenService));
     }
 
     public ICustomerService CustomerService => _lazyCustomerService.Value;
     public ISupplierService SupplierService => _lazySupplierService.Value;
-    public IAuthenticationService AuthService => _lazyAuthService.Value;
-    public RefreshTokenService RefreshTokenService => _lazyRefreshTokenService.Value;
-    public HttpInterceptorService InterceptorService => _lazyInterceptorService.Value;
     public IProductCategoryService ProductCategoryService => _lazyProductCategoryService.Value;
     public IProductService ProductService => _lazyProductService.Value;
     public IPurchaseService PurchaseService => _lazyPurchaseService.Value;

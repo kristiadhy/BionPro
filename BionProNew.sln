@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAssembly", "WebAssembly\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Services", "Web.Services\Web.Services.csproj", "{4A47E35F-F3CD-4B6D-B1D0-7442C3D9AE00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeService", "BarcodeService\BarcodeService.csproj", "{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarcodeService", "BarcodeService\BarcodeService.csproj", "{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -34,12 +34,11 @@ public partial class ProductTransaction
     private ProductParam? ProductParameter = new();
     private RadzenTextBox? txtNameForFocus;
     private ProductImageUpload? ProductImageUploadRef;
-
     private PageModel? ProductPageModel { get; set; }
 
     public ProductTransaction()
     {
-        ProductPageModel = GlobalState.PageModels.Where(s => s.ID == 5).FirstOrDefault();
+        ProductPageModel = GlobalState.PageModels.Where(s => s.ID == 3).FirstOrDefault();
         ProductValidator = new();
     }
 

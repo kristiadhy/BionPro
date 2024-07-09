@@ -5,11 +5,11 @@ using WebAssembly;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 var configuration = builder.Configuration;
-var host = builder.HostEnvironment;
+var hostEnvironment = builder.HostEnvironment;
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.ConfigureServices(configuration, host);
+builder.Services.ConfigureServices(configuration, hostEnvironment);
 
 await builder.Build().RunAsync();

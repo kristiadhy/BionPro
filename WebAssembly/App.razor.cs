@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Web.Services.IHttpRepository;
+using Web.Services.HttpRepository;
 
 namespace WebAssembly;
 
 public partial class App : IDisposable
 {
     [Inject]
-    IServiceManager ServiceManager { get; set; } = default!;
+    HttpInterceptorService InterceptorService { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        ServiceManager.InterceptorService.RegisterEvent();
+        InterceptorService.RegisterEvent();
     }
 
     public void Dispose()
     {
-        ServiceManager.InterceptorService.DisposeEvent();
+        InterceptorService.DisposeEvent();
     }
 }

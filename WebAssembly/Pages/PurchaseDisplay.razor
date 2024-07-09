@@ -1,13 +1,14 @@
-﻿@page "/products/categories"
+﻿@page "/purchases"
 
-<PageTitle>@($"{GlobalState.AppName} | {ProductCategoryPageModel?.Title}")</PageTitle>
-
-@* <ProductSubButtons PageModel="ProductCategoryPageModel" /> *@
-<ProductSubMenu />
+<PageTitle>@($"{GlobalState.AppName} | {PurchasesPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
-    <RadzenText TextStyle="TextStyle.H5">@ProductCategoryPageModel?.Title</RadzenText>
+    <RadzenText TextStyle="TextStyle.H5">@PurchasesPageModel?.Title</RadzenText>
     <BreadCrumb breadCrumbs="@BreadCrumbs" />
+</MainMenuContainer>
+
+<MainMenuContainer>
+    <RadzenText TextStyle="TextStyle.Body1">This is your list of purchases. It shows the transactions you have done with your suppliers. Each purchase will increase the number of product items in your inventory.</RadzenText>
 </MainMenuContainer>
 
 <MainMenuContainer>
@@ -15,9 +16,10 @@
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
-<RadzenDataGrid @ref="ProductCategoryGrid"
+<RadzenDataGrid @ref="PurchaseGrid"
                 IsLoading=@isLoading
-                Data="@ProductCategoryState.ProductCategoryList"
+                Data="@PurchaseState.PurchaseList"
+                TItem="PurchaseDtoForQueries"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -32,20 +34,33 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(ProductCategoryState.ProductCategoryList.IndexOf(data) + 1)
+                @(PurchaseState.PurchaseList.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="CategoryID"
+        <RadzenDataGridColumn Property="PurchaseID"
                               Visible=false
                               Filterable="false"
                               Title="ID"
                               TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="Name"
-                              Title="Name"
+        <RadzenDataGridColumn Property="TransactionCode"
+                              Title="Code" />
+
+        <RadzenDataGridColumn Property="Date"
+                              Title="Date"
                               Frozen="true" />
+
+        <RadzenDataGridColumn Property="Supplier"
+                              Title="Supplier" />
+
+        <RadzenDataGridColumn Property="GrandTotal"
+                              Title="GrandTotal"
+                              FormatString="{0:c}" />
+
+        <RadzenDataGridColumn Property="Description"
+                              Title="Description" />
 
         <RadzenDataGridColumn Context="Action"
                               Title="Action"
@@ -54,6 +69,7 @@
                               TextAlign="TextAlign.Left"
                               Frozen="true"
                               FrozenPosition="FrozenColumnPosition.Right">
+
             <Template Context="dto">
                 <RadzenButton Icon="edit"
                               ButtonStyle="ButtonStyle.Light"
@@ -76,6 +92,6 @@
     </Columns>
 </RadzenDataGrid>
 
-<Pager PageSize="@ProductCategoryState.MetaData.PageSize"
-       TotalCount="@ProductCategoryState.MetaData.TotalCount"
+<Pager PageSize="@PurchaseState.MetaData.PageSize"
+       TotalCount="@PurchaseState.MetaData.TotalCount"
        PageChanged="@(args => PageChanged(args))" />

@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.json" />
+    <_ContentIncludedByDefault Remove="Components\CustomDatePicker.razor" />
+    <_ContentIncludedByDefault Remove="Components\ProductDropDown.razor" />
+    <_ContentIncludedByDefault Remove="Pages\PurchaseDisplay.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +28,18 @@
 
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\PurchaseDisplay.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\CustomDatePicker.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\ProductDropDown.razor" />
   </ItemGroup>
 
 </Project>

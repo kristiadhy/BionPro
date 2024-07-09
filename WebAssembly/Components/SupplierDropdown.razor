@@ -1,19 +1,19 @@
 ﻿<div class="rz-display-flex">
-    <RadzenDropDown TValue="int?"
+    <RadzenDropDown TValue="Guid?"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterOperator="StringFilterOperator.StartsWith"
                     AllowFiltering="true"
-                    Placeholder="Product Category"
-                    Data=@ProductCategoryState.ProductCategoryListDropdown
-                    TextProperty="@nameof(ProductCategoryDto.Name)"
-                    ValueProperty="@nameof(ProductCategoryDto.CategoryID)"
+                    Placeholder="Select Supplier"
+                    Data=@SupplierState.SupplierListDropdown
+                    TextProperty="@nameof(SupplierDto.SupplierName)"
+                    ValueProperty="@nameof(SupplierDto.SupplierID)"
                     AllowClear="true"
                     AllowVirtualization="true"
-                    Disabled="@IsLoading"
                     Change="(args=> OnValueChanged(args))"
+                    Disabled="@IsLoading"
                     @bind-Value="@SelectedValue"
                     Style="width: 100%; max-width: 400px;"
-                    Name="ProductCategory" />
+                    Name="Supplier" />
 
     @if (IsLoading)
     {
@@ -25,19 +25,17 @@
     }
 </div>
 @code {
-    //@bind-Value="@SelectedValue"
-
     [Inject]
-    ProductCategoryState ProductCategoryState { get; set; } = default!;
+    SupplierState SupplierState { get; set; } = default!;
 
     private bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!ProductCategoryState.ProductCategoryListDropdown.Any())
+        if (!SupplierState.SupplierListDropdown.Any())
         {
             IsLoading = true;
-            await ProductCategoryState.LoadProductCategoriesDropDown();
+            await SupplierState.LoadSuppliersDropDown();
             IsLoading = false;
         }
 
@@ -48,30 +46,15 @@
     public EditContext? EditContext { get; set; }
 
     [Parameter]
-    public EventCallback<int?> SelectedValueChanged { get; set; }
+    public EventCallback<Guid?> SelectedValueChanged { get; set; }
 
     [Parameter]
-    public int? SelectedValue { get; set; }
-
-    // private int? _selectedValue;
-    // [Parameter]
-    // public int? SelectedValue
-    // {
-    //     get => _selectedValue;
-    //     set
-    //     {
-    //         if (_selectedValue != value)
-    //         {
-    //             _selectedValue = value;
-    //             SelectedValueChanged.InvokeAsync(value);
-    //         }
-    //     }
-    // }
+    public Guid? SelectedValue { get; set; }
 
     private async Task OnValueChanged(object e)
     {
-        SelectedValue = e is not null ? (int)Convert.ChangeType(e, typeof(int)) : null;
+        SelectedValue = e is not null ? (Guid)Convert.ChangeType(e, typeof(Guid)) : null;
         await SelectedValueChanged.InvokeAsync(SelectedValue);
-        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(ProductCategoryDto.CategoryID)));
+        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(SupplierDto.SupplierID)));
     }
 }

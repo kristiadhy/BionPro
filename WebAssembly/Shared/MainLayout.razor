@@ -24,7 +24,7 @@
                     <RadzenPanelMenuItem Text="Suppliers" Icon="people_outline" Path="suppliers" />
                     <RadzenPanelMenuItem Text="Products" Icon="inventory" Path="products" />
                     <RadzenPanelMenuItem Text="Inventory" Icon="storefront" IconColor="@iconColor" />
-                    <RadzenPanelMenuItem Text="Purchases" Icon="shopping_cart" IconColor="@iconColor" Path="counter" />
+                    <RadzenPanelMenuItem Text="Purchases" Icon="shopping_cart" IconColor="@iconColor" Path="purchases" />
                     <RadzenPanelMenuItem Text="Sales" Icon="shopping_bag" IconColor="@iconColor" />
                     <RadzenPanelMenuItem Text="Authorization" Icon="lock_open" IconColor="@iconColor" />
                     <RadzenPanelMenuItem Text="Settings" Icon="build" IconColor="@iconColor" />
@@ -71,7 +71,7 @@
 
 @code {
     bool IsSmallScreen = false;
-    bool sidebarExpanded = true;
+    bool sidebarExpanded = false;
     string iconColor = string.Empty;
     ErrorBoundary? errorBoundary;
 

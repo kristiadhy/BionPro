@@ -7,6 +7,7 @@ public class HttpInterceptorService
 {
     private readonly HttpClientInterceptor _interceptor;
     private readonly RefreshTokenService _refreshTokenService;
+    private readonly SemaphoreSlim _refreshTokenLock = new(1, 1);
 
     public HttpInterceptorService(HttpClientInterceptor interceptor, RefreshTokenService refreshTokenService)
     {
@@ -27,10 +28,18 @@ public class HttpInterceptorService
 
         if (absPath is null || absPath.Contains("authentication")) return;
 
-        var accessToken = await _refreshTokenService.TryRefreshToken();
-        if (!string.IsNullOrEmpty(accessToken))
+        await _refreshTokenLock.WaitAsync(); // Wait to enter the semaphore
+        try
         {
-            e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var accessToken = await _refreshTokenService.TryRefreshToken();
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                e.Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
+        }
+        finally
+        {
+            _refreshTokenLock.Release(); // Release the semaphore
         }
     }
 

@@ -1,0 +1,24 @@
+﻿<RadzenDatePicker TValue="DateTime?"
+                  Value="@Value"
+                  Change="@OnChange"
+                  DateFormat="dd/MM/yyyy HH:mm"
+                  ShowTime="true"
+                  ShowSeconds="false"
+                  Placeholder="Select Date"
+                  Name="TransactionDate" />
+
+<RadzenButton Icon="autorenew"
+              ButtonStyle="ButtonStyle.Primary"
+              Click="@OnRefreshClick"
+              Variant="Variant.Text" />
+
+@code {
+    [Parameter]
+    public DateTime? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime?> OnChange { get; set; }
+
+    [Parameter]
+    public EventCallback OnRefreshClick { get; set; }
+}

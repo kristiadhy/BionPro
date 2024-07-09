@@ -11,6 +11,10 @@
 </MainMenuContainer>
 
 <MainMenuContainer>
+    <RadzenText TextStyle="TextStyle.Body1">This is your product list. This products will be use in all of transactions related to inventory in the entire application.</RadzenText>
+</MainMenuContainer>
+
+<MainMenuContainer>
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
@@ -76,7 +80,7 @@
             </Template>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Context="ProductAction"
+        <RadzenDataGridColumn Context="Action"
                               Title="Action"
                               Filterable="false"
                               Sortable="false"
@@ -84,12 +88,12 @@
                               Frozen="true"
                               FrozenPosition="FrozenColumnPosition.Right">
 
-            <Template Context="ProductDtoForProductQueries">
+            <Template Context="dto">
                 <RadzenButton Icon="edit"
                               ButtonStyle="ButtonStyle.Light"
                               Variant="Variant.Flat"
                               Size="ButtonSize.Medium"
-                              Click="@(args => EvEditRow(ProductDtoForProductQueries))"
+                              Click="@(args => EvEditRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger"
@@ -98,7 +102,7 @@
                               Shade="Shade.Lighter"
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
-                              Click="@(async args => await EvDeleteRow(ProductDtoForProductQueries))"
+                              Click="@(async args => await EvDeleteRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>

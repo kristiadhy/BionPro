@@ -8,11 +8,11 @@ public partial class AuthLink
     [Inject]
     NavigationManager NavigationHelper { get; set; } = default!;
     [Inject]
-    IServiceManager ServiceManager { get; set; } = default!;
+    IAuthenticationService AuthService { get; set; } = default!;
 
     private void Logout()
     {
-        ServiceManager.AuthService.Logout();
+        AuthService.Logout();
         NavigationHelper.NavigateTo($"/login");
     }
 }

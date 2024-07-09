@@ -35,6 +35,9 @@ public static class ServiceExtensions
         });
         services.AddHttpClientInterceptor(); //Should be put below the http client registration
         services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<RefreshTokenService>();
+        services.AddScoped<HttpInterceptorService>();
         services.AddScoped<IServiceManager, ServiceManager>();
 
         services.AddAuthorizationCore();

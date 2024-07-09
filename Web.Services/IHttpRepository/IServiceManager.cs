@@ -9,7 +9,4 @@ public interface IServiceManager
     IProductCategoryService ProductCategoryService { get; }
     IProductService ProductService { get; }
     IPurchaseService PurchaseService { get; }
-    IAuthenticationService AuthService { get; }
-    RefreshTokenService RefreshTokenService { get; }
-    HttpInterceptorService InterceptorService { get; }
 }

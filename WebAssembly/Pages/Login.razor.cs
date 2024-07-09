@@ -10,7 +10,7 @@ public partial class Login
     [Inject]
     NavigationManager NavigationManager { get; set; } = default!;
     [Inject]
-    IServiceManager ServiceManager { get; set; } = default!;
+    IAuthenticationService AuthService { get; set; } = default!;
     bool AlertVisible = false;
     string ErrorMessage = string.Empty;
 
@@ -19,7 +19,7 @@ public partial class Login
         UserAuthenticationDTO userDTO = new(args.Username, args.Password);
         try
         {
-            var tokenResponse = await ServiceManager.AuthService.Login(userDTO);
+            var tokenResponse = await AuthService.Login(userDTO);
         }
         catch
         {

@@ -28,10 +28,9 @@ public class ProductCategoryState
 
     public async Task LoadProductCategoriesDropDown()
     {
-        ProductCategoryParam ProductCategoryParameter = new();
-        var pagingResponse = await _serviceManager.ProductCategoryService.GetProductCategories(ProductCategoryParameter);
+        ProductCategoryParam productCategoryParameter = new();
+        var pagingResponse = await _serviceManager.ProductCategoryService.GetProductCategories(productCategoryParameter);
         ProductCategoryListDropdown = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
     }
 
     public void CopyProductCategoryToDropDown()

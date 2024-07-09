@@ -9,8 +9,8 @@ internal class PurchaseConfiguration : IEntityTypeConfiguration<PurchaseModel>
     {
         builder.ToTable("T01Purchases");
 
-        builder.HasKey(c => c.PurchaseID);
-        builder.Property(c => c.PurchaseID).ValueGeneratedOnAdd();
+        builder.HasKey(e => e.PurchaseID);
+        builder.Property(e => e.PurchaseID).ValueGeneratedOnAdd();
 
         builder.Property(e => e.TransactionCode).HasMaxLength(15);
 
@@ -18,5 +18,9 @@ internal class PurchaseConfiguration : IEntityTypeConfiguration<PurchaseModel>
         builder.Property(e => e.DiscountAmount).HasColumnType("decimal(10, 2)");
 
         builder.Property(e => e.Description).HasMaxLength(int.MaxValue);
+
+        builder.HasMany(e=> e.PurchaseDetails)
+               .WithOne(e=> e.Purchase)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

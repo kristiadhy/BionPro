@@ -1,0 +1,66 @@
+﻿<div class="rz-display-flex">
+    <RadzenFormField Text="Product" Variant="Variant.Outlined">
+        <RadzenDropDownDataGrid TValue="ProductDtoForProductQueries"
+                                Data=@ProductState.ProductListDropdown
+                                TextProperty="@nameof(ProductDto.Name)"
+                                ValueProperty="@nameof(ProductDto.ProductID)"
+                                AllowColumnResize="true"
+                                AllowFilteringByAllStringColumns="true"
+                                AllowVirtualization="true"
+                                AllowClear="true"
+                                Placeholder="Select Product"
+                                Disabled="@IsLoading"
+                                Name="DropDownDataGridColumns">
+            <Columns>
+                <RadzenDropDownDataGridColumn Property="@nameof(ProductDto.Name)" Title="Name" Width="150px" />
+                <RadzenDropDownDataGridColumn Property="@nameof(ProductDto.SKU)" Title="SKU" Width="100px" />
+                <RadzenDropDownDataGridColumn Property="@nameof(ProductDto.Price)" Title="Price" Width="100px" FormatString="{0:c}" />
+            </Columns>
+        </RadzenDropDownDataGrid>
+    </RadzenFormField>
+
+    @if (IsLoading)
+    {
+        <RadzenProgressBarCircular Value="100"
+                                   ShowValue="false"
+                                   Mode="ProgressBarMode.Indeterminate"
+                                   Size="ProgressBarCircularSize.ExtraSmall"
+                                   class="ms-2 mt-2" />
+    }
+
+</div>
+
+@code {
+    [Inject]
+    ProductState ProductState { get; set; } = default!;
+
+    private bool IsLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ProductState.ProductListDropdown.Any())
+        {
+            IsLoading = true;
+            await ProductState.LoadProductsDropDown();
+            IsLoading = false;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid?> SelectedValueChanged { get; set; }
+
+    [Parameter]
+    public Guid? SelectedValue { get; set; }
+
+    private async Task OnValueChanged(object e)
+    {
+        SelectedValue = e is not null ? (Guid)Convert.ChangeType(e, typeof(Guid)) : null;
+        await SelectedValueChanged.InvokeAsync(SelectedValue);
+        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(ProductDto.ProductID)));
+    }
+}
