@@ -1,6 +1,6 @@
 ﻿<RadzenDatePicker TValue="DateTime?"
                   Value="@Value"
-                  Change="@OnChange"
+                  Change="@OnValueChanged"
                   DateFormat="dd/MM/yyyy HH:mm"
                   ShowTime="true"
                   ShowSeconds="false"
@@ -9,16 +9,32 @@
 
 <RadzenButton Icon="autorenew"
               ButtonStyle="ButtonStyle.Primary"
-              Click="@OnRefreshClick"
+              Click="@OnDateRefresh"
               Variant="Variant.Text" />
 
 @code {
     [Parameter]
     public DateTime? Value { get; set; }
 
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+
     [Parameter]
     public EventCallback<DateTime?> OnChange { get; set; }
 
     [Parameter]
     public EventCallback OnRefreshClick { get; set; }
+
+    private async Task OnValueChanged(DateTime? e)
+    {
+        Value = e is not null ? (DateTime)Convert.ChangeType(e, typeof(DateTime)) : null;
+        await OnChange.InvokeAsync(Value);
+        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(PurchaseDto.Date)));
+    }
+
+    private async Task OnDateRefresh()
+    {
+        await OnRefreshClick.InvokeAsync();
+        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(PurchaseDto.Date)));
+    }
 }

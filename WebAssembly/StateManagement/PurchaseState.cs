@@ -11,8 +11,6 @@ public class PurchaseState
     public MetaData MetaData { get; set; } = new();
     public PurchaseParam PurchaseParameter { get; set; } = new();
     public PurchaseDto Purchase { get; set; } = new();
-    public PurchaseDetailDto PurchaseDetailForTransaction { get; set; } = new();
-    public List<PurchaseDetailDto> PurchaseDetailListForTransaction { get; set; } = [];
 
     public PurchaseState(IServiceManager serviceManager)
     {

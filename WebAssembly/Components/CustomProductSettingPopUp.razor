@@ -1,0 +1,89 @@
+﻿@inject DialogService DialogService
+
+<RadzenTemplateForm Context="PurchaseDetailFormContext"
+                    Data="@PurchaseDetail"
+                    Submit="@((PurchaseDetailDto args) => ApplyChanges(args))">
+    <FluentValidationValidator />
+
+    <RadzenStack Gap="1rem">
+        <RadzenFormField Text="Quantity" Variant="@FieldVariant">
+            <RadzenNumeric @bind-Value="@PurchaseDetail.Quantity"
+                           TValue="int"
+                           Format="n0"
+                           Name="Quantity"
+                           Placeholder="Quantity"
+                           Step="1"
+                           InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter Quantity" } })"
+                           Style="width: 150px;" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Price" Variant="@FieldVariant">
+            <RadzenNumeric @bind-Value="@PurchaseDetail.Price"
+                           TValue="decimal"
+                           Format="c"
+                           Name="Price"
+                           Placeholder="Price"
+                           InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter Price" } })"
+                           Style="width: 150px;" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Discount" Variant="@FieldVariant">
+            <RadzenNumeric @bind-Value="@PurchaseDetail.DiscountPercentage"
+                           TValue="decimal"
+                           Format="p2"
+                           Name="Discount"
+                           Placeholder="Discount"
+                           Step="0.01"
+                           Min="0"
+                           Max="1"
+                           InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter DiscountPercentage" } })"
+                           Style="width: 150px;" />
+        </RadzenFormField>
+
+        <RadzenFormField Variant="@FieldVariant">
+            <RadzenNumeric Value="@PurchaseDetail.SubTotal"
+                           Disabled="true"
+                           TValue="decimal"
+                           Format="c"
+                           Name="SubTotal"
+                           Placeholder="SubTotal"
+                           InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter SubTotal" } })"
+                           Style="width: 150px;" />
+        </RadzenFormField>
+
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     JustifyContent="JustifyContent.Left"
+                     Gap="1rem"
+                     Class="rz-my-4">
+
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Size="ButtonSize.Medium"
+                          Icon="save"
+                          Text="Apply" />
+
+            <RadzenButton ButtonStyle="ButtonStyle.Light"
+                          Variant="Variant.Flat"
+                          Click="@((args) => DialogService.Close(false))"
+                          Size="ButtonSize.Medium"
+                          Icon="clear"
+                          Text="Cancel" />
+        </RadzenStack>
+
+    </RadzenStack>
+
+    <ValidationSummary class="mt-3" />
+
+</RadzenTemplateForm>
+
+@code {
+    private readonly Variant FieldVariant = Variant.Outlined;
+
+    [Parameter]
+    public PurchaseDetailDto PurchaseDetail { get; set; } = default!;
+
+    private void ApplyChanges(PurchaseDetailDto purchaseDetailDto)
+    {
+        DialogService.Close(true);
+    }
+}

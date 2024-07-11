@@ -10,6 +10,7 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.json" />
     <_ContentIncludedByDefault Remove="Components\CustomDatePicker.razor" />
+    <_ContentIncludedByDefault Remove="Components\CustomProductSettingPopUp.razor" />
     <_ContentIncludedByDefault Remove="Components\ProductDropDown.razor" />
     <_ContentIncludedByDefault Remove="Pages\PurchaseDisplay.razor" />
   </ItemGroup>
@@ -40,6 +41,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Components\ProductDropDown.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\CustomProductSettingPopUp.razor" />
   </ItemGroup>
 
 </Project>

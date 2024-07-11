@@ -19,8 +19,8 @@ internal class PurchaseConfiguration : IEntityTypeConfiguration<PurchaseModel>
 
         builder.Property(e => e.Description).HasMaxLength(int.MaxValue);
 
-        builder.HasMany(e=> e.PurchaseDetails)
-               .WithOne(e=> e.Purchase)
+        builder.HasMany(e => e.PurchaseDetails)
+               .WithOne(e => e.Purchase)
                .OnDelete(DeleteBehavior.Cascade);
     }
 }

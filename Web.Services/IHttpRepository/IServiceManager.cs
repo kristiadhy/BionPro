@@ -1,6 +1,4 @@
-﻿using Web.Services.HttpRepository;
-
-namespace Web.Services.IHttpRepository;
+﻿namespace Web.Services.IHttpRepository;
 
 public interface IServiceManager
 {

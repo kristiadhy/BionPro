@@ -13,5 +13,11 @@ public class PurchaseValidator : AbstractValidator<PurchaseDto>
 
         RuleFor(prop => prop.Date)
             .NotEmpty();
+
+        RuleFor(prop => prop.PurchaseDetails)
+           .NotEmpty().WithMessage("You should have at least 1 product/item in the table");
+
+        //RuleForEach(p => p.PurchaseDetails)
+        //   .SetValidator(new PurchaseDetailValidator());
     }
 }

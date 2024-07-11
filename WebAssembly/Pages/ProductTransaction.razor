@@ -11,13 +11,12 @@
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
         <RadzenCard class="my-2">
-            <RadzenTemplateForm Data="@ProductState.Product" Submit="@(async (ProductDto args) => { await SubmitAsync(args); })">
+            <RadzenTemplateForm Data="@ProductState.Product" Submit="@((ProductDto args) =>SubmitAsync(args))">
                 <FluentValidationValidator @ref="ProductValidator" />
 
                 <RadzenFieldset Text="@FormHeaderText">
                     <RadzenStack Gap="1rem">
-                        <ProductCategoryDropdown SelectedValue="ProductState.Product.CategoryID"
-                                                 SelectedValueChanged="OnProductCategoryChanged" />
+                        <ProductCategoryDropdown @bind-SelectedValue="ProductState.Product.CategoryID" />
 
                         <RadzenTextBox Name="@nameof(ProductState.Product.Name)"
                                        Placeholder="Name"

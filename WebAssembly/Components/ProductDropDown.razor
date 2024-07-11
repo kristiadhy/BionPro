@@ -1,16 +1,21 @@
-﻿<div class="rz-display-flex">
+﻿@inject IJSRuntime JS
+
+<div class="rz-display-flex">
     <RadzenFormField Text="Product" Variant="Variant.Outlined">
-        <RadzenDropDownDataGrid TValue="ProductDtoForProductQueries"
-                                Data=@ProductState.ProductListDropdown
+        <RadzenDropDownDataGrid Data=@ProductState.ProductListDropdown
+                                @bind-Value="SelectedValue"
                                 TextProperty="@nameof(ProductDto.Name)"
                                 ValueProperty="@nameof(ProductDto.ProductID)"
                                 AllowColumnResize="true"
                                 AllowFilteringByAllStringColumns="true"
                                 AllowVirtualization="true"
                                 AllowClear="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
+                                FilterOperator="StringFilterOperator.Contains"
                                 Placeholder="Select Product"
                                 Disabled="@IsLoading"
-                                Name="DropDownDataGridColumns">
+                                Name="DropDownDataGridColumns"
+                                Change="OnValueChanged">
             <Columns>
                 <RadzenDropDownDataGridColumn Property="@nameof(ProductDto.Name)" Title="Name" Width="150px" />
                 <RadzenDropDownDataGridColumn Property="@nameof(ProductDto.SKU)" Title="SKU" Width="100px" />

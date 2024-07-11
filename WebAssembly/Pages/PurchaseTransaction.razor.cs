@@ -1,6 +1,6 @@
 ﻿using Blazored.FluentValidation;
 using Domain.DTO;
-using Domain.Parameters;
+using FluentValidation;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
@@ -23,28 +23,31 @@ public partial class PurchaseTransaction
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
+    DialogService DialogService { get; set; } = default!;
+    [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
+    [Inject]
     ProductState ProductState { get; set; } = default!;
-    PurchaseDetailState PurchaseDetailState { get; set; } = default!;
 
     [Parameter] public int? ParamPurchaseID { get; set; }
-    private FluentValidationValidator PurchaseValidator;
+
+    private FluentValidationValidator? PurchaseDetailValidator { get; set; }
+
     private string PagePathText = string.Empty;
     private string FormHeaderText = string.Empty;
     private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     private bool IsSaving = false;
-    private PurchaseParam? PurchaseParameter = new();
-    private RadzenTextBox? txtForFocus;
-    private int ProductSearchSelection = 1;
+
+    private int ProductSearchSelection = 2;
     private PageModel? PurchasePageModel { get; set; }
-    private Variant FieldVariant = Variant.Outlined;
-    private RadzenDataGrid<PurchaseDetailDto> PurchaseDetailGrid { get; set; } = default!;
+    private readonly Variant FieldVariant = Variant.Outlined;
+    private RadzenDataGrid<PurchaseDetailDto> PurchaseDetailGrid = default!;
     private bool GridIsLoading = false;
+    private PurchaseDetailDto PurchaseDetail = new();
 
     public PurchaseTransaction()
     {
         PurchasePageModel = GlobalState.PageModels.Where(s => s.ID == 5).FirstOrDefault();
-        PurchaseValidator = new();
     }
 
     protected override void OnInitialized()
@@ -52,9 +55,7 @@ public partial class PurchaseTransaction
         //if (PurchaseState.Purchase.Date == default)
         //    PurchaseState.Purchase.Date = DateTimeOffset.Now;
 
-        PurchaseState.PurchaseDetailForTransaction.ProductName = string.Empty;
-        PurchaseState.PurchaseDetailForTransaction.Quantity = 1;
-        PurchaseState.PurchaseDetailForTransaction.DiscountPercentage = 0;
+        SetPurchaseDetailDefaultValue(PurchaseDetail);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -73,8 +74,6 @@ public partial class PurchaseTransaction
             FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Purchase transaction";
             FormStatus = GlobalEnum.FormStatus.New;
         }
-
-        await ProductState.LoadProductsDropDown();
     }
 
     public void EvBackToPrevious()
@@ -82,15 +81,56 @@ public partial class PurchaseTransaction
         NavigationManager.NavigateTo($"{PurchasePageModel?.Path}");
     }
 
-    public async Task SubmitAsync(PurchaseDto product)
+    public async Task SubmitAsync(PurchaseDto purchase)
     {
+        if (!await ConfirmationModalService.SavingConfirmation("Purchase"))
+            return;
 
+        IsSaving = true;
+
+        try
+        {
+            HttpResponseMessage response;
+            if (FormStatus == GlobalEnum.FormStatus.New)
+                response = await ServiceManager.PurchaseService.Create(purchase);
+            else
+                response = await ServiceManager.PurchaseService.Update(purchase);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new purchase added" : "Purchase updated";
+                NotificationService.SaveNotification(notificationMessage);
+            }
+
+            await PurchaseState.LoadPurchases();
+        }
+        finally
+        {
+            IsSaving = false;
+            StateHasChanged();
+        }
     }
 
     private async Task ClearField()
     {
         PurchaseState.Purchase = new();
-        await txtForFocus!.FocusAsync();
+    }
+
+    private async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
+    {
+        GridIsLoading = true;
+        PurchaseDetail.ProductName = ProductState.ProductListDropdown.Where(s => s.ProductID == PurchaseDetail.ProductID).FirstOrDefault()?.Name;
+        PurchaseDetail.Price = ProductState.ProductListDropdown.Where(s => s.ProductID == PurchaseDetail.ProductID).FirstOrDefault()?.Price ?? 0;
+        PurchaseState.Purchase.PurchaseDetails.Add(PurchaseDetail);
+        GridIsLoading = false;
+
+        //This is used to re-validate the DataGrid, ensuring that error messages for non-existent products are not displayed.
+        await PurchaseDetailValidator!.ValidateAsync();
+
+        await PurchaseDetailGrid.Reload();
+
+        PurchaseDetail = new();
+        SetPurchaseDetailDefaultValue(PurchaseDetail);
     }
 
     private void OnSupplierChanged(Guid? value)
@@ -108,18 +148,30 @@ public partial class PurchaseTransaction
         PurchaseState.Purchase.Date = DateTime.Now;
     }
 
-    private void OnProductChanged(Guid? value)
+    private async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
     {
-        PurchaseState.PurchaseDetailForTransaction.ProductID = value;
+        var parameters = new Dictionary<string, object>
+        {
+            { "PurchaseDetail", purchaseDetail }
+        };
+
+        await DialogService.OpenAsync<CustomProductSettingPopUp>($"{purchaseDetail.ProductName}", parameters);
     }
 
-    private void EvEditQty(PurchaseDetailDto purchases)
+    private async Task EvDeleteRow(PurchaseDetailDto purchaseDetail)
     {
+        if (purchaseDetail is null)
+            return;
 
+        PurchaseState.Purchase.PurchaseDetails.Remove(purchaseDetail);
+        await PurchaseDetailGrid.Reload();
     }
 
-    private void EvDeleteRow(PurchaseDetailDto purchases)
+    private void SetPurchaseDetailDefaultValue(PurchaseDetailDto purchaseDetailDto)
     {
-
+        purchaseDetailDto.ProductID = null;
+        purchaseDetailDto.ProductName = string.Empty;
+        purchaseDetailDto.Quantity = 1;
+        purchaseDetailDto.DiscountPercentage = 0;
     }
 }

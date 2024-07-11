@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using Services.Extensions;
-using Toolbelt.Blazor;
 using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;

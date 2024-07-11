@@ -25,11 +25,7 @@ internal sealed class SupplierService : ISupplierService
 
     public async Task<(IEnumerable<SupplierDto> supplierDto, MetaData metaData)> GetByParametersAsync(Guid supplierID, SupplierParam supplierParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information($"Get suppliers");
-
         var suppliers = await _repositoryManager.SupplierRepo.GetByParametersAsync(supplierParam, trackChanges, cancellationToken);
-
-        _logger.Information("Suppliers retrieved");
 
         var suppliersToReturn = _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
 
@@ -38,13 +34,9 @@ internal sealed class SupplierService : ISupplierService
 
     public async Task<SupplierDto> GetBySupplierIDAsync(Guid supplierID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information($"Get supplier with ID : {supplierID}");
-
         var suppliers = await _repositoryManager.SupplierRepo.GetByIDAsync(supplierID, trackChanges, cancellationToken);
         if (suppliers is null)
             throw new SupplierIDNotFoundException(supplierID);
-
-        _logger.Information("Supplier {supplierName} retrieved", suppliers.SupplierName);
 
         var suppliersToReturn = _mapper.Map<SupplierDto>(suppliers);
         return suppliersToReturn;
@@ -56,12 +48,8 @@ internal sealed class SupplierService : ISupplierService
         var validator = new SupplierValidator();
         validator.ValidateInput(supplierModel);
 
-        _logger.Information("Insert new supplier {supplierName}", supplierDto.SupplierName);
-
         _repositoryManager.SupplierRepo.CreateEntity(supplierModel, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Supplier {supplierName} added", supplierDto.SupplierName);
 
         var suppliersToReturn = _mapper.Map<SupplierDto>(supplierModel);
 
@@ -74,12 +62,8 @@ internal sealed class SupplierService : ISupplierService
         var validator = new SupplierValidator();
         validator.ValidateInput(suppliersToUpdate);
 
-        _logger.Information("Update supplier {suppliersName}", supplierDto.SupplierName);
-
         _repositoryManager.SupplierRepo.UpdateEntity(suppliersToUpdate, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Supplier {supplierName} updated", supplierDto.SupplierName);
     }
 
     public async Task DeleteAsync(Guid suppliersID, bool trackChanges, CancellationToken cancellationToken = default)
@@ -88,23 +72,15 @@ internal sealed class SupplierService : ISupplierService
         if (supplierToDelete is null)
             throw new SupplierIDNotFoundException(suppliersID);
 
-        _logger.Information("Delete suppliers : {supplierName}", supplierToDelete.SupplierName);
-
         _repositoryManager.SupplierRepo.DeleteEntity(supplierToDelete, trackChanges);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Supplier {supplierName} deleted", supplierToDelete.SupplierName);
     }
 
     public async Task<(SupplierDto supplierToPatch, SupplierModel supplier)> GetSupplierForPatchAsync(Guid supplierID, bool empTrackChanges, CancellationToken cancellationToken = default)
     {
-        _logger.Information("Get supplier with ID : {supplierID}", supplierID);
-
         var supplier = await _repositoryManager.SupplierRepo.GetByIDAsync(supplierID, empTrackChanges, cancellationToken);
         if (supplier is null)
             throw new SupplierIDNotFoundException(supplierID);
-
-        _logger.Information("Supplier {supplierName} retrieved", supplier.SupplierName);
 
         var supplierToPatch = _mapper.Map<SupplierDto>(supplier);
 
@@ -115,7 +91,5 @@ internal sealed class SupplierService : ISupplierService
     {
         _mapper.Map(supplierToPatch, supplier);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
-
-        _logger.Information("Supplier {supplierName} updated", supplierToPatch.SupplierName);
     }
 }

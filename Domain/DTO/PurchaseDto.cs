@@ -8,6 +8,7 @@ public class PurchaseDto
     public decimal DiscountAmount { get; set; }
     public string? Description { get; set; }
     public Guid? SupplierID { get; set; }
+    public List<PurchaseDetailDto> PurchaseDetails { get; set; } = [];
 }
 
 public class PurchaseDtoForQueries

@@ -67,9 +67,6 @@ public partial class ProductTransaction
 
     public async Task SubmitAsync(ProductDto product)
     {
-        if (!await ProductValidator!.ValidateAsync())
-            return;
-
         if (!await ConfirmationModalService.SavingConfirmation("Product"))
             return;
 
@@ -116,10 +113,5 @@ public partial class ProductTransaction
     {
         ProductState.Product = new();
         await txtNameForFocus!.FocusAsync();
-    }
-
-    private void OnProductCategoryChanged(int? value)
-    {
-        ProductState.Product.CategoryID = value;
     }
 }
