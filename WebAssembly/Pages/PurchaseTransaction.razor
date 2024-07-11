@@ -136,6 +136,7 @@
                                             <RadzenDataGridColumn Property="Quantity"
                                                                   Title="Qty"
                                                                   Width="80px"
+                                                                  TextAlign="TextAlign.Center"
                                                                   FormatString="{0:n0}" />
 
                                             <RadzenDataGridColumn Property="Price"
@@ -150,8 +151,12 @@
 
                                             <RadzenDataGridColumn Property="SubTotal"
                                                                   Title="SubTotal"
-                                                                  Width="100px"
-                                                                  FormatString="{0:c}" />
+                                                                  Width="125px"
+                                                                  FormatString="{0:c}">
+                                                <FooterTemplate>
+                                                    <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", PurchaseState.Purchase.PurchaseDetails.Sum(o => o.SubTotal))</b>
+                                                </FooterTemplate>
+                                            </RadzenDataGridColumn>
 
                                             <RadzenDataGridColumn Context="Action"
                                                                   Title="Action"

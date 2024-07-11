@@ -19,7 +19,7 @@
 <RadzenDataGrid @ref="PurchaseGrid"
                 IsLoading=@isLoading
                 Data="@PurchaseState.PurchaseList"
-                TItem="PurchaseDtoForQueries"
+                TItem="PurchaseDto"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -58,7 +58,11 @@
 
         <RadzenDataGridColumn Property="GrandTotal"
                               Title="GrandTotal"
-                              FormatString="{0:c}" />
+                              FormatString="{0:c}" >
+            <Template Context="data">
+                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", data.PurchaseDetails.Sum(o => o.SubTotal))</b>
+            </Template>
+                              </RadzenDataGridColumn>
 
         <RadzenDataGridColumn Property="Description"
                               Title="Description" />
@@ -85,7 +89,16 @@
                               Shade="Shade.Lighter"
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
-                              Click="@(async args => await EvDeleteRow(dto))"
+                              Click="@(args => EvDeleteRow(dto))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Info"
+                              Icon="visibility"
+                              Variant="Variant.Flat"
+                              Shade="Shade.Lighter"
+                              Size="ButtonSize.Medium"
+                              class="my-1 ms-1"
+                              Click="@(args => EvSeeDetail(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>

@@ -68,6 +68,7 @@ public partial class PurchaseTransaction
             PagePathText = GlobalEnum.FormStatus.Edit.ToString();
             FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing purchase transaction";
             FormStatus = GlobalEnum.FormStatus.Edit;
+            await PurchaseDetailGrid.Reload();
         }
         else
         {

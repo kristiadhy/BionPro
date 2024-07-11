@@ -16,9 +16,11 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
         appDBContext = repositoryContext;
     }
 
-    public async Task<PagedList<PurchaseDtoForQueries>> GetByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<PagedList<PurchaseModel>> GetByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var purchases = await GetPurchaseWithSummary()
+        var purchases = await FindAll(trackChanges)
+            .Include(x => x.Supplier)
+            .Include(x => x.PurchaseDetails)
             .SearchBySupplier(purchaseParam.SrcSupplier)
             .SearchByTransactionDate(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
             .Sort(purchaseParam.OrderBy)
@@ -26,12 +28,14 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
             .Take(purchaseParam.PageSize)
             .ToListAsync(cancellationToken);
 
-        var count = await GetPurchaseWithSummary()
+        var count = await FindAll(trackChanges)
+            .Include(x => x.Supplier)
+            .Include(x => x.PurchaseDetails)
             .SearchBySupplier(purchaseParam.SrcSupplier)
             .SearchByTransactionDate(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
             .CountAsync(cancellationToken);
 
-        return new PagedList<PurchaseDtoForQueries>(purchases, count, purchaseParam.PageNumber, purchaseParam.PageSize);
+        return new PagedList<PurchaseModel>(purchases, count, purchaseParam.PageNumber, purchaseParam.PageSize);
     }
 
     public async Task<PurchaseModel?> GetByIDAsync(int purchaseID, bool trackChanges, CancellationToken cancellationToken = default)
@@ -69,27 +73,18 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
 
     private IQueryable<PurchaseDtoForQueries> GetPurchaseWithSummary()
     {
-        var result = from a in appDBContext.Set<PurchaseModel>().AsNoTracking()
-                     join b in (
-            from b in appDBContext.Set<PurchaseDetailModel>().AsNoTracking()
-            group b by b.PurchaseID into g
-            select new
+        var result = appDBContext.Set<PurchaseModel>().AsNoTracking()
+            .Select(a => new PurchaseDtoForQueries
             {
-                PurchaseID = g.Key,
-                GrandTotal = g.Sum(x => x.SubTotal)
-            }
-        ) on a.PurchaseID equals b.PurchaseID
-                     select new PurchaseDtoForQueries
-                     {
-                         PurchaseID = a.PurchaseID,
-                         TransactionCode = a.TransactionCode,
-                         Date = a.Date,
-                         DiscountPercentage = a.DiscountPercentage,
-                         DiscountAmount = a.DiscountAmount,
-                         Description = a.Description,
-                         SupplierName = a.Supplier!.SupplierName,
-                         GrandTotal = b.GrandTotal
-                     };
+                PurchaseID = a.PurchaseID,
+                TransactionCode = a.TransactionCode,
+                Date = a.Date,
+                DiscountPercentage = a.DiscountPercentage,
+                DiscountAmount = a.DiscountAmount,
+                Description = a.Description,
+                SupplierName = a.Supplier!.SupplierName, // Assuming navigation property is properly configured
+                GrandTotal = a.PurchaseDetails!.Sum(pd => pd.SubTotal) // Directly summing the SubTotal of related PurchaseDetails
+            });
 
         return result;
     }

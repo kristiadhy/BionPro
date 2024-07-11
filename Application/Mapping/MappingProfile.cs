@@ -18,7 +18,11 @@ internal class MappingProfile : Profile
         CreateMap<PurchaseModel, PurchaseDto>()
             .ForMember(dest => dest.PurchaseDetails, opt => opt
             .MapFrom(src => src.PurchaseDetails))
+            .ForMember(dest => dest.SupplierName, opt => opt
+            .MapFrom(src => src.Supplier!.SupplierName))
             .ReverseMap();
+        //CreateMap<PurchaseModel, PurchaseDtoForQueries>()
+        //     .ForMember(dest => dest.GrandTotal, opt => opt.MapFrom(src => CalculateGrandTotal(src)))
         CreateMap<UserRegistrationDTO, UserModel>();
     }
 }

@@ -23,7 +23,7 @@ public partial class PurchaseDisplay
     [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
 
-    private RadzenDataGrid<PurchaseDtoForQueries> PurchaseGrid { get; set; } = default!;
+    private RadzenDataGrid<PurchaseDto> PurchaseGrid { get; set; } = default!;
 
     private bool isLoading = false;
 
@@ -53,12 +53,12 @@ public partial class PurchaseDisplay
         isLoading = false;
     }
 
-    private void EvEditRow(PurchaseDtoForQueries purchases)
+    private void EvEditRow(PurchaseDto purchases)
     {
         NavigationManager.NavigateTo($"{PurchasesPageModel?.Path}/edit/{purchases.PurchaseID}");
     }
 
-    private async Task EvDeleteRow(PurchaseDtoForQueries purchases)
+    private async Task EvDeleteRow(PurchaseDto purchases)
     {
         if (purchases is null)
             return;
@@ -75,6 +75,11 @@ public partial class PurchaseDisplay
 
         NotificationService.DeleteNotification("Purchase data has been deleted");
         await EvReloadData();
+    }
+
+    private async Task EvSeeDetail(PurchaseDto purchases)
+    {
+
     }
 
     private void EvCreateNew()

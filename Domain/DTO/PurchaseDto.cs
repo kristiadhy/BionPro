@@ -8,9 +8,11 @@ public class PurchaseDto
     public decimal DiscountAmount { get; set; }
     public string? Description { get; set; }
     public Guid? SupplierID { get; set; }
+    public string? SupplierName { get; set; }
     public List<PurchaseDetailDto> PurchaseDetails { get; set; } = [];
 }
 
+//It's an option. We use this to display purchase data with summary of the details without loading the details.
 public class PurchaseDtoForQueries
 {
     public int PurchaseID { get; set; }

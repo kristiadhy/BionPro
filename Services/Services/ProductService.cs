@@ -30,9 +30,9 @@ public class ProductService : IProductService
     public async Task<(IEnumerable<ProductDtoForProductQueries> productDto, MetaData metaData)> GetByParametersAsync(Guid productID, ProductParam productParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var products = await _repositoryManager.ProductRepo.GetByParametersAsync(productParam, trackChanges, cancellationToken);
-        var productCategoriesToReturn = _mapper.Map<IEnumerable<ProductDtoForProductQueries>>(products);
+        var productsToReturn = _mapper.Map<IEnumerable<ProductDtoForProductQueries>>(products);
 
-        return (productCategoriesToReturn, products.MetaData);
+        return (productsToReturn, products.MetaData);
     }
 
     public async Task<ProductDto> GetByProductIDAsync(Guid productID, bool trackChanges, CancellationToken cancellationToken = default)
@@ -41,8 +41,8 @@ public class ProductService : IProductService
         if (product is null)
             throw new ProductNotFoundException(productID);
 
-        var productCategoriesToReturn = _mapper.Map<ProductDto>(product);
-        return productCategoriesToReturn;
+        var productToReturn = _mapper.Map<ProductDto>(product);
+        return productToReturn;
     }
 
     public async Task<ProductDto> CreateAsync(ProductDto productDto, bool trackChanges, CancellationToken cancellationToken = default)

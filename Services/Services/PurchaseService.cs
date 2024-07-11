@@ -25,10 +25,11 @@ internal sealed class PurchaseService : IPurchaseService
         _logger = logger;
     }
 
-    public async Task<(IEnumerable<PurchaseDtoForQueries> purchaseDto, MetaData metaData)> GetByParametersAsync(int purchaseID, PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<(IEnumerable<PurchaseDto> purchaseDto, MetaData metaData)> GetByParametersAsync(int purchaseID, PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var purchases = await _repositoryManager.PurchaseRepo.GetByParametersAsync(purchaseParam, trackChanges, cancellationToken);
-        return (purchases, purchases.MetaData);
+        var purchasesToReturn = _mapper.Map<IEnumerable<PurchaseDto>>(purchases);
+        return (purchasesToReturn, purchases.MetaData);
     }
 
     public async Task<PurchaseDto> GetByPurchaseIDAsync(int purchaseID, bool trackChanges, CancellationToken cancellationToken = default)

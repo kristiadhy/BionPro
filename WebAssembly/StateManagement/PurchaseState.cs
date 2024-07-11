@@ -7,7 +7,7 @@ namespace WebAssembly.StateManagement;
 public class PurchaseState
 {
     private readonly IServiceManager _serviceManager;
-    public List<PurchaseDtoForQueries> PurchaseList { get; set; } = [];
+    public List<PurchaseDto> PurchaseList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public PurchaseParam PurchaseParameter { get; set; } = new();
     public PurchaseDto Purchase { get; set; } = new();
