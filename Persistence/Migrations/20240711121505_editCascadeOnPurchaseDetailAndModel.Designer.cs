@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Context;
 
@@ -11,9 +12,11 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240711121505_editCascadeOnPurchaseDetailAndModel")]
+    partial class editCascadeOnPurchaseDetailAndModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -683,9 +686,9 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.PurchaseDetailModel", b =>
                 {
                     b.HasOne("Domain.Entities.ProductModel", "Product")
-                        .WithMany("PurchaseDetails")
+                        .WithMany()
                         .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.PurchaseModel", "Purchase")
@@ -771,8 +774,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductModel", b =>
                 {
-                    b.Navigation("PurchaseDetails");
-
                     b.Navigation("Stocks");
                 });
 

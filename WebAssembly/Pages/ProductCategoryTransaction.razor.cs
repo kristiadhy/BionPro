@@ -6,6 +6,7 @@ using Web.Services.IHttpRepository;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
+using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -34,7 +35,7 @@ public partial class ProductCategoryTransaction
 
     public ProductCategoryTransaction()
     {
-        ProductCategoryPageModel = GlobalState.PageModels.Where(s => s.ID == 4).FirstOrDefault();
+        ProductCategoryPageModel = GlobalConstant.PageModels.Where(s => s.ID == 4).FirstOrDefault();
     }
 
     protected override async Task OnParametersSetAsync()

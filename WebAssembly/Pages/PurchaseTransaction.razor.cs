@@ -6,6 +6,7 @@ using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
+using WebAssembly.Constants;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
@@ -47,7 +48,7 @@ public partial class PurchaseTransaction
 
     public PurchaseTransaction()
     {
-        PurchasePageModel = GlobalState.PageModels.Where(s => s.ID == 5).FirstOrDefault();
+        PurchasePageModel = GlobalConstant.PageModels.Where(s => s.ID == 5).FirstOrDefault();
     }
 
     protected override void OnInitialized()
@@ -119,9 +120,14 @@ public partial class PurchaseTransaction
     private async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
     {
         GridIsLoading = true;
-        PurchaseDetail.ProductName = ProductState.ProductListDropdown.Where(s => s.ProductID == PurchaseDetail.ProductID).FirstOrDefault()?.Name;
-        PurchaseDetail.Price = ProductState.ProductListDropdown.Where(s => s.ProductID == PurchaseDetail.ProductID).FirstOrDefault()?.Price ?? 0;
-        PurchaseState.Purchase.PurchaseDetails.Add(PurchaseDetail);
+        var product = ProductState.ProductListDropdown.Where(s => s.ProductID == purchaseDetail.ProductID).FirstOrDefault();
+        if (product != null)
+        {
+            purchaseDetail.ProductID = product.ProductID;
+            purchaseDetail.ProductName = product.Name;
+            purchaseDetail.Price = product.Price;
+            PurchaseState.Purchase.PurchaseDetails.Add(purchaseDetail);
+        }
         GridIsLoading = false;
 
         //This is used to re-validate the DataGrid, ensuring that error messages for non-existent products are not displayed.

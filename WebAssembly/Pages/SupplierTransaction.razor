@@ -2,7 +2,7 @@
 @page "/suppliers/edit"
 @page "/suppliers/edit/{ParamSupplierID:guid}"
 
-<PageTitle>@($"{GlobalState.AppName} | {SupplierPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{GlobalConstant.AppName} | {SupplierPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />

@@ -3,7 +3,7 @@
 @page "/purchases/edit/{ParamPurchaseID:int}"
 @using WebAssembly.Validators
 
-<PageTitle>@($"{GlobalState.AppName} | {PurchasePageModel?.Title}")</PageTitle>
+<PageTitle>@($"{GlobalConstant.AppName} | {PurchasePageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />

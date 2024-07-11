@@ -9,6 +9,7 @@ using WebAssembly.Components;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
+using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -38,7 +39,7 @@ public partial class ProductTransaction
 
     public ProductTransaction()
     {
-        ProductPageModel = GlobalState.PageModels.Where(s => s.ID == 3).FirstOrDefault();
+        ProductPageModel = GlobalConstant.PageModels.Where(s => s.ID == 3).FirstOrDefault();
         ProductValidator = new();
     }
 

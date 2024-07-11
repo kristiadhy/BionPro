@@ -4,6 +4,6 @@
 </RadzenMenu>
 
 @code {
-    private PageModel? ProductsPageModel { get; set; } = GlobalState.PageModels.Where(s => s.ID == 3).FirstOrDefault();
-    private PageModel? ProductsCategoriesPageModel { get; set; } = GlobalState.PageModels.Where(s => s.ID == 4).FirstOrDefault();
+    private PageModel? ProductsPageModel { get; set; } = GlobalConstant.PageModels.Where(s => s.ID == 3).FirstOrDefault();
+    private PageModel? ProductsCategoriesPageModel { get; set; } = GlobalConstant.PageModels.Where(s => s.ID == 4).FirstOrDefault();
 }

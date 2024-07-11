@@ -9,6 +9,6 @@ public class PurchaseDetailModel
 
     public int? PurchaseID { get; set; }
     public PurchaseModel? Purchase { get; set; }
-    public Guid ProductID { get; set; }
+    public Guid? ProductID { get; set; }
     public ProductModel? Product { get; set; }
 }

@@ -43,6 +43,15 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
             return null;
     }
 
+    public async Task<bool> CheckTransactionCodeExistAsync(string transactionCode, bool trackChanges, CancellationToken cancellationToken = default)
+    {
+        var purchase = await FindByCondition(x => x.TransactionCode == transactionCode, trackChanges).FirstOrDefaultAsync(cancellationToken);
+        if (purchase is not null)
+            return true;
+        else
+            return false;
+    }
+
     public void CreateEntity(PurchaseModel entity, bool trackChanges)
     {
         Create(entity);

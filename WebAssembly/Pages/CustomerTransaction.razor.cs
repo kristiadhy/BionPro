@@ -3,6 +3,7 @@ using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Constants;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
@@ -34,7 +35,7 @@ public partial class CustomerTransaction
 
     public CustomerTransaction()
     {
-        CustomerPageModel = GlobalState.PageModels.Where(s => s.ID == 1).FirstOrDefault();
+        CustomerPageModel = GlobalConstant.PageModels.Where(s => s.ID == 1).FirstOrDefault();
     }
 
     protected override async Task OnParametersSetAsync()

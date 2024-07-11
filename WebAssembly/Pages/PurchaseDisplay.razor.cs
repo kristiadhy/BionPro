@@ -6,6 +6,7 @@ using Web.Services.IHttpRepository;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
+using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -31,7 +32,7 @@ public partial class PurchaseDisplay
 
     public PurchaseDisplay()
     {
-        PurchasesPageModel = GlobalState.PageModels.Where(s => s.ID == 5).FirstOrDefault();
+        PurchasesPageModel = GlobalConstant.PageModels.Where(s => s.ID == 5).FirstOrDefault();
         BreadCrumbs =
         [
             new PageModel { Path = PurchasesPageModel?.Path, Title= PurchasesPageModel?.Title },
@@ -63,7 +64,7 @@ public partial class PurchaseDisplay
             return;
 
         string transactionCode = purchases.TransactionCode ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Purchase", transactionCode);
+        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Purchase", $"Code {transactionCode}");
         if (!confirmationStatus)
             return;
 

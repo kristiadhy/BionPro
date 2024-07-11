@@ -6,6 +6,7 @@ using Web.Services.IHttpRepository;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
+using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -31,7 +32,7 @@ public partial class ProductDisplay
 
     public ProductDisplay()
     {
-        ProductsPageModel = GlobalState.PageModels.Where(s => s.ID == 3).FirstOrDefault();
+        ProductsPageModel = GlobalConstant.PageModels.Where(s => s.ID == 3).FirstOrDefault();
         BreadCrumbs =
         [
             new PageModel { Path = ProductsPageModel?.Path, Title= ProductsPageModel?.Title },

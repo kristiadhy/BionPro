@@ -5,6 +5,7 @@ using Web.Services.IHttpRepository;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
+using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -33,7 +34,7 @@ public partial class SupplierTransaction
 
     public SupplierTransaction()
     {
-        SupplierPageModel = GlobalState.PageModels.Where(s => s.ID == 2).FirstOrDefault();
+        SupplierPageModel = GlobalConstant.PageModels.Where(s => s.ID == 2).FirstOrDefault();
     }
 
     protected override async Task OnParametersSetAsync()

@@ -7,7 +7,7 @@ public class PurchaseValidator : AbstractValidator<PurchaseModel>
     public PurchaseValidator()
     {
         RuleFor(prop => prop.TransactionCode)
-         .NotEmpty()
+         //.NotEmpty()
          .MaximumLength(15);
 
         RuleFor(prop => prop.Date)

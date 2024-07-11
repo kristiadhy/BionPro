@@ -1,4 +1,6 @@
-﻿using Application.Exceptions;
+﻿using Application.Constants;
+using Application.Exceptions;
+using Application.Factories;
 using Application.IRepositories;
 using Application.Validators;
 using AutoMapper;
@@ -7,6 +9,7 @@ using Domain.Entities;
 using Domain.Parameters;
 using Serilog;
 using Services.Contracts.IServices;
+using System.Transactions;
 
 namespace Services.Services;
 internal sealed class PurchaseService : IPurchaseService
@@ -41,6 +44,9 @@ internal sealed class PurchaseService : IPurchaseService
 
     public async Task<PurchaseDto> CreateAsync(PurchaseDto dto, bool trackChanges, CancellationToken cancellationToken = default)
     {
+        //Generate unique transaction code for purchase before saving to database
+        dto.TransactionCode = await GenerateUniqueTransactionCode(trackChanges, cancellationToken);
+
         var purchaseModel = _mapper.Map<PurchaseModel>(dto);
         var validator = new PurchaseValidator();
         validator.ValidateInput(purchaseModel);
@@ -85,5 +91,20 @@ internal sealed class PurchaseService : IPurchaseService
     {
         _mapper.Map(purchaseDto, purchaseModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<string> GenerateUniqueTransactionCode(bool trackChanges, CancellationToken cancellationToken)
+    {
+        var prefix = GlobalConstant.TransactionCodes.Where(s => s.ID == 1).FirstOrDefault()?.Prefix ?? string.Empty;
+        var transactionCode = TransactionCodeFactory.GenerateTransactionCode(prefix);
+        var isExistTransactionCode = await _repositoryManager.PurchaseRepo.CheckTransactionCodeExistAsync(transactionCode, trackChanges, cancellationToken);
+
+        if (isExistTransactionCode)
+        {
+            // If transaction code already exists, recursively call this method until a unique code is generated.
+            return await GenerateUniqueTransactionCode(trackChanges, cancellationToken);
+        }
+
+        return transactionCode;
     }
 }

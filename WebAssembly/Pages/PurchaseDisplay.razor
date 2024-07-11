@@ -1,6 +1,6 @@
 ﻿@page "/purchases"
 
-<PageTitle>@($"{GlobalState.AppName} | {PurchasesPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{GlobalConstant.AppName} | {PurchasesPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <RadzenText TextStyle="TextStyle.H5">@PurchasesPageModel?.Title</RadzenText>
@@ -50,9 +50,10 @@
 
         <RadzenDataGridColumn Property="Date"
                               Title="Date"
+                              FormatString="{0:g}"
                               Frozen="true" />
 
-        <RadzenDataGridColumn Property="Supplier"
+        <RadzenDataGridColumn Property="SupplierName"
                               Title="Supplier" />
 
         <RadzenDataGridColumn Property="GrandTotal"
