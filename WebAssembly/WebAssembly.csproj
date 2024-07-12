@@ -12,6 +12,7 @@
     <_ContentIncludedByDefault Remove="Components\CustomDatePicker.razor" />
     <_ContentIncludedByDefault Remove="Components\CustomProductSettingPopUp.razor" />
     <_ContentIncludedByDefault Remove="Components\ProductDropDown.razor" />
+    <_ContentIncludedByDefault Remove="Components\TransactionPageHeader.razor" />
     <_ContentIncludedByDefault Remove="Pages\PurchaseDisplay.razor" />
   </ItemGroup>
 
@@ -45,6 +46,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Components\CustomProductSettingPopUp.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\TransactionPageHeader.razor" />
   </ItemGroup>
 
 </Project>

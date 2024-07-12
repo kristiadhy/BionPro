@@ -25,11 +25,10 @@ internal sealed class PurchaseService : IPurchaseService
         _logger = logger;
     }
 
-    public async Task<(IEnumerable<PurchaseDto> purchaseDto, MetaData metaData)> GetByParametersAsync(int purchaseID, PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<(IEnumerable<PurchaseDtoForSummary> purchaseDto, MetaData metaData)> GetSummaryByParametersAsync(int purchaseID, PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var purchases = await _repositoryManager.PurchaseRepo.GetByParametersAsync(purchaseParam, trackChanges, cancellationToken);
-        var purchasesToReturn = _mapper.Map<IEnumerable<PurchaseDto>>(purchases);
-        return (purchasesToReturn, purchases.MetaData);
+        var purchases = await _repositoryManager.PurchaseRepo.GetSummaryByParametersAsync(purchaseParam, trackChanges, cancellationToken);
+        return (purchases, purchases.MetaData);
     }
 
     public async Task<PurchaseDto> GetByPurchaseIDAsync(int purchaseID, bool trackChanges, CancellationToken cancellationToken = default)
@@ -45,6 +44,10 @@ internal sealed class PurchaseService : IPurchaseService
 
     public async Task<PurchaseDto> CreateAsync(PurchaseDto dto, bool trackChanges, CancellationToken cancellationToken = default)
     {
+        //Just in case user just edit the data and then save a new data, the PurchaseID will already exist. Hence, we need to reset it.
+        if (dto.PurchaseID != 0)
+            dto.PurchaseID = 0;
+
         //Generate unique transaction code for purchase before saving to database
         dto.TransactionCode = await GenerateUniqueTransactionCode(trackChanges, cancellationToken);
 

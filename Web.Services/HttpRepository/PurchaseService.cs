@@ -19,7 +19,7 @@ internal class PurchaseService : IPurchaseService
         _options = options;
     }
 
-    public async Task<PagingResponse<PurchaseDto>> GetPurchases(PurchaseParam purchaseParam)
+    public async Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -33,9 +33,9 @@ internal class PurchaseService : IPurchaseService
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseForGetMethod(response);
 
-        var pagingResponse = new PagingResponse<PurchaseDto>()
+        var pagingResponse = new PagingResponse<PurchaseDtoForSummary>()
         {
-            Items = JsonConvert.DeserializeObject<List<PurchaseDto>>(content, _options)!,
+            Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content, _options)!,
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
         };
 

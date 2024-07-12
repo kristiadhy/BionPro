@@ -10,4 +10,6 @@ public class SupplierModel : BaseEntity
     public string? CPPhone { get; set; }
     public string? Note { get; set; }
     public bool? Active { get; set; }
+
+    public ICollection<PurchaseModel>? Purchases { get; set; }
 }

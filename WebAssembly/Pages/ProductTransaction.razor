@@ -10,38 +10,38 @@
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
+        <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
             <RadzenTemplateForm Data="@ProductState.Product" Submit="@((ProductDto args) =>SubmitAsync(args))">
                 <FluentValidationValidator @ref="ProductValidator" />
 
-                <RadzenFieldset Text="@FormHeaderText">
-                    <RadzenStack Gap="1rem">
-                        <ProductCategoryDropdown @bind-SelectedValue="ProductState.Product.CategoryID" />
+                <RadzenStack Gap="1rem">
+                    <ProductCategoryDropdown @bind-SelectedValue="ProductState.Product.CategoryID" />
 
-                        <RadzenTextBox Name="@nameof(ProductState.Product.Name)"
-                                       Placeholder="Name"
-                                       @bind-Value="ProductState.Product.Name"
-                                       @ref="@txtNameForFocus" />
+                    <RadzenTextBox Name="@nameof(ProductState.Product.Name)"
+                                   Placeholder="Name"
+                                   @bind-Value="ProductState.Product.Name"
+                                   @ref="@txtNameForFocus" />
 
-                        <RadzenTextBox Name="@nameof(ProductState.Product.SKU)"
-                                       Placeholder="SKU"
-                                       @bind-Value="ProductState.Product.SKU" />
+                    <RadzenTextBox Name="@nameof(ProductState.Product.SKU)"
+                                   Placeholder="SKU"
+                                   @bind-Value="ProductState.Product.SKU" />
 
-                        <RadzenNumeric TValue="decimal"
-                                       Format="" @bind-Value="ProductState.Product.Price"
-                                       Placeholder="Price"
-                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                    <RadzenNumeric TValue="decimal"
+                                   Format="" @bind-Value="ProductState.Product.Price"
+                                   Placeholder="Price"
+                                   InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 
-                        <ProductImageUpload @ref="ProductImageUploadRef"
-                                            ImageFromServer=@ProductState.Product.ImageUrl />
+                    <ProductImageUpload @ref="ProductImageUploadRef"
+                                        ImageFromServer=@ProductState.Product.ImageUrl />
 
-                        <RadzenTextArea Name="@nameof(ProductState.Product.Description)"
-                                        Placeholder="Description"
-                                        class="w-100"
-                                        aria-label="TextArea"
-                                        @bind-Value="ProductState.Product.Description" />
-                    </RadzenStack>
-                </RadzenFieldset>
+                    <RadzenTextArea Name="@nameof(ProductState.Product.Description)"
+                                    Placeholder="Description"
+                                    class="w-100"
+                                    aria-label="TextArea"
+                                    @bind-Value="ProductState.Product.Description" />
+                </RadzenStack>
+
                 <ValidationSummary />
 
                 <SaveTransactionButton OnButtonClear="ClearField"

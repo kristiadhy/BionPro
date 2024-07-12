@@ -7,20 +7,20 @@ namespace WebAssembly.StateManagement;
 public class PurchaseState
 {
     private readonly IServiceManager _serviceManager;
-    public List<PurchaseDto> PurchaseList { get; set; } = [];
+    public List<PurchaseDtoForSummary> PurchaseListForSummary { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public PurchaseParam PurchaseParameter { get; set; } = new();
-    public PurchaseDto Purchase { get; set; } = new();
+    public PurchaseDto PurchaseForTransaction { get; set; } = new();
 
     public PurchaseState(IServiceManager serviceManager)
     {
         _serviceManager = serviceManager;
     }
 
-    public async Task LoadPurchases()
+    public async Task LoadPurchasesForSummary()
     {
-        var pagingResponse = await _serviceManager.PurchaseService.GetPurchases(PurchaseParameter);
-        PurchaseList = pagingResponse.Items;
+        var pagingResponse = await _serviceManager.PurchaseService.GetPurchasesForSummary(PurchaseParameter);
+        PurchaseListForSummary = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
     }
 }

@@ -13,7 +13,7 @@ public class PurchaseDto
 }
 
 //It's an option. We use this to display purchase data with summary of the details without loading the details.
-public class PurchaseDtoForQueries
+public class PurchaseDtoForSummary
 {
     public int PurchaseID { get; set; }
     public string? TransactionCode { get; set; }

@@ -11,194 +11,195 @@
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="8" SizeMD="12" class="rz-pb-5">
+        <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
-            <RadzenTemplateForm Context="PurchaseFormContext" Data="@PurchaseState.Purchase" Submit="@((PurchaseDto args) => SubmitAsync(args))">
+            <RadzenTemplateForm Context="PurchaseFormContext" Data="@PurchaseState.PurchaseForTransaction" Submit="@((PurchaseDto args) => SubmitAsync(args))">
                 <FluentValidationValidator />
 
-                <RadzenFieldset Text="@FormHeaderText">
-                    <RadzenStack Gap="1rem">
-                        <RadzenColumn SizeLG="12" SizeMD="12">
-                            <SupplierDropdown SelectedValue="PurchaseState.Purchase.SupplierID"
-                                              SelectedValueChanged="OnSupplierChanged" />
-                        </RadzenColumn>
-                        <RadzenColumn SizeLG="12" SizeMD="12">
-                            <CustomDatePicker Value="@(PurchaseState.Purchase.Date.DateTime)"
-                                              OnChange="@(args => OnDateChanged(args))"
-                                              OnRefreshClick="@(args => RefreshDate())" />
-                        </RadzenColumn>
+                <RadzenStack Gap="1rem">
+                    <RadzenColumn SizeLG="12" SizeMD="12">
+                        <SupplierDropdown @bind-SelectedValue="PurchaseState.PurchaseForTransaction.SupplierID" />
+                    </RadzenColumn>
+                    <RadzenColumn SizeLG="12" SizeMD="12">
+                        <CustomDatePicker Value="@(PurchaseState.PurchaseForTransaction.Date.DateTime)"
+                                          OnChange="@(args => OnDateChanged(args))"
+                                          OnRefreshClick="@(args => RefreshDate())" />
+                    </RadzenColumn>
 
-                        <RadzenPanel AllowCollapse="true">
-                            <HeaderTemplate>
-                                <RadzenText TextStyle="TextStyle.Subtitle1" Class="rz-display-flex rz-align-items-center mb-3">
-                                    <RadzenIcon Icon="list" /> Purchase Details
-                                </RadzenText>
-                            </HeaderTemplate>
+                    <RadzenPanel AllowCollapse="true">
+                        <HeaderTemplate>
+                            <RadzenText TextStyle="TextStyle.Subtitle1" Class="rz-display-flex rz-align-items-center mb-3">
+                                <RadzenIcon Icon="list" /> Purchase Details
+                            </RadzenText>
+                        </HeaderTemplate>
 
-                            <ChildContent>
-                                <RadzenStack Gap="1rem">
-                                    <RadzenColumn Size="12">
-                                        <RadzenSelectBar @bind-Value=@ProductSearchSelection
-                                                         TValue="int"
-                                                         Size="ButtonSize.ExtraSmall">
-                                            <Items>
-                                                <RadzenSelectBarItem Text="Enter Product Code" Value="1" />
-                                                <RadzenSelectBarItem Text="Select From Product List" Value="2" />
-                                            </Items>
-                                        </RadzenSelectBar>
-                                    </RadzenColumn>
+                        <ChildContent>
+                            <RadzenStack Gap="1rem">
+                                <RadzenColumn Size="12">
+                                    <RadzenSelectBar @bind-Value=@ProductSearchSelection
+                                                     TValue="int"
+                                                     Size="ButtonSize.ExtraSmall">
+                                        <Items>
+                                            <RadzenSelectBarItem Text="Enter Product Code" Value="1" />
+                                            <RadzenSelectBarItem Text="Select From Product List" Value="2" />
+                                        </Items>
+                                    </RadzenSelectBar>
+                                </RadzenColumn>
 
-                                    <RadzenTemplateForm Context="PurchaseDetailFormContext" Data="@PurchaseDetail" Submit="@((PurchaseDetailDto args) => AddToPurchaseDetailGrid(args))">
-                                        <FluentValidationValidator @ref="PurchaseDetailValidator" />
+                                <RadzenTemplateForm Context="PurchaseDetailFormContext" Data="@PurchaseDetail" Submit="@((PurchaseDetailDto args) => AddToPurchaseDetailGrid(args))">
+                                    <FluentValidationValidator @ref="PurchaseDetailValidator" />
 
-                                        <RadzenStack Orientation="Orientation.Horizontal"
-                                                     Wrap="FlexWrap.Wrap"
-                                                     Gap="1rem"
-                                                     AlignItems="AlignItems.Center">
+                                    <RadzenStack Orientation="Orientation.Horizontal"
+                                                 Wrap="FlexWrap.Wrap"
+                                                 Gap="1rem"
+                                                 AlignItems="AlignItems.Center">
 
-                                            @if (ProductSearchSelection == 2)
-                                            {
-                                                <ProductDropDown @bind-SelectedValue="PurchaseDetail.ProductID" />
-                                            }
-                                            else if (ProductSearchSelection == 1)
-                                            {
-                                                <RadzenFormField Text="Enter Product Code" Variant="@FieldVariant">
-                                                    <RadzenTextBox Name="ProductCode" />
-                                                </RadzenFormField>
-                                            }
-
-                                            <RadzenFormField Text="Quantity" Variant="@FieldVariant">
-                                                <RadzenNumeric @bind-Value="@PurchaseDetail.Quantity"
-                                                               TValue="int"
-                                                               Format="n0"
-                                                               Name="Quantity"
-                                                               Placeholder="Quantity"
-                                                               Step="1"
-                                                               InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter value" } })"
-                                                               Style="width: 150px;" />
+                                        @if (ProductSearchSelection == 2)
+                                        {
+                                            <ProductDropDown @bind-SelectedValue="PurchaseDetail.ProductID" />
+                                        }
+                                        else if (ProductSearchSelection == 1)
+                                        {
+                                            <RadzenFormField Text="Enter Product Code" Variant="@FieldVariant">
+                                                <RadzenTextBox Name="ProductCode" />
                                             </RadzenFormField>
+                                        }
 
-                                            <RadzenFormField Text="Discount" Variant="@FieldVariant">
-                                                <RadzenNumeric @bind-Value="@PurchaseDetail.DiscountPercentage"
-                                                               TValue="decimal"
-                                                               Format="p2"
-                                                               Name="Discount"
-                                                               Placeholder="Discount"
-                                                               Step="0.01"
-                                                               Min="0"
-                                                               Max="1"
-                                                               InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter value" } })"
-                                                               Style="width: 150px;" />
-                                            </RadzenFormField>
+                                        <RadzenFormField Text="Quantity" Variant="@FieldVariant">
+                                            <RadzenNumeric @bind-Value="@PurchaseDetail.Quantity"
+                                                           TValue="int"
+                                                           Format="n0"
+                                                           Name="Quantity"
+                                                           Placeholder="Quantity"
+                                                           Step="1"
+                                                           InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter value" } })"
+                                                           Style="width: 150px;" />
+                                        </RadzenFormField>
 
-                                            <RadzenButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined"
-                                                          Icon="add_circle_outline"
-                                                          ButtonStyle="ButtonStyle.Primary"
-                                                          Size="ButtonSize.Medium" />
+                                        <RadzenFormField Text="Discount" Variant="@FieldVariant">
+                                            <RadzenNumeric @bind-Value="@PurchaseDetail.DiscountPercentage"
+                                                           TValue="decimal"
+                                                           Format="p2"
+                                                           Name="Discount"
+                                                           Placeholder="Discount"
+                                                           Step="0.01"
+                                                           Min="0"
+                                                           Max="1"
+                                                           InputAttributes="@(new Dictionary<string, object> { { "aria-label", "enter value" } })"
+                                                           Style="width: 150px;" />
+                                        </RadzenFormField>
 
-                                        </RadzenStack>
+                                        <RadzenButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined"
+                                                      Icon="add_circle_outline"
+                                                      ButtonStyle="ButtonStyle.Primary"
+                                                      Size="ButtonSize.Medium" />
 
-                                        <ValidationSummary class="mt-3" />
+                                    </RadzenStack>
 
-                                    </RadzenTemplateForm>
+                                    <ValidationSummary class="mt-3" />
 
-                                    <RadzenDataGrid @ref="PurchaseDetailGrid"
-                                                    IsLoading=@GridIsLoading
-                                                    Data="@PurchaseState.Purchase.PurchaseDetails"
-                                                    TItem="PurchaseDetailDto"
-                                                    SelectionMode="DataGridSelectionMode.Single"
-                                                    AllowSorting="true"
-                                                    AllowFiltering="false"
-                                                    AllowColumnResize="true"
-                                                    AllowColumnReorder="false"
-                                                    GridLines="DataGridGridLines.Both"
-                                                    class="my-4">
-                                        <Columns>
-                                            <RadzenDataGridColumn Width="50px"
-                                                                  Title="#" Filterable="false"
-                                                                  Sortable="false"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="data">
-                                                    @(PurchaseState.Purchase.PurchaseDetails.IndexOf(data) + 1)
-                                                </Template>
-                                            </RadzenDataGridColumn>
+                                </RadzenTemplateForm>
 
-                                            <RadzenDataGridColumn Property="ProductID"
-                                                                  Visible=false
-                                                                  Filterable="false"
-                                                                  Title="ID"
-                                                                  TextAlign="TextAlign.Center">
-                                            </RadzenDataGridColumn>
+                                <RadzenDataGrid @ref="PurchaseDetailGrid"
+                                                IsLoading=@GridIsLoading
+                                                Data="@PurchaseState.PurchaseForTransaction.PurchaseDetails"
+                                                TItem="PurchaseDetailDto"
+                                                SelectionMode="DataGridSelectionMode.Single"
+                                                AllowSorting="true"
+                                                AllowFiltering="false"
+                                                AllowColumnResize="true"
+                                                AllowColumnReorder="false"
+                                                GridLines="DataGridGridLines.Both"
+                                                class="my-4">
+                                    <Columns>
+                                        <RadzenDataGridColumn Width="50px"
+                                                              Title="#" Filterable="false"
+                                                              Sortable="false"
+                                                              TextAlign="TextAlign.Center">
+                                            <Template Context="data">
+                                                @(PurchaseState.PurchaseForTransaction.PurchaseDetails.IndexOf(data) + 1)
+                                            </Template>
+                                        </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn Property="ProductName"
-                                                                  Title="Product Name"
-                                                                  Frozen="true" />
+                                        <RadzenDataGridColumn Property="ProductID"
+                                                              Visible=false
+                                                              Filterable="false"
+                                                              Title="ID"
+                                                              TextAlign="TextAlign.Center">
+                                        </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn Property="Quantity"
-                                                                  Title="Qty"
-                                                                  Width="80px"
-                                                                  TextAlign="TextAlign.Center"
-                                                                  FormatString="{0:n0}" />
+                                        <RadzenDataGridColumn Property="ProductName"
+                                                              Title="Product Name"
+                                                              Frozen="true" />
 
-                                            <RadzenDataGridColumn Property="Price"
-                                                                  Title="Price"
-                                                                  Width="100px"
-                                                                  FormatString="{0:c}" />
+                                        <RadzenDataGridColumn Property="Quantity"
+                                                              Title="Qty"
+                                                              Width="80px"
+                                                              TextAlign="TextAlign.Center"
+                                                              FormatString="{0:n0}" />
 
-                                            <RadzenDataGridColumn Property="DiscountPercentage"
-                                                                  Title="Discount"
-                                                                  Width="100px"
-                                                                  FormatString="{0:p2}" />
+                                        <RadzenDataGridColumn Property="Price"
+                                                              Title="Price"
+                                                              Width="100px"
+                                                              TextAlign="TextAlign.Right"
+                                                              FormatString="{0:c}" />
 
-                                            <RadzenDataGridColumn Property="SubTotal"
-                                                                  Title="SubTotal"
-                                                                  Width="125px"
-                                                                  FormatString="{0:c}">
-                                                <FooterTemplate>
-                                                    <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", PurchaseState.Purchase.PurchaseDetails.Sum(o => o.SubTotal))</b>
-                                                </FooterTemplate>
-                                            </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn Property="DiscountPercentage"
+                                                              Title="Discount"
+                                                              Width="100px"
+                                                              TextAlign="TextAlign.Right"
+                                                              FormatString="{0:p2}" />
 
-                                            <RadzenDataGridColumn Context="Action"
-                                                                  Title="Action"
-                                                                  Width="100px"
-                                                                  Filterable="false"
-                                                                  Sortable="false"
-                                                                  TextAlign="TextAlign.Left">
+                                        <RadzenDataGridColumn Property="SubTotal"
+                                                              Title="SubTotal"
+                                                              Width="125px"
+                                                              TextAlign="TextAlign.Right"
+                                                              FormatString="{0:c}">
+                                            <FooterTemplate>
+                                                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", PurchaseState.PurchaseForTransaction.PurchaseDetails.Sum(o => o.SubTotal))</b>
+                                            </FooterTemplate>
+                                        </RadzenDataGridColumn>
 
-                                                <Template Context="dto">
-                                                    <RadzenButton Icon="edit"
-                                                                  ButtonStyle="ButtonStyle.Light"
-                                                                  Variant="Variant.Flat"
-                                                                  Size="ButtonSize.Medium"
-                                                                  Click="@(args => EvEditDetails(dto))"
-                                                                  @onclick:stopPropagation="true">
-                                                    </RadzenButton>
+                                        <RadzenDataGridColumn Context="Action"
+                                                              Title="Action"
+                                                              Width="100px"
+                                                              Filterable="false"
+                                                              Sortable="false"
+                                                              TextAlign="TextAlign.Left">
 
-                                                    <RadzenButton ButtonStyle="ButtonStyle.Danger"
-                                                                  Icon="delete"
-                                                                  Variant="Variant.Flat"
-                                                                  Shade="Shade.Lighter"
-                                                                  Size="ButtonSize.Medium"
-                                                                  class="my-1 ms-1"
-                                                                  Click="@(args => EvDeleteRow(dto))"
-                                                                  @onclick:stopPropagation="true">
-                                                    </RadzenButton>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-                                        </Columns>
-                                    </RadzenDataGrid>
-                                </RadzenStack>
-                            </ChildContent>
-                        </RadzenPanel>
+                                            <Template Context="dto">
+                                                <RadzenButton Icon="edit"
+                                                              ButtonStyle="ButtonStyle.Light"
+                                                              Variant="Variant.Flat"
+                                                              Size="ButtonSize.Medium"
+                                                              Click="@(args => EvEditDetails(dto))"
+                                                              @onclick:stopPropagation="true">
+                                                </RadzenButton>
 
-                        <RadzenTextArea Name="@nameof(PurchaseState.Purchase.Description)"
-                                        Placeholder="Description"
-                                        class="w-100"
-                                        aria-label="TextArea"
-                                        @bind-Value="PurchaseState.Purchase.Description" />
+                                                <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                                              Icon="delete"
+                                                              Variant="Variant.Flat"
+                                                              Shade="Shade.Lighter"
+                                                              Size="ButtonSize.Medium"
+                                                              class="my-1 ms-1"
+                                                              Click="@(args => EvDeleteRow(dto))"
+                                                              @onclick:stopPropagation="true">
+                                                </RadzenButton>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </RadzenStack>
+                        </ChildContent>
+                    </RadzenPanel>
 
-                    </RadzenStack>
-                </RadzenFieldset>
+                    <RadzenTextArea Name="@nameof(PurchaseState.PurchaseForTransaction.Description)"
+                                    Placeholder="Description"
+                                    class="w-100"
+                                    aria-label="TextArea"
+                                    @bind-Value="PurchaseState.PurchaseForTransaction.Description" />
+
+                </RadzenStack>
 
                 <ValidationSummary />
 

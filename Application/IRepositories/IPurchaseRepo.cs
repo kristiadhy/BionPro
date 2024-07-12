@@ -5,7 +5,8 @@ using Domain.Parameters;
 namespace Application.IRepositories;
 public interface IPurchaseRepo : IRepositoryBase<PurchaseModel>
 {
-    Task<PagedList<PurchaseModel>> GetByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default);
+    Task<PagedList<PurchaseDtoForSummary>> GetSummaryByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default);
+    //Task<PagedList<PurchaseModel>> GetByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default);
     Task<PurchaseModel?> GetByIDAsync(int purchaseID, bool trackChanges, CancellationToken cancellationToken = default);
     Task<bool> CheckTransactionCodeExistAsync(string transactionCode, bool trackChanges, CancellationToken cancellationToken = default);
 }

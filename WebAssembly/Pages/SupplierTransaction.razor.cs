@@ -24,8 +24,7 @@ public partial class SupplierTransaction
 
     [Parameter] public Guid? ParamSupplierID { get; set; }
 
-    protected string PagePathText = string.Empty;
-    protected string FormHeaderText = string.Empty;
+    private readonly string AdditionalHeaderText = "supplier";
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     protected bool IsSaving = false;
     protected SupplierParam SupplierParameter = new();
@@ -42,15 +41,10 @@ public partial class SupplierTransaction
         if (ParamSupplierID is not null)
         {
             SupplierState.Supplier = await ServiceManager.SupplierService.GetSupplierByID((Guid)ParamSupplierID);
-
-            PagePathText = GlobalEnum.FormStatus.Edit.ToString();
-            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing Supplier";
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
-            PagePathText = GlobalEnum.FormStatus.New.ToString();
-            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Supplier";
             FormStatus = GlobalEnum.FormStatus.New;
         }
     }

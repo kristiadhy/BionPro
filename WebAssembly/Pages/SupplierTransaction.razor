@@ -10,58 +10,57 @@
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
+        <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
-            <RadzenTemplateForm Data="@SupplierState.Supplier" Submit="@(async (SupplierDto args) => { await SubmitAsync(args); })">
-                 <FluentValidationValidator />
+            <RadzenTemplateForm Data="@SupplierState.Supplier" Submit="@((SupplierDto args) => SubmitAsync(args))">
+                <FluentValidationValidator />
 
                 <RadzenStack>
-                    <RadzenFieldset Text="@FormHeaderText">
-                        <RadzenStack Gap="1rem">
-                            <RadzenTabs>
-                                <Tabs>
-                                    <RadzenTabsItem Text="Basic Info">
-                                        <RadzenStack>
-                                            <RadzenTextBox Name="@nameof(SupplierState.Supplier.SupplierName)"
-                                                           Placeholder="Name"
-                                                           @bind-Value="SupplierState.Supplier.SupplierName" />
+                    <RadzenStack Gap="1rem">
+                        <RadzenTabs>
+                            <Tabs>
+                                <RadzenTabsItem Text="Basic Info">
+                                    <RadzenStack>
+                                        <RadzenTextBox Name="@nameof(SupplierState.Supplier.SupplierName)"
+                                                       Placeholder="Name"
+                                                       @bind-Value="SupplierState.Supplier.SupplierName" />
 
-                                            <RadzenTextBox Name="@nameof(SupplierState.Supplier.PhoneNumber)"
-                                                           Placeholder="Phone Number"
-                                                           @bind-Value="SupplierState.Supplier.PhoneNumber" />
+                                        <RadzenTextBox Name="@nameof(SupplierState.Supplier.PhoneNumber)"
+                                                       Placeholder="Phone Number"
+                                                       @bind-Value="SupplierState.Supplier.PhoneNumber" />
 
-                                            <RadzenTextBox Name="@nameof(SupplierState.Supplier.Email)"
-                                                           Placeholder="Email"
-                                                           @bind-Value="SupplierState.Supplier.Email" />
+                                        <RadzenTextBox Name="@nameof(SupplierState.Supplier.Email)"
+                                                       Placeholder="Email"
+                                                       @bind-Value="SupplierState.Supplier.Email" />
 
-                                            <RadzenTextArea Name="@nameof(SupplierState.Supplier.Address)"
-                                                            Placeholder="Address"
-                                                            class="w-100"
-                                                            aria-label="TextArea"
-                                                            @bind-Value="SupplierState.Supplier.Address" />
+                                        <RadzenTextArea Name="@nameof(SupplierState.Supplier.Address)"
+                                                        Placeholder="Address"
+                                                        class="w-100"
+                                                        aria-label="TextArea"
+                                                        @bind-Value="SupplierState.Supplier.Address" />
 
-                                            <RadzenTextArea Name="@nameof(SupplierState.Supplier.Note)"
-                                                            Placeholder="Note"
-                                                            class="w-100"
-                                                            aria-label="TextArea"
-                                                            @bind-Value="SupplierState.Supplier.Note" />
+                                        <RadzenTextArea Name="@nameof(SupplierState.Supplier.Note)"
+                                                        Placeholder="Note"
+                                                        class="w-100"
+                                                        aria-label="TextArea"
+                                                        @bind-Value="SupplierState.Supplier.Note" />
 
-                                        </RadzenStack>
-                                    </RadzenTabsItem>
+                                    </RadzenStack>
+                                </RadzenTabsItem>
 
-                                    <RadzenTabsItem Text="Contact Person">
-                                        <RadzenStack>
-                                            <RadzenTextBox Name="@nameof(SupplierState.Supplier.ContactPerson)"
-                                                           Placeholder="Contact Person"
-                                                           @bind-Value="SupplierState.Supplier.ContactPerson" />
-                                            <RadzenTextBox Name="@nameof(SupplierState.Supplier.CPPhone)"
-                                                           Placeholder="Contact Person's Phone"
-                                                           @bind-Value="SupplierState.Supplier.CPPhone" />
-                                        </RadzenStack>
-                                    </RadzenTabsItem>
-                                </Tabs>
-                            </RadzenTabs>
-                        </RadzenStack>
-                    </RadzenFieldset>
+                                <RadzenTabsItem Text="Contact Person">
+                                    <RadzenStack>
+                                        <RadzenTextBox Name="@nameof(SupplierState.Supplier.ContactPerson)"
+                                                       Placeholder="Contact Person"
+                                                       @bind-Value="SupplierState.Supplier.ContactPerson" />
+                                        <RadzenTextBox Name="@nameof(SupplierState.Supplier.CPPhone)"
+                                                       Placeholder="Contact Person's Phone"
+                                                       @bind-Value="SupplierState.Supplier.CPPhone" />
+                                    </RadzenStack>
+                                </RadzenTabsItem>
+                            </Tabs>
+                        </RadzenTabs>
+                    </RadzenStack>
                 </RadzenStack>
                 <ValidationSummary />
 

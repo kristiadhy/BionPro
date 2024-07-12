@@ -16,31 +16,53 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
         appDBContext = repositoryContext;
     }
 
-    public async Task<PagedList<PurchaseModel>> GetByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
+    public async Task<PagedList<PurchaseDtoForSummary>> GetSummaryByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var purchases = await FindAll(trackChanges)
-            .Include(x => x.Supplier)
-            .Include(x => x.PurchaseDetails)
-            .SearchBySupplier(purchaseParam.SrcSupplier)
-            .SearchByTransactionDate(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
-            .Sort(purchaseParam.OrderBy)
+        var purchases = await GetPurchaseWithSummary()
+            .SearchBySupplierForSummary(purchaseParam.SrcSupplier)
+            .SearchByTransactionDateForSummary(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
+            .SortForSummary(purchaseParam.OrderBy)
             .Skip((purchaseParam.PageNumber - 1) * purchaseParam.PageSize)
             .Take(purchaseParam.PageSize)
             .ToListAsync(cancellationToken);
 
-        var count = await FindAll(trackChanges)
-            .Include(x => x.Supplier)
-            .Include(x => x.PurchaseDetails)
-            .SearchBySupplier(purchaseParam.SrcSupplier)
-            .SearchByTransactionDate(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
+        var count = await GetPurchaseWithSummary()
+            .SearchBySupplierForSummary(purchaseParam.SrcSupplier)
+            .SearchByTransactionDateForSummary(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
             .CountAsync(cancellationToken);
 
-        return new PagedList<PurchaseModel>(purchases, count, purchaseParam.PageNumber, purchaseParam.PageSize);
+        return new PagedList<PurchaseDtoForSummary>(purchases, count, purchaseParam.PageNumber, purchaseParam.PageSize);
     }
+
+    //public async Task<PagedList<PurchaseModel>> GetByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
+    //{
+    //    var purchases = await FindAll(trackChanges)
+    //        .Include(x => x.Supplier)
+    //        .Include(x => x.PurchaseDetails)
+    //        //.SearchBySupplier(purchaseParam.SrcSupplier)
+    //        //.SearchByTransactionDate(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
+    //        .Sort(purchaseParam.OrderBy)
+    //        .Skip((purchaseParam.PageNumber - 1) * purchaseParam.PageSize)
+    //        .Take(purchaseParam.PageSize)
+    //        .ToListAsync(cancellationToken);
+
+    //    var count = await FindAll(trackChanges)
+    //        //.Include(x => x.Supplier)
+    //        //.Include(x => x.PurchaseDetails)
+    //        //.SearchBySupplier(purchaseParam.SrcSupplier)
+    //        //.SearchByTransactionDate(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
+    //        .CountAsync(cancellationToken);
+
+    //    return new PagedList<PurchaseModel>(purchases, count, purchaseParam.PageNumber, purchaseParam.PageSize);
+    //}
 
     public async Task<PurchaseModel?> GetByIDAsync(int purchaseID, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var purchase = await FindByCondition(x => x.PurchaseID == purchaseID, trackChanges).FirstOrDefaultAsync(cancellationToken);
+        var purchase = await FindByCondition(x => x.PurchaseID == purchaseID, trackChanges)
+            .Include(x => x.Supplier)
+            .Include(x => x.PurchaseDetails!)
+            .ThenInclude(pd => pd.Product)
+            .FirstOrDefaultAsync(cancellationToken);
         if (purchase is not null)
             return purchase;
         else
@@ -49,7 +71,8 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
 
     public async Task<bool> CheckTransactionCodeExistAsync(string transactionCode, bool trackChanges, CancellationToken cancellationToken = default)
     {
-        var purchase = await FindByCondition(x => x.TransactionCode == transactionCode, trackChanges).FirstOrDefaultAsync(cancellationToken);
+        var purchase = await FindByCondition(x => x.TransactionCode == transactionCode, trackChanges)
+            .FirstOrDefaultAsync(cancellationToken);
         if (purchase is not null)
             return true;
         else
@@ -71,10 +94,10 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
         Delete(entity);
     }
 
-    private IQueryable<PurchaseDtoForQueries> GetPurchaseWithSummary()
+    private IQueryable<PurchaseDtoForSummary> GetPurchaseWithSummary()
     {
         var result = appDBContext.Set<PurchaseModel>().AsNoTracking()
-            .Select(a => new PurchaseDtoForQueries
+            .Select(a => new PurchaseDtoForSummary
             {
                 PurchaseID = a.PurchaseID,
                 TransactionCode = a.TransactionCode,
@@ -82,8 +105,8 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
                 DiscountPercentage = a.DiscountPercentage,
                 DiscountAmount = a.DiscountAmount,
                 Description = a.Description,
-                SupplierName = a.Supplier!.SupplierName, // Assuming navigation property is properly configured
-                GrandTotal = a.PurchaseDetails!.Sum(pd => pd.SubTotal) // Directly summing the SubTotal of related PurchaseDetails
+                SupplierName = a.Supplier!.SupplierName,
+                GrandTotal = a.PurchaseDetails!.Sum(pd => pd.SubTotal)
             });
 
         return result;

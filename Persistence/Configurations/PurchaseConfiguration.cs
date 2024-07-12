@@ -22,5 +22,10 @@ internal class PurchaseConfiguration : IEntityTypeConfiguration<PurchaseModel>
         builder.HasMany(e => e.PurchaseDetails)
                .WithOne(e => e.Purchase)
                .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(e => e.Supplier)
+            .WithMany(e => e.Purchases)
+            .HasForeignKey(e => e.SupplierID)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

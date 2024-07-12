@@ -5,7 +5,7 @@ using Web.Services.Features;
 namespace Web.Services.IHttpRepository;
 public interface IPurchaseService
 {
-    public Task<PagingResponse<PurchaseDto>> GetPurchases(PurchaseParam purchaseParam);
+    public Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam);
     public Task<PurchaseDto> GetPurchaseByID(int purchaseID);
     public Task<HttpResponseMessage> Create(PurchaseDto purchaseDto);
     public Task<HttpResponseMessage> Update(PurchaseDto purchaseDto);

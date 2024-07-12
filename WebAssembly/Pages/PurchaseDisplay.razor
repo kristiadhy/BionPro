@@ -18,8 +18,8 @@
 
 <RadzenDataGrid @ref="PurchaseGrid"
                 IsLoading=@isLoading
-                Data="@PurchaseState.PurchaseList"
-                TItem="PurchaseDto"
+                Data="@PurchaseState.PurchaseListForSummary"
+                TItem="PurchaseDtoForSummary"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -34,7 +34,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(PurchaseState.PurchaseList.IndexOf(data) + 1)
+                @(PurchaseState.PurchaseListForSummary.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -58,11 +58,8 @@
 
         <RadzenDataGridColumn Property="GrandTotal"
                               Title="GrandTotal"
-                              FormatString="{0:c}" >
-            <Template Context="data">
-                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", data.PurchaseDetails.Sum(o => o.SubTotal))</b>
-            </Template>
-                              </RadzenDataGridColumn>
+                              TextAlign="TextAlign.Right"
+                              FormatString="{0:c}" />
 
         <RadzenDataGridColumn Property="Description"
                               Title="Description" />

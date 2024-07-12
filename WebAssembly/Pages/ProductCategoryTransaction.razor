@@ -10,18 +10,18 @@
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
+        <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
             <RadzenTemplateForm Data="@ProductCategoryState.ProductCategory" Submit="@(async (ProductCategoryDto args) => { await SubmitAsync(args); })">
                 <FluentValidationValidator />
 
-                <RadzenFieldset Text="@FormHeaderText">
-                    <RadzenStack>
-                        <RadzenTextBox Name="@nameof(ProductCategoryState.ProductCategory.Name)"
-                                       Placeholder="Name"
-                                       @bind-Value="ProductCategoryState.ProductCategory.Name"
-                                       @ref="@txtNameForFocus" />
-                    </RadzenStack>
-                </RadzenFieldset>
+                <RadzenStack>
+                    <RadzenTextBox Name="@nameof(ProductCategoryState.ProductCategory.Name)"
+                                   Placeholder="Name"
+                                   @bind-Value="ProductCategoryState.ProductCategory.Name"
+                                   @ref="@txtNameForFocus" />
+                </RadzenStack>
+
                 <ValidationSummary />
 
                 <SaveTransactionButton OnButtonClear="ClearField"

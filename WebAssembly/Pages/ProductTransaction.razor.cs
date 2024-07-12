@@ -28,8 +28,7 @@ public partial class ProductTransaction
 
     [Parameter] public Guid? ParamProductID { get; set; }
     private FluentValidationValidator ProductValidator;
-    private string PagePathText = string.Empty;
-    private string FormHeaderText = string.Empty;
+    private readonly string AdditionalHeaderText = "product";
     private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     private bool IsSaving = false;
     private ProductParam? ProductParameter = new();
@@ -48,15 +47,10 @@ public partial class ProductTransaction
         if (ParamProductID is not null)
         {
             ProductState.Product = await ServiceManager.ProductService.GetProductByID((Guid)ParamProductID);
-
-            PagePathText = GlobalEnum.FormStatus.Edit.ToString();
-            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing Product ";
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
-            PagePathText = GlobalEnum.FormStatus.New.ToString();
-            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Product ";
             FormStatus = GlobalEnum.FormStatus.New;
         }
     }

@@ -3,6 +3,7 @@ using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Components;
 using WebAssembly.Constants;
 using WebAssembly.Model;
 using WebAssembly.Services;
@@ -24,11 +25,10 @@ public partial class CustomerTransaction
     CustomerState CustomerState { get; set; } = default!;
 
     [Parameter] public Guid? ParamCustomerID { get; set; }
-    protected string PagePathText = string.Empty;
-    protected string FormHeaderText = string.Empty;
-    protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
-    protected bool IsSaving = false;
-    protected CustomerParam CustomerParameter = new();
+    private readonly string AdditionalHeaderText = "customer";
+    private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
+    private bool IsSaving = false;
+    private CustomerParam CustomerParameter = new();
     private RadzenTextBox? txtNameForFocus;
 
     private PageModel? CustomerPageModel { get; set; }
@@ -43,15 +43,10 @@ public partial class CustomerTransaction
         if (ParamCustomerID is not null)
         {
             CustomerState.Customer = await ServiceManager.CustomerService.GetCustomerByID((Guid)ParamCustomerID);
-
-            PagePathText = GlobalEnum.FormStatus.Edit.ToString();
-            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing Customer";
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
-            PagePathText = GlobalEnum.FormStatus.New.ToString();
-            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Customer";
             FormStatus = GlobalEnum.FormStatus.New;
         }
     }

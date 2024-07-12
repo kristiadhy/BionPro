@@ -34,9 +34,8 @@ public partial class PurchaseTransaction
 
     private FluentValidationValidator? PurchaseDetailValidator { get; set; }
 
-    private string PagePathText = string.Empty;
-    private string FormHeaderText = string.Empty;
-    private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
+    private readonly string AdditionalHeaderText = "purchase transaction";
+    private GlobalEnum.FormStatus FormStatus;
     private bool IsSaving = false;
 
     private int ProductSearchSelection = 2;
@@ -53,9 +52,6 @@ public partial class PurchaseTransaction
 
     protected override void OnInitialized()
     {
-        //if (PurchaseState.Purchase.Date == default)
-        //    PurchaseState.Purchase.Date = DateTimeOffset.Now;
-
         SetPurchaseDetailDefaultValue(PurchaseDetail);
     }
 
@@ -63,17 +59,12 @@ public partial class PurchaseTransaction
     {
         if (ParamPurchaseID is not null)
         {
-            PurchaseState.Purchase = await ServiceManager.PurchaseService.GetPurchaseByID((int)ParamPurchaseID);
-
-            PagePathText = GlobalEnum.FormStatus.Edit.ToString();
-            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing purchase transaction";
+            PurchaseState.PurchaseForTransaction = await ServiceManager.PurchaseService.GetPurchaseByID((int)ParamPurchaseID);
             FormStatus = GlobalEnum.FormStatus.Edit;
             await PurchaseDetailGrid.Reload();
         }
         else
         {
-            PagePathText = GlobalEnum.FormStatus.New.ToString();
-            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Purchase transaction";
             FormStatus = GlobalEnum.FormStatus.New;
         }
     }
@@ -104,7 +95,7 @@ public partial class PurchaseTransaction
                 NotificationService.SaveNotification(notificationMessage);
             }
 
-            await PurchaseState.LoadPurchases();
+            await PurchaseState.LoadPurchasesForSummary();
         }
         finally
         {
@@ -115,7 +106,7 @@ public partial class PurchaseTransaction
 
     private async Task ClearField()
     {
-        PurchaseState.Purchase = new();
+        PurchaseState.PurchaseForTransaction = new();
     }
 
     private async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
@@ -127,7 +118,7 @@ public partial class PurchaseTransaction
             purchaseDetail.ProductID = product.ProductID;
             purchaseDetail.ProductName = product.Name;
             purchaseDetail.Price = product.Price;
-            PurchaseState.Purchase.PurchaseDetails.Add(purchaseDetail);
+            PurchaseState.PurchaseForTransaction.PurchaseDetails.Add(purchaseDetail);
         }
         GridIsLoading = false;
 
@@ -140,19 +131,14 @@ public partial class PurchaseTransaction
         SetPurchaseDetailDefaultValue(PurchaseDetail);
     }
 
-    private void OnSupplierChanged(Guid? value)
-    {
-        PurchaseState.Purchase.SupplierID = value;
-    }
-
     private void OnDateChanged(DateTime? dateTime)
     {
-        PurchaseState.Purchase.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
+        PurchaseState.PurchaseForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
     }
 
     private void RefreshDate()
     {
-        PurchaseState.Purchase.Date = DateTime.Now;
+        PurchaseState.PurchaseForTransaction.Date = DateTime.Now;
     }
 
     private async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
@@ -170,7 +156,7 @@ public partial class PurchaseTransaction
         if (purchaseDetail is null)
             return;
 
-        PurchaseState.Purchase.PurchaseDetails.Remove(purchaseDetail);
+        PurchaseState.PurchaseForTransaction.PurchaseDetails.Remove(purchaseDetail);
         await PurchaseDetailGrid.Reload();
     }
 

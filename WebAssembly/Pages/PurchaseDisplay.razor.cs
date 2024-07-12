@@ -23,7 +23,7 @@ public partial class PurchaseDisplay
     [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
 
-    private RadzenDataGrid<PurchaseDto> PurchaseGrid { get; set; } = default!;
+    private RadzenDataGrid<PurchaseDtoForSummary> PurchaseGrid { get; set; } = default!;
 
     private bool isLoading = false;
 
@@ -49,16 +49,16 @@ public partial class PurchaseDisplay
     private async Task EvLoadData()
     {
         isLoading = true;
-        await PurchaseState.LoadPurchases();
+        await PurchaseState.LoadPurchasesForSummary();
         isLoading = false;
     }
 
-    private void EvEditRow(PurchaseDto purchases)
+    private void EvEditRow(PurchaseDtoForSummary purchases)
     {
         NavigationManager.NavigateTo($"{PurchasesPageModel?.Path}/edit/{purchases.PurchaseID}");
     }
 
-    private async Task EvDeleteRow(PurchaseDto purchases)
+    private async Task EvDeleteRow(PurchaseDtoForSummary purchases)
     {
         if (purchases is null)
             return;
@@ -77,7 +77,7 @@ public partial class PurchaseDisplay
         await EvReloadData();
     }
 
-    private async Task EvSeeDetail(PurchaseDto purchases)
+    private async Task EvSeeDetail(PurchaseDtoForSummary purchases)
     {
 
     }

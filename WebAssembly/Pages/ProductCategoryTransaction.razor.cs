@@ -24,8 +24,7 @@ public partial class ProductCategoryTransaction
     ProductCategoryState ProductCategoryState { get; set; } = default!;
 
     [Parameter] public int? ParamProductCategoryID { get; set; }
-    protected string PagePathText = string.Empty;
-    protected string FormHeaderText = string.Empty;
+    private readonly string AdditionalHeaderText = "product category";
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     protected bool IsSaving = false;
     protected ProductCategoryParam ProductCategoryParameter = new();
@@ -43,15 +42,10 @@ public partial class ProductCategoryTransaction
         if (ParamProductCategoryID is not null)
         {
             ProductCategoryState.ProductCategory = await ServiceManager.ProductCategoryService.GetProductCategoryByID((int)ParamProductCategoryID);
-
-            PagePathText = GlobalEnum.FormStatus.Edit.ToString();
-            FormHeaderText = $"{GlobalEnum.FormStatus.Edit.ToString()} Existing Product Category";
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
-            PagePathText = GlobalEnum.FormStatus.New.ToString();
-            FormHeaderText = $"Create {GlobalEnum.FormStatus.New.ToString()} Product Category";
             FormStatus = GlobalEnum.FormStatus.New;
         }
     }

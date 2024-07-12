@@ -1,0 +1,45 @@
+﻿@if (IsReady)
+{
+    <RadzenAlert AllowClose="false" Icon="@icon" AlertStyle="@alertStyle" Variant="@variant" Shade="@shade">
+        @Title
+    </RadzenAlert>
+}
+
+@code {
+    private AlertStyle alertStyle = AlertStyle.Primary;
+    private Variant variant = Variant.Flat;
+    private Shade shade = Shade.Lighter;
+    private string icon = "control_point";
+
+    private bool IsReady = false;
+    private string? Title;
+
+    [Parameter]
+    public GlobalEnum.FormStatus FormStatus { get; set; }
+
+    [Parameter]
+    public string AdditionalText { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        IsReady = true;
+        UpdateComponentState();
+    }
+
+    public void UpdateComponentState()
+    {
+        if (FormStatus == GlobalEnum.FormStatus.New)
+        {
+            Title = $"Add new {AdditionalText}";
+            alertStyle = AlertStyle.Primary;
+            icon = "control_point"; // Resetting to default or specify if needed
+        }
+        else if (FormStatus == GlobalEnum.FormStatus.Edit)
+        {
+            Title = $"Edit {AdditionalText}";
+            alertStyle = AlertStyle.Secondary;
+            icon = "edit";
+        }
+    }
+}
