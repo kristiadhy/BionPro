@@ -6,7 +6,7 @@ namespace WebAssembly.StateManagement;
 
 public class PurchaseDetailState
 {
-    private readonly IServiceManager _serviceManager;
+    private readonly IServiceManager ServiceManager;
     public List<PurchaseDetailDto> PurchaseDetailList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     //public PurchaseDetailParam PurchaseDetailParameter { get; set; } = new();
@@ -14,12 +14,12 @@ public class PurchaseDetailState
 
     public PurchaseDetailState(IServiceManager serviceManager)
     {
-        _serviceManager = serviceManager;
+        ServiceManager = serviceManager;
     }
 
     public async Task LoadPurchaseDetails()
     {
-        //var pagingResponse = await _serviceManager.PurchaseDetailService.GetPurchaseDetails(PurchaseDetailParameter);
+        //var pagingResponse = await ServiceManager.PurchaseDetailService.GetPurchaseDetails(PurchaseDetailParameter);
         //PurchaseDetailList = pagingResponse.Items;
         //MetaData = pagingResponse.MetaData;
     }

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Components;
+using WebAssembly.Constants;
+using WebAssembly.CustomEventArgs;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
-using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -20,6 +22,8 @@ public partial class PurchaseDisplay
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
+    [Inject]
+    DialogService DialogService { get; set; } = default!;
     [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
 
@@ -79,7 +83,15 @@ public partial class PurchaseDisplay
 
     private async Task EvSeeDetail(PurchaseDtoForSummary purchases)
     {
+        var parameters = new Dictionary<string, object>
+        {
+            { "purchaseID", purchases.PurchaseID }
+        };
 
+        await DialogService.OpenAsync<PurchaseDetailItems>($"{purchases.TransactionCode} | {purchases.Date.ToString("dd/MM/yyyy HH:mm")}", 
+            parameters,
+            new DialogOptions() { Width = "700px", Resizable = true, Draggable = true }
+            );
     }
 
     private void EvCreateNew()
@@ -87,9 +99,10 @@ public partial class PurchaseDisplay
         NavigationManager.NavigateTo($"{PurchasesPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerEventArgs args)
+    private async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        PurchaseState.PurchaseParameter.PageNumber = args.PageIndex + 1;
-        await EvReloadData();
+        PurchaseState.PurchaseParameter.PageNumber = args.CurrentPage;
+        if (!args.IsFromFirstRender)
+            await EvReloadData();
     }
 }

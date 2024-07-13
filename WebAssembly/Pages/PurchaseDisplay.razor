@@ -56,8 +56,14 @@
         <RadzenDataGridColumn Property="SupplierName"
                               Title="Supplier" />
 
+        <RadzenDataGridColumn Property="TotalQuantity"
+                              Title="TotalQty"
+                              TextAlign="TextAlign.Center"
+                              Width="80px"
+                              FormatString="{0:n0}" />
+
         <RadzenDataGridColumn Property="GrandTotal"
-                              Title="GrandTotal"
+                              Title="Grand Total"
                               TextAlign="TextAlign.Right"
                               FormatString="{0:c}" />
 
@@ -105,4 +111,5 @@
 
 <Pager PageSize="@PurchaseState.MetaData.PageSize"
        TotalCount="@PurchaseState.MetaData.TotalCount"
+       CurrentPage="PurchaseState.PurchaseParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

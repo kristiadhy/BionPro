@@ -6,7 +6,7 @@ namespace WebAssembly.StateManagement;
 
 public class ProductState
 {
-    private readonly IServiceManager _serviceManager;
+    private readonly IServiceManager ServiceManager;
     public List<ProductDtoForProductQueries> ProductList { get; set; } = [];
     public IEnumerable<ProductDtoForProductQueries> ProductListDropdown { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
@@ -15,12 +15,12 @@ public class ProductState
 
     public ProductState(IServiceManager serviceManager)
     {
-        _serviceManager = serviceManager;
+        ServiceManager = serviceManager;
     }
 
     public async Task LoadProducts()
     {
-        var pagingResponse = await _serviceManager.ProductService.GetProducts(ProductParameter);
+        var pagingResponse = await ServiceManager.ProductService.GetProducts(ProductParameter);
         ProductList = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
     }
@@ -28,7 +28,7 @@ public class ProductState
     public async Task LoadProductsDropDown()
     {
         ProductParam productParameter = new();
-        var pagingResponse = await _serviceManager.ProductService.GetProducts(productParameter);
+        var pagingResponse = await ServiceManager.ProductService.GetProducts(productParameter);
         ProductListDropdown = pagingResponse.Items;
     }
 }

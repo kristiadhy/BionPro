@@ -35,6 +35,7 @@ public class CustomHttpClient
     public async Task<HttpResponseMessage> GetResponseAsync(string uriRequest)
     {
         HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
+        CheckErrorResponseForGetMethod(response);
         return response;
     }
 

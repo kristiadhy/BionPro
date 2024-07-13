@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Constants;
+using WebAssembly.CustomEventArgs;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
-using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 
@@ -85,9 +86,10 @@ public partial class ProductDisplay
         NavigationManager.NavigateTo($"{ProductsPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerEventArgs args)
+    private async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        ProductState.ProductParameter.PageNumber = args.PageIndex + 1;
-        await EvReloadData();
+        ProductState.ProductParameter.PageNumber = args.CurrentPage;
+        if (!args.IsFromFirstRender)
+            await EvReloadData();
     }
 }

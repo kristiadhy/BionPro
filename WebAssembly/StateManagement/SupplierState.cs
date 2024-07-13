@@ -6,7 +6,7 @@ namespace WebAssembly.StateManagement;
 
 public class SupplierState
 {
-    private IServiceManager _serviceManager;
+    private IServiceManager ServiceManager;
     public List<SupplierDto> SupplierList { get; set; } = [];
     public IEnumerable<SupplierDto> SupplierListDropdown { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
@@ -15,12 +15,12 @@ public class SupplierState
 
     public SupplierState(IServiceManager serviceManager)
     {
-        _serviceManager = serviceManager;
+        ServiceManager = serviceManager;
     }
 
     public async Task LoadSuppliers()
     {
-        var pagingResponse = await _serviceManager.SupplierService.GetSuppliers(SupplierParameter);
+        var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(SupplierParameter);
         SupplierList = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
     }
@@ -28,7 +28,7 @@ public class SupplierState
     public async Task LoadSuppliersDropDown()
     {
         SupplierParam supplierParameter = new();
-        var pagingResponse = await _serviceManager.SupplierService.GetSuppliers(supplierParameter);
+        var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(supplierParameter);
         SupplierListDropdown = pagingResponse.Items;
     }
 }

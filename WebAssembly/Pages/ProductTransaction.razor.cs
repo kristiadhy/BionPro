@@ -6,10 +6,10 @@ using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
+using WebAssembly.Constants;
 using WebAssembly.Model;
 using WebAssembly.Services;
 using WebAssembly.StateManagement;
-using WebAssembly.Constants;
 
 namespace WebAssembly.Pages;
 

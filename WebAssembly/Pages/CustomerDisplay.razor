@@ -93,4 +93,5 @@
 
 <Pager PageSize="@CustomerState.MetaData.PageSize"
        TotalCount="@CustomerState.MetaData.TotalCount"
+       CurrentPage="CustomerState.CustomerParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

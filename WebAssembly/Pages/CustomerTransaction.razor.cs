@@ -3,7 +3,6 @@ using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
-using WebAssembly.Components;
 using WebAssembly.Constants;
 using WebAssembly.Model;
 using WebAssembly.Services;

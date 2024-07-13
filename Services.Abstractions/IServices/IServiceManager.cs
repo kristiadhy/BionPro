@@ -11,4 +11,5 @@ public interface IServiceManager
     IProductService ProductService { get; }
     IAuthenticationService AuthenticationService { get; }
     IPurchaseService PurchaseService { get; }
+    IPurchaseDetailService PurchaseDetailService { get; }
 }

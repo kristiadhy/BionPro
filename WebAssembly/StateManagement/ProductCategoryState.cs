@@ -6,7 +6,7 @@ namespace WebAssembly.StateManagement;
 
 public class ProductCategoryState
 {
-    private readonly IServiceManager _serviceManager;
+    private readonly IServiceManager ServiceManager;
     public List<ProductCategoryDto> ProductCategoryList { get; set; } = [];
     public IEnumerable<ProductCategoryDto> ProductCategoryListDropdown { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
@@ -15,12 +15,12 @@ public class ProductCategoryState
 
     public ProductCategoryState(IServiceManager serviceManager)
     {
-        _serviceManager = serviceManager;
+        ServiceManager = serviceManager;
     }
 
     public async Task LoadProductCategories()
     {
-        var pagingResponse = await _serviceManager.ProductCategoryService.GetProductCategories(ProductCategoryParameter);
+        var pagingResponse = await ServiceManager.ProductCategoryService.GetProductCategories(ProductCategoryParameter);
         ProductCategoryList = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
         CopyProductCategoryToDropDown();
@@ -29,7 +29,7 @@ public class ProductCategoryState
     public async Task LoadProductCategoriesDropDown()
     {
         ProductCategoryParam productCategoryParameter = new();
-        var pagingResponse = await _serviceManager.ProductCategoryService.GetProductCategories(productCategoryParameter);
+        var pagingResponse = await ServiceManager.ProductCategoryService.GetProductCategories(productCategoryParameter);
         ProductCategoryListDropdown = pagingResponse.Items;
     }
 

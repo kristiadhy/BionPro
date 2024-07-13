@@ -136,7 +136,11 @@
                                                               Title="Qty"
                                                               Width="80px"
                                                               TextAlign="TextAlign.Center"
-                                                              FormatString="{0:n0}" />
+                                                              FormatString="{0:n0}">
+                                            <FooterTemplate>
+                                                <b>@PurchaseState.PurchaseForTransaction.PurchaseDetails.Sum(o => o.Quantity).ToString("n0")</b>
+                                            </FooterTemplate>
+                                        </RadzenDataGridColumn>
 
                                         <RadzenDataGridColumn Property="Price"
                                                               Title="Price"
@@ -156,7 +160,7 @@
                                                               TextAlign="TextAlign.Right"
                                                               FormatString="{0:c}">
                                             <FooterTemplate>
-                                                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", PurchaseState.PurchaseForTransaction.PurchaseDetails.Sum(o => o.SubTotal))</b>
+                                                <b>@PurchaseState.PurchaseForTransaction.PurchaseDetails.Sum(o => o.SubTotal).ToString("C")</b>
                                             </FooterTemplate>
                                         </RadzenDataGridColumn>
 

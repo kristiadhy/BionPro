@@ -1,7 +1,7 @@
 ﻿@using Radzen
 @using Radzen.Blazor
 
-<RadzenPager ShowPagingSummary="true"
+<RadzenPager @ref="CustomPager" ShowPagingSummary="true"
              PagingSummaryFormat="Displaying page {0} of {1} (total {2} records)"
              HorizontalAlign="HorizontalAlign.Right"
              Count="@TotalCount"
@@ -10,6 +10,23 @@
              PageChanged="OnPageChanged" />
 
 @code {
+    //<summary>: Customized RadzenPager
+    //<param>: TotalCount: Total number of records </param>
+    //<param>: PageSize: Number of records per page </param>
+    //<param>: PageChanged: Event handler for page changed event </param>
+    //<param>: CurrentPage: Current page number </param>
+    //-----
+    //Radzen Pager doesn't have a property to set the selected index or current page number. That's why we need to do some custom implementation here.
+    //There is a strange behaviour where the page index is different if we click the page number or the next/previous button and if we use the GoToPage method.
+    //To fix this, we need to set the current page number to current page - 1 when the component is first rendered to make it similar with the OnPageChanged method.
+    //We also want to know if the event is from the first render or not to decide wether we need to reload the data or not.
+    //We pass the IsFromFirstRender to the caller so we can do or not do the data reload from the caller.
+    //-----
+    //</summary>
+
+    RadzenPager? CustomPager;
+    private bool IsFromFirstRender = false;
+
     [Parameter]
     public int TotalCount { get; set; }
 
@@ -17,13 +34,30 @@
     public int PageSize { get; set; }
 
     [Parameter]
-    public EventCallback<PagerEventArgs> PageChanged { get; set; }
+    public EventCallback<PagerOnChangedEventArgs> PageChanged { get; set; }
 
-    private int CurrentPage { get; set; } = 1;
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (CustomPager != null)
+            {
+                IsFromFirstRender = true;
+                await CustomPager.GoToPage(CurrentPage - 1, false);
+                IsFromFirstRender = false;
+            }
+        }
+    }
 
     private async Task OnPageChanged(PagerEventArgs args)
     {
-        CurrentPage = args.PageIndex + 1;
-        await PageChanged.InvokeAsync(args);
+        if (!IsFromFirstRender)
+            CurrentPage = args.PageIndex + 1;
+
+        var eventArgs = new PagerOnChangedEventArgs(CurrentPage, IsFromFirstRender);
+        await PageChanged.InvokeAsync(eventArgs);
     }
 }

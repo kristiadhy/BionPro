@@ -112,4 +112,5 @@
 
 <Pager PageSize="@ProductState.MetaData.PageSize"
        TotalCount="@ProductState.MetaData.TotalCount"
+       CurrentPage="ProductState.ProductParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

@@ -13,6 +13,7 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<IProductCategoryService> _lazyProductCategoryService;
     private readonly Lazy<IProductService> _lazyProductService;
     private readonly Lazy<IPurchaseService> _lazyPurchaseService;
+    private readonly Lazy<IPurchaseDetailService> _lazyPurchaseDetailService;
 
     public ServiceManager(CustomHttpClient apiService, JsonSerializerSettings settings, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage)
     {
@@ -21,6 +22,7 @@ public sealed class ServiceManager : IServiceManager
         _lazyProductCategoryService = new Lazy<IProductCategoryService>(() => new ProductCategoryService(apiService, settings));
         _lazyProductService = new Lazy<IProductService>(() => new ProductService(apiService, settings));
         _lazyPurchaseService = new Lazy<IPurchaseService>(() => new PurchaseService(apiService, settings));
+        _lazyPurchaseDetailService = new Lazy<IPurchaseDetailService>(() => new PurchaseDetailService(apiService, settings));
     }
 
     public ICustomerService CustomerService => _lazyCustomerService.Value;
@@ -28,4 +30,5 @@ public sealed class ServiceManager : IServiceManager
     public IProductCategoryService ProductCategoryService => _lazyProductCategoryService.Value;
     public IProductService ProductService => _lazyProductService.Value;
     public IPurchaseService PurchaseService => _lazyPurchaseService.Value;
+    public IPurchaseDetailService PurchaseDetailService => _lazyPurchaseDetailService.Value;
 }

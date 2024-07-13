@@ -148,7 +148,7 @@ public partial class PurchaseTransaction
             { "PurchaseDetail", purchaseDetail }
         };
 
-        await DialogService.OpenAsync<CustomProductSettingPopUp>($"{purchaseDetail.ProductName}", parameters);
+        await DialogService.OpenAsync<CustomPurchaseEditProductPopUp>($"{purchaseDetail.ProductName}", parameters);
     }
 
     private async Task EvDeleteRow(PurchaseDetailDto purchaseDetail)

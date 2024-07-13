@@ -8,4 +8,5 @@ public interface IRepositoryManager
     IProductRepo ProductRepo { get; }
     IPurchaseRepo PurchaseRepo { get; }
     IUnitOfWorkRepo UnitOfWorkRepo { get; }
+    IPurchaseDetailRepo PurchaseDetailRepo { get; }
 }

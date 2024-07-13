@@ -106,6 +106,8 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
                 DiscountAmount = a.DiscountAmount,
                 Description = a.Description,
                 SupplierName = a.Supplier!.SupplierName,
+                TotalItems = a.PurchaseDetails!.Count(),
+                TotalQuantity = a.PurchaseDetails!.Sum(pd => pd.Quantity),
                 GrandTotal = a.PurchaseDetails!.Sum(pd => pd.SubTotal)
             });
 

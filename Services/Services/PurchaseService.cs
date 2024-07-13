@@ -9,7 +9,6 @@ using Domain.Entities;
 using Domain.Parameters;
 using Serilog;
 using Services.Contracts.IServices;
-using System.Transactions;
 
 namespace Services.Services;
 internal sealed class PurchaseService : IPurchaseService

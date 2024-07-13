@@ -6,7 +6,7 @@ namespace WebAssembly.StateManagement;
 
 public class CustomerState
 {
-    private IServiceManager _serviceManager;
+    private IServiceManager ServiceManager;
     public List<CustomerDTO> CustomerList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
     public CustomerParam CustomerParameter { get; set; } = new();
@@ -14,12 +14,12 @@ public class CustomerState
 
     public CustomerState(IServiceManager serviceManager)
     {
-        _serviceManager = serviceManager;
+        ServiceManager = serviceManager;
     }
 
     public async Task LoadCustomers()
     {
-        var pagingResponse = await _serviceManager.CustomerService.GetCustomers(CustomerParameter);
+        var pagingResponse = await ServiceManager.CustomerService.GetCustomers(CustomerParameter);
         CustomerList = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
     }

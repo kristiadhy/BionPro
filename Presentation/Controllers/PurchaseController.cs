@@ -27,8 +27,8 @@ public class PurchaseController(IServiceManager serviceManager) : ControllerBase
     [HttpGet("{id:int}", Name = "PurchaseByID")]
     public async Task<IActionResult> GetByID(int id, CancellationToken cancellationToken)
     {
-        var supplier = await _serviceManager.PurchaseService.GetByPurchaseIDAsync(id, false, cancellationToken);
-        return Ok(supplier);
+        var purchases = await _serviceManager.PurchaseService.GetByPurchaseIDAsync(id, false, cancellationToken);
+        return Ok(purchases);
     }
 
     [HttpPost(Name = "CreatePurchase")]

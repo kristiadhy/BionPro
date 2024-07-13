@@ -31,7 +31,6 @@ internal class ProductService : IProductService
         var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseForGetMethod(response);
 
         var pagingResponse = new PagingResponse<ProductDtoForProductQueries>()
         {

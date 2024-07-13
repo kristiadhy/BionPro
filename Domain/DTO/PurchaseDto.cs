@@ -22,5 +22,7 @@ public class PurchaseDtoForSummary
     public decimal DiscountPercentage { get; set; }
     public decimal DiscountAmount { get; set; }
     public string? Description { get; set; }
+    public int TotalItems { get; set; }
+    public int TotalQuantity { get; set; }
     public decimal GrandTotal { get; set; }
 }
