@@ -44,8 +44,8 @@ internal sealed class PurchaseService : IPurchaseService
     public async Task<PurchaseDto> CreateAsync(PurchaseDto dto, bool trackChanges, CancellationToken cancellationToken = default)
     {
         //Just in case user just edit the data and then save a new data, the PurchaseID will already exist. Hence, we need to reset it.
-        if (dto.PurchaseID != 0)
-            dto.PurchaseID = 0;
+        if (dto.PurchaseID is not null)
+            dto.PurchaseID = null;
 
         //Generate unique transaction code for purchase before saving to database
         dto.TransactionCode = await GenerateUniqueTransactionCode(trackChanges, cancellationToken);

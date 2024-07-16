@@ -1,0 +1,99 @@
+﻿@using WebAssembly.Shared.Extensions
+@using static WebAssembly.Shared.Enum.DataFilterEnum
+
+<RadzenStack Orientation="Orientation.Horizontal"
+             AlignItems="AlignItems.Start"
+             Wrap="FlexWrap.Wrap"
+             Gap="2px">
+    <RadzenText TextStyle="TextStyle.Body1" Style="margin-top:2px;">By Transaction Date</RadzenText>
+    <RadzenButton Icon="highlight_off" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Text" Size="ButtonSize.Small" />
+</RadzenStack>
+
+<MainMenuContainer>
+    <RadzenDropDown @bind-Value=@ParentSelectedValue
+                    Data="@ParentDropDownData"
+                    AllowClear="true"
+                    Change="@((args) => OnTimePeriodChanged(args))"
+                    Placeholder="Select Time Period"
+                    Name="ParentTimePeriod" />
+
+    <RadzenDropDown @bind-Value=@DetailSelectedValue
+                    Data="@DetailDropdownData"
+                    Placeholder="Select Detail Period"
+                    AllowClear="true"
+                    Change="@((args) => OnDetailTimePeriodChanged(args))"
+                    Disabled="@IsDetailDropdownDisabled"
+                    Name="DetailTimePeriod" />
+    <RadzenDatePicker @bind-Value="@StartDate"
+                      DateFormat="dd/MM/yyyy"
+                      Change="@((args) => OnDateChanged(args))"
+                      Name="StartDate" />
+    <RadzenDatePicker @bind-Value="@EndDate"
+                      DateFormat="dd/MM/yyyy"
+                      Change="@((args) => OnDateChanged(args))"
+                      Name="EndDate" />
+</MainMenuContainer>
+
+@code {
+    private TimePeriod ParentSelectedValue;
+    private Enum? DetailSelectedValue;
+    private DateTime StartDate = DateTime.Now;
+    private DateTime EndDate = DateTime.Now;
+
+    private bool IsDetailDropdownDisabled = false;
+
+    private IEnumerable<Enum> ParentDropDownData;
+    private IEnumerable<Enum>? DetailDropdownData;
+
+    public FilterByTransactionDate()
+    {
+        ParentDropDownData = Enum.GetValues(typeof(TimePeriod)).Cast<Enum>();
+        ParentSelectedValue = (TimePeriod)ParentDropDownData.First();
+
+        LoadTimePeriodDetail((TimePeriod)ParentSelectedValue);
+    }
+
+    private void OnTimePeriodChanged(object? timePeriod)
+    {
+        if (timePeriod is null)
+            return;
+
+        LoadTimePeriodDetail((TimePeriod)timePeriod);
+        OnDetailTimePeriodChanged(DetailSelectedValue);
+    }
+
+    private void LoadTimePeriodDetail(TimePeriod timePeriod)
+    {
+        DetailSelectedValue = null;
+        DetailDropdownData = TimePeriodFilterService.SetDetailTimePeriod(timePeriod);
+
+        //No DetailDropdownData data means that the choice is "Custom by date", hence disable the DetailDropdown
+        if (!DetailDropdownData.Any())
+            IsDetailDropdownDisabled = true;
+        else
+        {
+            DetailSelectedValue = DetailDropdownData?.FirstOrDefault();
+            IsDetailDropdownDisabled = false;
+        }
+    }
+
+    private void OnDetailTimePeriodChanged(object? detailTimePeriod)
+    {
+        if (detailTimePeriod is null)
+            return;
+
+        var detailValue = (Enum)detailTimePeriod;
+        var bothDateValue = TimePeriodFilterService.SetDateRangeBasedOnDetailSelection(detailValue);
+        StartDate = bothDateValue.Item1;
+        EndDate = bothDateValue.Item2;
+    }
+
+    private void OnDateChanged(DateTime? date)
+    {
+        if (date is null)
+            return;
+
+        ParentSelectedValue = TimePeriod.ByCustomDate;
+        OnTimePeriodChanged(ParentSelectedValue);
+    }
+}

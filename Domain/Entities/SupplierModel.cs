@@ -1,7 +1,7 @@
 ﻿namespace Domain.Entities;
 public class SupplierModel : BaseEntity
 {
-    public Guid SupplierID { get; set; }
+    public Guid? SupplierID { get; set; }
     public string? SupplierName { get; set; }
     public string? PhoneNumber { get; set; }
     public string? Address { get; set; }

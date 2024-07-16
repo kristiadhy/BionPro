@@ -66,6 +66,7 @@ public partial class PurchaseTransaction
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
+            PurchaseState.PurchaseForTransaction.PurchaseID = null;
         }
     }
 

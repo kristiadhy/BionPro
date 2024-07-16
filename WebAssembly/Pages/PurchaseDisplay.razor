@@ -1,4 +1,5 @@
 ﻿@page "/purchases"
+@using static WebAssembly.Shared.Enum.DataFilterEnum
 
 <PageTitle>@($"{GlobalConstant.AppName} | {PurchasesPageModel?.Title}")</PageTitle>
 
@@ -12,9 +13,17 @@
 </MainMenuContainer>
 
 <MainMenuContainer>
+    <RadzenSplitButton AlwaysOpenPopup=true Icon="search" Text="Add Filter" Variant="Variant.Outlined" Size="ButtonSize.Medium">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="By Transaction Date" Value="1" />
+            <RadzenSplitButtonItem Text="By Supplier" Value="2" />
+        </ChildContent>
+    </RadzenSplitButton>
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
+
+<FilterByTransactionDate />
 
 <RadzenDataGrid @ref="PurchaseGrid"
                 IsLoading=@isLoading
@@ -51,13 +60,18 @@
         <RadzenDataGridColumn Property="Date"
                               Title="Date"
                               FormatString="{0:g}"
-                              Frozen="true" />
+                              Frozen="true">
+            <Template Context="data">
+                @* @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:g}", date.Date) *@
+                @data.Date.ToString("dd/MM/yyyy HH:mm")
+            </Template>
+                          </RadzenDataGridColumn>
 
         <RadzenDataGridColumn Property="SupplierName"
                               Title="Supplier" />
 
         <RadzenDataGridColumn Property="TotalQuantity"
-                              Title="TotalQty"
+                              Title="Total Qty"
                               TextAlign="TextAlign.Center"
                               Width="80px"
                               FormatString="{0:n0}" />

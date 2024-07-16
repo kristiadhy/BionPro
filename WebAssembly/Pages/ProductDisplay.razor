@@ -72,11 +72,11 @@
 
         <RadzenDataGridColumn Property="ImageUrl"
                               Title="Image"
-                              Width="80px">
+                              Width="60px">
             <Template Context="Product">
                 <RadzenImage Path="@Product.ImageUrl"
                              AlternateText="@Path.GetFileName(Product.ImageUrl)"
-                             class="img-thumbnail" />
+                             class="img-thumbnail img-fluid" Style="max-height: 80px;" />
             </Template>
         </RadzenDataGridColumn>
 

@@ -68,7 +68,7 @@ public partial class ProductCategoryDisplay
         if (!confirmationStatus)
             return;
 
-        int productCategoryID = productCategory.CategoryID!;
+        int productCategoryID = (int)productCategory.CategoryID!;
         var response = await ServiceManager.ProductCategoryService.Delete(productCategoryID);
         if (!response.IsSuccessStatusCode)
             return;

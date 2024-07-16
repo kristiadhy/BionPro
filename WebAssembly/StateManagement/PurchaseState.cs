@@ -1,6 +1,7 @@
 ﻿using Domain.DTO;
 using Domain.Parameters;
 using Web.Services.IHttpRepository;
+using static WebAssembly.Shared.Enum.DataFilterEnum;
 
 namespace WebAssembly.StateManagement;
 
@@ -11,6 +12,9 @@ public class PurchaseState
     public MetaData MetaData { get; set; } = new();
     public PurchaseParam PurchaseParameter { get; set; } = new();
     public PurchaseDto PurchaseForTransaction { get; set; } = new();
+
+    public TimePeriod FilterSelectedTimePeriod { get; set; }
+    public Enum? FilterSelectedDetailTimePeriod { get; set; }
 
     public PurchaseState(IServiceManager serviceManager)
     {

@@ -1,7 +1,7 @@
 ﻿namespace Domain.Entities;
 public class PurchaseModel : BaseEntity
 {
-    public int PurchaseID { get; set; }
+    public int? PurchaseID { get; set; }
     public string? TransactionCode { get; set; }
     public DateTimeOffset Date { get; set; }
     public decimal DiscountPercentage { get; set; }

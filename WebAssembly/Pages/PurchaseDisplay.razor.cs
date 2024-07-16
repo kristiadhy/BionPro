@@ -2,13 +2,16 @@
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
+using System.Runtime.CompilerServices;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
 using WebAssembly.Constants;
 using WebAssembly.CustomEventArgs;
 using WebAssembly.Model;
 using WebAssembly.Services;
+using WebAssembly.Shared.Extensions;
 using WebAssembly.StateManagement;
+using static WebAssembly.Shared.Enum.DataFilterEnum;
 
 namespace WebAssembly.Pages;
 
@@ -72,7 +75,7 @@ public partial class PurchaseDisplay
         if (!confirmationStatus)
             return;
 
-        int purchaseID = purchases.PurchaseID!;
+        int purchaseID = (int)purchases.PurchaseID!;
         var response = await ServiceManager.PurchaseService.Delete(purchaseID);
         if (!response.IsSuccessStatusCode)
             return;
@@ -85,10 +88,10 @@ public partial class PurchaseDisplay
     {
         var parameters = new Dictionary<string, object>
         {
-            { "purchaseID", purchases.PurchaseID }
+            { "purchaseID", purchases.PurchaseID! }
         };
 
-        await DialogService.OpenAsync<PurchaseDetailItems>($"{purchases.TransactionCode} | {purchases.Date.ToString("dd/MM/yyyy HH:mm")}", 
+        await DialogService.OpenAsync<PurchaseDetailItems>($"{purchases.TransactionCode} | {purchases.Date.ToString("dd/MM/yyyy HH:mm")}",
             parameters,
             new DialogOptions() { Width = "700px", Resizable = true, Draggable = true }
             );

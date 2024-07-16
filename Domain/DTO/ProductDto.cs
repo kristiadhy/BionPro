@@ -1,9 +1,9 @@
 ﻿namespace Domain.DTO;
 public class ProductDto
 {
-    public Guid ProductID { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string SKU { get; set; } = string.Empty;
+    public Guid? ProductID { get; set; }
+    public string? Name { get; set; }
+    public string? SKU { get; set; }
     public decimal Price { get; set; }
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
@@ -13,7 +13,7 @@ public class ProductDto
 
 public class ProductDtoForProductQueries
 {
-    public Guid ProductID { get; set; }
+    public Guid? ProductID { get; set; }
     public string? Name { get; set; }
     public string? SKU { get; set; }
     public decimal Price { get; set; }

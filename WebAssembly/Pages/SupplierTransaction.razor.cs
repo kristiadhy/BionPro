@@ -46,6 +46,7 @@ public partial class SupplierTransaction
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
+            SupplierState.Supplier.SupplierID = null;
         }
     }
 

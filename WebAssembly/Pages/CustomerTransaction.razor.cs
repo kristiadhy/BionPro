@@ -47,6 +47,7 @@ public partial class CustomerTransaction
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
+            CustomerState.Customer.CustomerID = null;
         }
     }
 

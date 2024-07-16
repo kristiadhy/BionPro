@@ -69,7 +69,7 @@ public partial class ProductDisplay
         if (!confirmationStatus)
             return;
 
-        Guid productID = products.ProductID!;
+        Guid productID = (Guid)products.ProductID!;
         if (products.ImageUrl is not null)
             await ServiceManager.ProductService.DeleteProductImage(products.ImageUrl);
 

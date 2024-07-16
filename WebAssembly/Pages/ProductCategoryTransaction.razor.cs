@@ -47,6 +47,7 @@ public partial class ProductCategoryTransaction
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
+            ProductCategoryState.ProductCategory.CategoryID = null;
         }
     }
 
@@ -63,10 +64,13 @@ public partial class ProductCategoryTransaction
         IsSaving = true;
         try
         {
-
-            var response = FormStatus == GlobalEnum.FormStatus.New
-            ? await ServiceManager.ProductCategoryService.Create(productCategory)
-            : await ServiceManager.ProductCategoryService.Update(productCategory);
+            HttpResponseMessage? response;
+            if (FormStatus == GlobalEnum.FormStatus.New)
+            {
+                response = await ServiceManager.ProductCategoryService.Create(productCategory);
+            }
+            else
+                response = await ServiceManager.ProductCategoryService.Update(productCategory);
 
             if (response.IsSuccessStatusCode)
             {

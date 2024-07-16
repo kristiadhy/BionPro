@@ -52,6 +52,7 @@ public partial class ProductTransaction
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
+            ProductState.Product.ProductID = null;
         }
     }
 
