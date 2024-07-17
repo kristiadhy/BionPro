@@ -2,16 +2,13 @@
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
-using System.Runtime.CompilerServices;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
 using WebAssembly.Constants;
 using WebAssembly.CustomEventArgs;
 using WebAssembly.Model;
 using WebAssembly.Services;
-using WebAssembly.Shared.Extensions;
 using WebAssembly.StateManagement;
-using static WebAssembly.Shared.Enum.DataFilterEnum;
 
 namespace WebAssembly.Pages;
 
@@ -107,5 +104,13 @@ public partial class PurchaseDisplay
         PurchaseState.PurchaseParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
+    }
+
+    private void OnFilterButtonClick(RadzenSplitButtonItem item)
+    {
+        if (item.Value == "FilterByDate")
+        {
+            PurchaseState.IsFilterByDateActive = true;
+        }
     }
 }

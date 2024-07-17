@@ -6,14 +6,15 @@
              Wrap="FlexWrap.Wrap"
              Gap="2px">
     <RadzenText TextStyle="TextStyle.Body1" Style="margin-top:2px;">By Transaction Date</RadzenText>
-    <RadzenButton Icon="highlight_off" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Text" Size="ButtonSize.Small" />
+    <RadzenButton Click="@OnButtonClearClick" Icon="highlight_off" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Text" Size="ButtonSize.Small" />
 </RadzenStack>
 
 <MainMenuContainer>
-    <RadzenDropDown @bind-Value=@ParentSelectedValue
+    <RadzenDropDown @ref="ParentDropDown"
+                    @bind-Value=@ParentSelectedValue
                     Data="@ParentDropDownData"
                     AllowClear="true"
-                    Change="@((args) => OnTimePeriodChanged(args))"
+                    Change="@((args) => OnTimePeriodChange(args))"
                     Placeholder="Select Time Period"
                     Name="ParentTimePeriod" />
 
@@ -21,79 +22,157 @@
                     Data="@DetailDropdownData"
                     Placeholder="Select Detail Period"
                     AllowClear="true"
-                    Change="@((args) => OnDetailTimePeriodChanged(args))"
+                    Change="@((args) => OnDetailTimePeriodChange(args))"
                     Disabled="@IsDetailDropdownDisabled"
                     Name="DetailTimePeriod" />
-    <RadzenDatePicker @bind-Value="@StartDate"
+
+    <RadzenDatePicker @bind-Value="@StartDateValue"
                       DateFormat="dd/MM/yyyy"
-                      Change="@((args) => OnDateChanged(args))"
+                      Change="@((args) => OnStartDateChange(args))"
                       Name="StartDate" />
-    <RadzenDatePicker @bind-Value="@EndDate"
+
+    <RadzenDatePicker @bind-Value="@EndDateValue"
                       DateFormat="dd/MM/yyyy"
-                      Change="@((args) => OnDateChanged(args))"
+                      Change="@((args) => OnEndDateChange(args))"
                       Name="EndDate" />
 </MainMenuContainer>
 
 @code {
-    private TimePeriod ParentSelectedValue;
-    private Enum? DetailSelectedValue;
-    private DateTime StartDate = DateTime.Now;
-    private DateTime EndDate = DateTime.Now;
+    [Parameter]
+    public TimePeriod? ParentSelectedValue { get; set; }
+    [Parameter]
+    public Enum? DetailSelectedValue { get; set; }
+    [Parameter]
+    public DateTime? StartDateValue { get; set; }
+    [Parameter]
+    public DateTime? EndDateValue { get; set; }
+    [Parameter]
+    public bool IsFilterSet { get; set; }
+    [Parameter]
+    public bool IsFilterActive { get; set; }
+
+    [Parameter]
+    public EventCallback<TimePeriod?> ParentSelectedValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<Enum?> DetailSelectedValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<DateTime?> StartDateValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<DateTime?> EndDateValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsFilterSetChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsFilterActiveChanged { get; set; }
 
     private bool IsDetailDropdownDisabled = false;
 
-    private IEnumerable<Enum> ParentDropDownData;
+    private RadzenDropDown<TimePeriod?>? ParentDropDown;
+    private IEnumerable<Enum>? ParentDropDownData;
     private IEnumerable<Enum>? DetailDropdownData;
 
     public FilterByTransactionDate()
     {
         ParentDropDownData = Enum.GetValues(typeof(TimePeriod)).Cast<Enum>();
-        ParentSelectedValue = (TimePeriod)ParentDropDownData.First();
-
-        LoadTimePeriodDetail((TimePeriod)ParentSelectedValue);
     }
 
-    private void OnTimePeriodChanged(object? timePeriod)
+    protected override async Task OnInitializedAsync()
+    {
+        //If filter never set before, then set the default value to "By Day"
+        if (!IsFilterSet)
+        {
+            ParentSelectedValue = (TimePeriod)ParentDropDownData!.First();
+            await ParentSelectedValueChanged.InvokeAsync(ParentSelectedValue);
+        }
+
+        //Load time period detail dropdown data based on selected parent dropdown data
+        //For ex: By Day -> Today, Yesterday, Last 3 Days, etc
+        await LoadTimePeriodDetail((TimePeriod)ParentSelectedValue!);
+
+        //Once the filter is set, change the IsFilterSet to true
+        IsFilterSet = true;
+        await IsFilterSetChanged.InvokeAsync(IsFilterSet);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadTimePeriodDetail(TimePeriod timePeriod)
+    {
+        //Load the DetailDropdownData based on the selected ParentDropDownData
+        DetailDropdownData = TimePeriodFilterService.SetDetailTimePeriod(timePeriod);
+
+        //No DetailDropdownData data means that the choice is "Custom by date", hence disable the DetailDropdown
+        IsDetailDropdownDisabled = !DetailDropdownData.Any();
+
+        //Select default value for DetailDropdownData by the first selection
+        if (!IsFilterSet)
+        {
+            DetailSelectedValue = DetailDropdownData?.FirstOrDefault();
+            await DetailSelectedValueChanged.InvokeAsync(DetailSelectedValue);
+            await OnDetailTimePeriodChange(DetailSelectedValue);
+        }
+    }
+
+    private async Task OnTimePeriodChange(object? timePeriod)
     {
         if (timePeriod is null)
             return;
 
-        LoadTimePeriodDetail((TimePeriod)timePeriod);
-        OnDetailTimePeriodChanged(DetailSelectedValue);
+        ParentSelectedValue = (TimePeriod)timePeriod;
+        await ParentSelectedValueChanged.InvokeAsync(ParentSelectedValue);
+
+        await LoadTimePeriodDetail((TimePeriod)ParentSelectedValue);
+
+        DetailSelectedValue = DetailDropdownData?.FirstOrDefault();
+        await DetailSelectedValueChanged.InvokeAsync(DetailSelectedValue);
+
+        //We trigger this method so the start date and end date value will be set based on the selected detail time period
+        await OnDetailTimePeriodChange(DetailSelectedValue);
     }
 
-    private void LoadTimePeriodDetail(TimePeriod timePeriod)
+    private async Task OnDetailTimePeriodChange(object? detailTimePeriod)
     {
-        DetailSelectedValue = null;
-        DetailDropdownData = TimePeriodFilterService.SetDetailTimePeriod(timePeriod);
+        if (detailTimePeriod is null) return;
 
-        //No DetailDropdownData data means that the choice is "Custom by date", hence disable the DetailDropdown
-        if (!DetailDropdownData.Any())
-            IsDetailDropdownDisabled = true;
-        else
+        DetailSelectedValue = (Enum)detailTimePeriod;
+        await DetailSelectedValueChanged.InvokeAsync(DetailSelectedValue);
+
+        var bothDateValue = TimePeriodFilterService.SetDateRangeBasedOnDetailSelection(DetailSelectedValue);
+        StartDateValue = bothDateValue.Item1;
+        await StartDateValueChanged.InvokeAsync(StartDateValue);
+        EndDateValue = bothDateValue.Item2;
+        await EndDateValueChanged.InvokeAsync(EndDateValue);
+    }
+
+    private async Task OnStartDateChange(DateTime? startDate)
+    {
+        if (startDate is null) return;
+
+        await SetParentCustomDateByDate();
+        StartDateValue = startDate.Value;
+        await StartDateValueChanged.InvokeAsync(StartDateValue);
+    }
+
+    private async Task OnEndDateChange(DateTime? endDate)
+    {
+        if (endDate is null) return;
+
+        await SetParentCustomDateByDate();
+        EndDateValue = endDate.Value;
+        await EndDateValueChanged.InvokeAsync(EndDateValue);
+    }
+
+    private async Task SetParentCustomDateByDate()
+    {
+        if ((TimePeriod)ParentDropDown!.SelectedItem != TimePeriod.ByCustomDate)
         {
-            DetailSelectedValue = DetailDropdownData?.FirstOrDefault();
-            IsDetailDropdownDisabled = false;
+            ParentSelectedValue = TimePeriod.ByCustomDate;
+            await OnTimePeriodChange(ParentSelectedValue);
         }
     }
 
-    private void OnDetailTimePeriodChanged(object? detailTimePeriod)
+    private async Task OnButtonClearClick()
     {
-        if (detailTimePeriod is null)
-            return;
-
-        var detailValue = (Enum)detailTimePeriod;
-        var bothDateValue = TimePeriodFilterService.SetDateRangeBasedOnDetailSelection(detailValue);
-        StartDate = bothDateValue.Item1;
-        EndDate = bothDateValue.Item2;
-    }
-
-    private void OnDateChanged(DateTime? date)
-    {
-        if (date is null)
-            return;
-
-        ParentSelectedValue = TimePeriod.ByCustomDate;
-        OnTimePeriodChanged(ParentSelectedValue);
+        IsFilterActive = false;
+        await IsFilterActiveChanged.InvokeAsync(IsFilterActive);
     }
 }

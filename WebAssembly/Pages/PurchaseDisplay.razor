@@ -13,17 +13,31 @@
 </MainMenuContainer>
 
 <MainMenuContainer>
-    <RadzenSplitButton AlwaysOpenPopup=true Icon="search" Text="Add Filter" Variant="Variant.Outlined" Size="ButtonSize.Medium">
+    <RadzenSplitButton Click=@(args => OnFilterButtonClick(args))
+                       AlwaysOpenPopup=true
+                       Icon="search"
+                       Text="Add Filter"
+                       Variant="Variant.Outlined"
+                       Size="ButtonSize.Medium">
         <ChildContent>
-            <RadzenSplitButtonItem Text="By Transaction Date" Value="1" />
+            <RadzenSplitButtonItem Text="By Transaction Date" Value="FilterByDate" />
             <RadzenSplitButtonItem Text="By Supplier" Value="2" />
         </ChildContent>
     </RadzenSplitButton>
+
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
-<FilterByTransactionDate />
+@if (PurchaseState.IsFilterByDateActive)
+{
+    <FilterByTransactionDate @bind-ParentSelectedValue="PurchaseState.FilterDateParentValue"
+                             @bind-DetailSelectedValue="PurchaseState.FilterDateDetailValue"
+                             @bind-StartDateValue="PurchaseState.FilterDateStartDate"
+                             @bind-EndDateValue="PurchaseState.FilterDateEndDate"
+                             @bind-IsFilterSet="PurchaseState.IsFilterSet"
+                             @bind-IsFilterActive="PurchaseState.IsFilterByDateActive" />
+}
 
 <RadzenDataGrid @ref="PurchaseGrid"
                 IsLoading=@isLoading
@@ -65,7 +79,7 @@
                 @* @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:g}", date.Date) *@
                 @data.Date.ToString("dd/MM/yyyy HH:mm")
             </Template>
-                          </RadzenDataGridColumn>
+        </RadzenDataGridColumn>
 
         <RadzenDataGridColumn Property="SupplierName"
                               Title="Supplier" />

@@ -13,8 +13,30 @@ public class PurchaseState
     public PurchaseParam PurchaseParameter { get; set; } = new();
     public PurchaseDto PurchaseForTransaction { get; set; } = new();
 
-    public TimePeriod FilterSelectedTimePeriod { get; set; }
-    public Enum? FilterSelectedDetailTimePeriod { get; set; }
+    //Set transaction date filter for purchase display
+    public TimePeriod? FilterDateParentValue { get; set; }
+    public Enum? FilterDateDetailValue { get; set; }
+    public DateTime? FilterDateStartDate { get; set; }
+    public DateTime? FilterDateEndDate { get; set; }
+    public bool IsFilterSet { get; set; } = false;
+
+    private bool _isFilterByDateActive = false;
+    public bool IsFilterByDateActive
+    {
+        get => _isFilterByDateActive;
+        set
+        {
+            if (_isFilterByDateActive != value)
+            {
+                _isFilterByDateActive = value;
+            }
+
+            //if (!_isFilterByDateActive)
+            //{
+            //    ResetPurchaseData();
+            //}
+        }
+    }
 
     public PurchaseState(IServiceManager serviceManager)
     {
@@ -26,5 +48,11 @@ public class PurchaseState
         var pagingResponse = await ServiceManager.PurchaseService.GetPurchasesForSummary(PurchaseParameter);
         PurchaseListForSummary = pagingResponse.Items;
         MetaData = pagingResponse.MetaData;
+    }
+
+    public void ResetPurchaseData()
+    {
+        PurchaseListForSummary = [];
+        MetaData = new();
     }
 }
