@@ -5,6 +5,14 @@ using System.Linq.Dynamic.Core;
 namespace Persistence.Extensions;
 public static class PurchaseQueryExtension
 {
+    public static IQueryable<PurchaseDtoForSummary> SearchBySupplierIDForSummary(this IQueryable<PurchaseDtoForSummary> purchases, Guid? supplierID)
+    {
+        if (supplierID is null)
+            return purchases;
+
+        return purchases.Where(e => e.SupplierID == supplierID);
+    }
+
     public static IQueryable<PurchaseDtoForSummary> SearchBySupplierForSummary(this IQueryable<PurchaseDtoForSummary> purchases, string? searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
@@ -12,7 +20,7 @@ public static class PurchaseQueryExtension
 
         var lowerCaseTerm = searchTerm.Trim().ToLower();
 
-        return purchases.Where(e => e.SupplierName!.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
+        return purchases.Where(e => e.SupplierName!.Contains(lowerCaseTerm));
     }
 
     public static IQueryable<PurchaseDtoForSummary> SearchByTransactionDateForSummary(this IQueryable<PurchaseDtoForSummary> purchases, DateTimeOffset? dateFrom, DateTimeOffset? dateTo)

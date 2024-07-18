@@ -1,6 +1,4 @@
-﻿using WebAssembly.Services;
-
-namespace WebAssembly.Extensions;
+﻿namespace WebAssembly.Extensions;
 
 public static class CustomComponentServices
 {

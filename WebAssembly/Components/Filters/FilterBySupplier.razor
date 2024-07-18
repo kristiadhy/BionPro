@@ -1,0 +1,64 @@
+﻿<FilterHeaderText HeaderText="By Supplier"
+                  OnButtonClearClick="OnButtonClearClick" />
+
+<MainMenuContainer>
+    <SupplierDropdown SelectedValue="@SupplierIDValue" SelectedValueChanged="OnSupplierChanged" />
+
+    <RadzenTextBox Name="FilterBySupplierName"
+                   Placeholder="Or search by supplier name"
+                   @bind-Value="SupplierNameValue"
+                   Change="@((args) => OnTextChange(args))"
+                   Style="width: 250px"
+                   Disabled="@IsSupplierTextDisabled" />
+</MainMenuContainer>
+
+@code {
+    [Parameter]
+    public Guid? SupplierIDValue { get; set; }
+    [Parameter]
+    public string? SupplierNameValue { get; set; }
+    [Parameter]
+    public bool IsFilterBySupplierActive { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid?> SupplierIDValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<string?> SupplierNameValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsFilterBySupplierActiveChanged { get; set; }
+    [Parameter]
+    public EventCallback ButtonClearFilterClicked { get; set; }
+
+    private bool IsSupplierTextDisabled = false;
+
+
+    private async Task OnSupplierChanged(Guid? supplierID)
+    {
+        SupplierIDValue = supplierID;
+        await SupplierIDValueChanged.InvokeAsync(SupplierIDValue);
+        await OnTextChange(string.Empty);
+
+        if (supplierID is null)
+            IsSupplierTextDisabled = false;
+        else
+        {
+            IsSupplierTextDisabled = true;
+        }
+    }
+
+    private async Task OnButtonClearClick()
+    {
+        IsFilterBySupplierActive = false;
+        await IsFilterBySupplierActiveChanged.InvokeAsync(IsFilterBySupplierActive);
+        SupplierIDValue = null;
+        await SupplierIDValueChanged.InvokeAsync(SupplierIDValue);
+
+        await ButtonClearFilterClicked.InvokeAsync();
+    }
+
+    private async Task OnTextChange(string text)
+    {
+        SupplierNameValue = text;
+        await SupplierNameValueChanged.InvokeAsync(SupplierNameValue);
+    }
+}

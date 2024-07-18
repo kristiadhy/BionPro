@@ -1,6 +1,4 @@
-﻿using WebAssembly.Model;
-
-namespace WebAssembly.Constants;
+﻿namespace WebAssembly.Constants;
 
 public static class GlobalConstant
 {

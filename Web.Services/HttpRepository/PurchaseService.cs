@@ -23,9 +23,12 @@ internal class PurchaseService : IPurchaseService
     {
         var queryStringParam = new Dictionary<string, string>
         {
-            ["pageNumber"] = purchaseParam.PageNumber.ToString(),
-            ["searchTerm"] = purchaseParam.SrcSupplier ?? "",
-            ["orderBy"] = purchaseParam.OrderBy!
+            [$"{nameof(PurchaseParam.PageNumber)}"] = purchaseParam.PageNumber.ToString(),
+            [$"{nameof(PurchaseParam.SrcSupplierID)}"] = purchaseParam.SrcSupplierID.ToString() ?? "",
+            [$"{nameof(PurchaseParam.SrcSupplierName)}"] = purchaseParam.SrcSupplierName ?? "",
+            [$"{nameof(PurchaseParam.SrcDateFrom)}"] = purchaseParam.SrcDateFrom.ToString() ?? "",
+            [$"{nameof(PurchaseParam.SrcDateTo)}"] = purchaseParam.SrcDateTo.ToString() ?? "",
+            [$"{nameof(PurchaseParam.OrderBy)}"] = purchaseParam.OrderBy ?? ""
         };
 
         var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);

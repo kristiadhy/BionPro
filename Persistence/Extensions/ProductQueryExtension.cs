@@ -4,14 +4,22 @@ using System.Linq.Dynamic.Core;
 namespace Persistence.Extensions;
 public static class ProductQueryExtension
 {
-    public static IQueryable<ProductModel> SearchByName(this IQueryable<ProductModel> products, string? searchTerm)
+    public static IQueryable<ProductModel> SearchByProductCategory(this IQueryable<ProductModel> products, int? productCategoryID)
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
+        if (productCategoryID is null)
             return products;
 
-        var lowerCaseTerm = searchTerm.Trim().ToLower();
+        return products.Where(e => e.CategoryID == productCategoryID);
+    }
 
-        return products.Where(e => e.Name.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
+    public static IQueryable<ProductModel> SearchByProductName(this IQueryable<ProductModel> products, string? productname)
+    {
+        if (string.IsNullOrWhiteSpace(productname))
+            return products;
+
+        var lowerCaseTerm = productname.Trim().ToLower();
+
+        return products.Where(e => e.Name!.Contains(lowerCaseTerm));
     }
 
     public static IQueryable<ProductModel> Sort(this IQueryable<ProductModel> products, string? orderByQueryString)

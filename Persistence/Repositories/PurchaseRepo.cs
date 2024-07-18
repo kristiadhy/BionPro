@@ -19,7 +19,8 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
     public async Task<PagedList<PurchaseDtoForSummary>> GetSummaryByParametersAsync(PurchaseParam purchaseParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var purchases = await GetPurchaseWithSummary()
-            .SearchBySupplierForSummary(purchaseParam.SrcSupplier)
+            .SearchBySupplierIDForSummary(purchaseParam.SrcSupplierID)
+            .SearchBySupplierForSummary(purchaseParam.SrcSupplierName)
             .SearchByTransactionDateForSummary(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
             .SortForSummary(purchaseParam.OrderBy)
             .Skip((purchaseParam.PageNumber - 1) * purchaseParam.PageSize)
@@ -27,7 +28,8 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
             .ToListAsync(cancellationToken);
 
         var count = await GetPurchaseWithSummary()
-            .SearchBySupplierForSummary(purchaseParam.SrcSupplier)
+            .SearchBySupplierIDForSummary(purchaseParam.SrcSupplierID)
+            .SearchBySupplierForSummary(purchaseParam.SrcSupplierName)
             .SearchByTransactionDateForSummary(purchaseParam.SrcDateFrom, purchaseParam.SrcDateTo)
             .CountAsync(cancellationToken);
 
@@ -105,6 +107,7 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
                 DiscountPercentage = a.DiscountPercentage,
                 DiscountAmount = a.DiscountAmount,
                 Description = a.Description,
+                SupplierID = a.Supplier!.SupplierID,
                 SupplierName = a.Supplier!.SupplierName,
                 TotalItems = a.PurchaseDetails!.Count(),
                 TotalQuantity = a.PurchaseDetails!.Sum(pd => pd.Quantity),

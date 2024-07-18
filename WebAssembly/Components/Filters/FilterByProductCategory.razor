@@ -1,0 +1,47 @@
+﻿<RadzenStack Orientation="Orientation.Vertical"
+             AlignItems="AlignItems.Start"
+             Wrap="FlexWrap.Wrap" Gap="2px">
+    <FilterHeaderText HeaderText="By Product category"
+                      OnButtonClearClick="OnButtonClearClick" />
+    <ProductCategoryDropdown SelectedValue="@ProductCategoryIDValue"
+                             SelectedValueChanged="OnProductCategoryChanged" />
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public int? ProductCategoryIDValue { get; set; }
+    [Parameter]
+    public bool IsFilterByProductCategoryActive { get; set; }
+
+    [Parameter]
+    public EventCallback<int?> ProductCategoryIDValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsFilterByProductCategoryActiveChanged { get; set; }
+    [Parameter]
+    public EventCallback ButtonClearFilterClicked { get; set; }
+
+    private bool IsProductCategoryTextDisabled = false;
+
+
+    private async Task OnProductCategoryChanged(int? productCategoryID)
+    {
+        ProductCategoryIDValue = productCategoryID;
+        await ProductCategoryIDValueChanged.InvokeAsync(ProductCategoryIDValue);
+
+        if (productCategoryID is null)
+            IsProductCategoryTextDisabled = false;
+        else
+        {
+            IsProductCategoryTextDisabled = true;
+        }
+    }
+
+    private async Task OnButtonClearClick()
+    {
+        IsFilterByProductCategoryActive = false;
+        await IsFilterByProductCategoryActiveChanged.InvokeAsync(IsFilterByProductCategoryActive);
+        ProductCategoryIDValue = null;
+        await ProductCategoryIDValueChanged.InvokeAsync(ProductCategoryIDValue);
+        await ButtonClearFilterClicked.InvokeAsync();
+    }
+}

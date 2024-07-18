@@ -1,0 +1,43 @@
+﻿<RadzenStack Orientation="Orientation.Vertical"
+             AlignItems="AlignItems.Start"
+             Wrap="FlexWrap.Wrap" Gap="2px">
+
+    <FilterHeaderText HeaderText="By Product"
+                      OnButtonClearClick="OnButtonClearClick" />
+
+    <RadzenTextBox Name="FilterByProductName"
+                   Placeholder="Search by product name"
+                   @bind-Value="ProductNameValue"
+                   Change="@((args) => OnTextChange(args))"
+                   Style="width: 250px" />
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public string? ProductNameValue { get; set; }
+    [Parameter]
+    public bool IsFilterByProductNameActive { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ProductNameValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsFilterByProductNameActiveChanged { get; set; }
+    [Parameter]
+    public EventCallback ButtonClearFilterClicked { get; set; }
+
+
+    private async Task OnButtonClearClick()
+    {
+        IsFilterByProductNameActive = false;
+        await IsFilterByProductNameActiveChanged.InvokeAsync(IsFilterByProductNameActive);
+        ProductNameValue = null;
+        await ProductNameValueChanged.InvokeAsync(ProductNameValue);
+        await ButtonClearFilterClicked.InvokeAsync();
+    }
+
+    private async Task OnTextChange(string text)
+    {
+        ProductNameValue = text;
+        await ProductNameValueChanged.InvokeAsync(ProductNameValue);
+    }
+}

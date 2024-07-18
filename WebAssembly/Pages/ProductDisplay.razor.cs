@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
+using System.ComponentModel.DataAnnotations;
 using Web.Services.IHttpRepository;
-using WebAssembly.Constants;
 using WebAssembly.CustomEventArgs;
-using WebAssembly.Model;
-using WebAssembly.Services;
-using WebAssembly.StateManagement;
 
 namespace WebAssembly.Pages;
 
@@ -27,6 +24,8 @@ public partial class ProductDisplay
     internal static RadzenDataGrid<ProductDtoForProductQueries> ProductGrid { get; set; } = default!;
 
     private bool isLoading = false;
+    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
 
     private PageModel? ProductsPageModel { get; set; }
     private IEnumerable<PageModel> BreadCrumbs { get; set; }
@@ -39,6 +38,11 @@ public partial class ProductDisplay
             new PageModel { Path = ProductsPageModel?.Path, Title= ProductsPageModel?.Title },
             new PageModel { Path = null, Title = "List" }
         ];
+    }
+
+    protected override void OnInitialized()
+    {
+        SetFilterButtonText();
     }
 
     private async Task EvReloadData()
@@ -91,5 +95,74 @@ public partial class ProductDisplay
         ProductState.ProductParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
+    }
+
+    private void OnFilterButtonClick(RadzenSplitButtonItem item)
+    {
+        bool isFilterActiveBefore = ProductState.IsFilterActive;
+
+        if (item is null)
+        {
+            //If the filter is active, then clear the filter
+            if (isFilterActiveBefore)
+                ProductState.ToggleFilterState();
+
+            else //If there is no active filter, then set filter by product category as default
+            {
+                ProductState.IsFilterByProductCategoryActive = true;
+                ProductState.IsFilterActive = true;
+            }
+        }
+        else
+        {
+            // Use a method to set the filter state based on item.Value
+            SetFilterStateBasedOnItemValue(item.Value);
+        }
+
+        // Update filter button appearance only if the filter activation state has changed
+        if (isFilterActiveBefore != ProductState.IsFilterActive)
+        {
+            SetFilterButtonText();
+        }
+    }
+
+    private void SetFilterStateBasedOnItemValue(string value)
+    {
+        switch (value)
+        {
+            case nameof(FilterCondition.ByProductCategory):
+                ProductState.IsFilterByProductCategoryActive = true;
+                break;
+            case nameof(FilterCondition.ByProductName):
+                ProductState.IsFilterByProductNameActive = true;
+                break;
+        }
+        ProductState.IsFilterActive = true;
+    }
+
+    private void SetFilterButtonText()
+    {
+        if (ProductState.IsFilterActive)
+        {
+            filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
+            filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
+        }
+        else
+        {
+            filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+            filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+        }
+    }
+
+    private void ButtonClearFilterClicked()
+    {
+        ProductState.SetGlobalFilterStateByFilters();
+        SetFilterButtonText();
+    }
+
+    private enum FilterCondition
+    {
+        ByProductCategory,
+        ByProductName,
     }
 }

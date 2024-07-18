@@ -1,13 +1,7 @@
 ﻿@using WebAssembly.Shared.Extensions
 @using static WebAssembly.Shared.Enum.DataFilterEnum
 
-<RadzenStack Orientation="Orientation.Horizontal"
-             AlignItems="AlignItems.Start"
-             Wrap="FlexWrap.Wrap"
-             Gap="2px">
-    <RadzenText TextStyle="TextStyle.Body1" Style="margin-top:2px;">By Transaction Date</RadzenText>
-    <RadzenButton Click="@OnButtonClearClick" Icon="highlight_off" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Text" Size="ButtonSize.Small" />
-</RadzenStack>
+<FilterHeaderText HeaderText="By Transaction Date" OnButtonClearClick="OnButtonClearClick" />
 
 <MainMenuContainer>
     <RadzenDropDown @ref="ParentDropDown"
@@ -49,7 +43,7 @@
     [Parameter]
     public bool IsFilterSet { get; set; }
     [Parameter]
-    public bool IsFilterActive { get; set; }
+    public bool IsFilterByDateActive { get; set; }
 
     [Parameter]
     public EventCallback<TimePeriod?> ParentSelectedValueChanged { get; set; }
@@ -62,7 +56,9 @@
     [Parameter]
     public EventCallback<bool> IsFilterSetChanged { get; set; }
     [Parameter]
-    public EventCallback<bool> IsFilterActiveChanged { get; set; }
+    public EventCallback<bool> IsFilterByDateActiveChanged { get; set; }
+    [Parameter]
+    public EventCallback ButtonClearFilterClicked { get; set; }
 
     private bool IsDetailDropdownDisabled = false;
 
@@ -172,7 +168,9 @@
 
     private async Task OnButtonClearClick()
     {
-        IsFilterActive = false;
-        await IsFilterActiveChanged.InvokeAsync(IsFilterActive);
+        IsFilterByDateActive = false;
+        await IsFilterByDateActiveChanged.InvokeAsync(IsFilterByDateActive);
+
+        await ButtonClearFilterClicked.InvokeAsync();
     }
 }

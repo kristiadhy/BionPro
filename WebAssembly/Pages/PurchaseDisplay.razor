@@ -14,14 +14,13 @@
 
 <MainMenuContainer>
     <RadzenSplitButton Click=@(args => OnFilterButtonClick(args))
-                       AlwaysOpenPopup=true
-                       Icon="search"
-                       Text="Add Filter"
+                       Icon="@filterIcon"
+                       Text="@filterText"
                        Variant="Variant.Outlined"
                        Size="ButtonSize.Medium">
         <ChildContent>
-            <RadzenSplitButtonItem Text="By Transaction Date" Value="FilterByDate" />
-            <RadzenSplitButtonItem Text="By Supplier" Value="2" />
+            <RadzenSplitButtonItem Text="By Transaction Date" Value="@nameof(FilterCondition.ByDate)" />
+            <RadzenSplitButtonItem Text="By Supplier" Value="@nameof(FilterCondition.BySupplier)" />
         </ChildContent>
     </RadzenSplitButton>
 
@@ -36,7 +35,17 @@
                              @bind-StartDateValue="PurchaseState.FilterDateStartDate"
                              @bind-EndDateValue="PurchaseState.FilterDateEndDate"
                              @bind-IsFilterSet="PurchaseState.IsFilterSet"
-                             @bind-IsFilterActive="PurchaseState.IsFilterByDateActive" />
+                             @bind-IsFilterByDateActive="PurchaseState.IsFilterByDateActive"
+                             ButtonClearFilterClicked="ButtonClearFilterClicked" />
+}
+
+
+@if (PurchaseState.IsFilterBySupplierActive)
+{
+    <FilterBySupplier @bind-SupplierIDValue="PurchaseState.FilterSupplierByID"
+                      @bind-SupplierNameValue="PurchaseState.FilterSupplierByName"
+                      @bind-IsFilterBySupplierActive="PurchaseState.IsFilterBySupplierActive"
+                      ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 <RadzenDataGrid @ref="PurchaseGrid"

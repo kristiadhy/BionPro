@@ -1,6 +1,4 @@
-﻿using WebAssembly.StateManagement;
-
-namespace WebAssembly.Extensions;
+﻿namespace WebAssembly.Extensions;
 
 public static class StateManagementServices
 {

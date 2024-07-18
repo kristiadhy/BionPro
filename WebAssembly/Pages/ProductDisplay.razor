@@ -15,9 +15,38 @@
 </MainMenuContainer>
 
 <MainMenuContainer>
+    <RadzenSplitButton Click=@(args => OnFilterButtonClick(args))
+                       Icon="@filterIcon"
+                       Text="@filterText"
+                       Variant="Variant.Outlined"
+                       Size="ButtonSize.Medium">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="By Category" Value="@nameof(FilterCondition.ByProductCategory)" />
+            <RadzenSplitButtonItem Text="By Product Name" Value="@nameof(FilterCondition.ByProductName)" />
+        </ChildContent>
+    </RadzenSplitButton>
+
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
+
+<RadzenStack Orientation="Orientation.Horizontal"
+             AlignItems="AlignItems.Start"
+             Wrap="FlexWrap.Wrap"
+             Gap="10px">
+    @if (ProductState.IsFilterByProductCategoryActive)
+    {
+        <FilterByProductCategory @bind-ProductCategoryIDValue="ProductState.FilterProductCategoryValue"
+                                 @bind-IsFilterByProductCategoryActive="ProductState.IsFilterByProductCategoryActive"
+                                 ButtonClearFilterClicked="ButtonClearFilterClicked" />
+    }
+    @if (ProductState.IsFilterByProductNameActive)
+    {
+        <FilterByProduct @bind-ProductNameValue="ProductState.FilterProductNameValue"
+                         @bind-IsFilterByProductNameActive="ProductState.IsFilterByProductNameActive"
+                         ButtonClearFilterClicked="ButtonClearFilterClicked" />
+    }
+</RadzenStack>
 
 @*                 Count="@ProductState.MetaData.TotalCount"
                 AllowPaging="true"

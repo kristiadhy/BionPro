@@ -2,7 +2,8 @@
 public class PurchaseParam : RequestParameters
 {
     public PurchaseParam() => OrderBy = "Date";
-    public string? SrcSupplier { get; set; }
+    public Guid? SrcSupplierID { get; set; }
+    public string? SrcSupplierName { get; set; }
     public DateTimeOffset? SrcDateFrom { get; set; }
     public DateTimeOffset? SrcDateTo { get; set; }
 }

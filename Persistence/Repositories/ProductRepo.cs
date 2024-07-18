@@ -29,14 +29,16 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
     {
         var products = await FindAll(trackChanges)
             .Include(x => x.Category)
-            .SearchByName(productParam.SrcByName) //It's a local method
+            .SearchByProductCategory(productParam.SrcByProductCategory)
+            .SearchByProductName(productParam.SrcByProductName)
             .Sort(productParam.OrderBy)
             .Skip((productParam.PageNumber - 1) * productParam.PageSize)
             .Take(productParam.PageSize)
             .ToListAsync(cancellationToken);
 
         var count = await FindAll(trackChanges)
-            .SearchByName(productParam.SrcByName)
+            .SearchByProductCategory(productParam.SrcByProductCategory)
+            .SearchByProductName(productParam.SrcByProductName)
             .CountAsync(cancellationToken);
 
         return new PagedList<ProductModel>(products, count, productParam.PageNumber, productParam.PageSize);

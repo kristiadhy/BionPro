@@ -17,6 +17,7 @@ public class PurchaseDtoForSummary
 {
     public int? PurchaseID { get; set; }
     public string? TransactionCode { get; set; }
+    public Guid? SupplierID { get; set; }
     public string? SupplierName { get; set; }
     public DateTimeOffset Date { get; set; }
     public decimal DiscountPercentage { get; set; }

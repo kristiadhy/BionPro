@@ -4,11 +4,7 @@ using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
-using WebAssembly.Constants;
 using WebAssembly.CustomEventArgs;
-using WebAssembly.Model;
-using WebAssembly.Services;
-using WebAssembly.StateManagement;
 
 namespace WebAssembly.Pages;
 
@@ -30,6 +26,8 @@ public partial class PurchaseDisplay
     private RadzenDataGrid<PurchaseDtoForSummary> PurchaseGrid { get; set; } = default!;
 
     private bool isLoading = false;
+    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
 
     private PageModel? PurchasesPageModel { get; set; }
     private IEnumerable<PageModel> BreadCrumbs { get; set; }
@@ -42,6 +40,11 @@ public partial class PurchaseDisplay
             new PageModel { Path = PurchasesPageModel?.Path, Title= PurchasesPageModel?.Title },
             new PageModel { Path = null, Title = "List" }
         ];
+    }
+
+    protected override void OnInitialized()
+    {
+        SetFilterButtonText();
     }
 
     private async Task EvReloadData()
@@ -108,9 +111,72 @@ public partial class PurchaseDisplay
 
     private void OnFilterButtonClick(RadzenSplitButtonItem item)
     {
-        if (item.Value == "FilterByDate")
+        bool isFilterActiveBefore = PurchaseState.IsFilterActive;
+
+        if (item is null)
         {
-            PurchaseState.IsFilterByDateActive = true;
+            //If the filter is active, then clear the filter
+            if(isFilterActiveBefore)
+                PurchaseState.ToggleFilterState();
+
+            else //If there is no active filter, then set filter by transaction date as default
+            {
+                PurchaseState.IsFilterByDateActive = true;
+                PurchaseState.IsFilterActive = true;
+            }
         }
+        else
+        {
+            // Use a method to set the filter state based on item.Value
+            SetFilterStateBasedOnItemValue(item.Value);
+        }
+
+        // Update filter button appearance only if the filter activation state has changed
+        if (isFilterActiveBefore != PurchaseState.IsFilterActive)
+        {
+            SetFilterButtonText();
+        }
+    }
+
+    private void SetFilterStateBasedOnItemValue(string value)
+    {
+        switch (value)
+        {
+            case nameof(FilterCondition.ByDate):
+                PurchaseState.IsFilterByDateActive = true;
+                break;
+            case nameof(FilterCondition.BySupplier):
+                PurchaseState.IsFilterBySupplierActive = true;
+                break;
+        }
+        PurchaseState.IsFilterActive = true;
+    }
+
+
+
+    private void SetFilterButtonText()
+    {
+        if (PurchaseState.IsFilterActive)
+        {
+            filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
+            filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
+        }
+        else
+        {
+            filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+            filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+        }
+    }
+
+    private void ButtonClearFilterClicked()
+    {
+        PurchaseState.SetGlobalFilterStateByFilters();
+        SetFilterButtonText();
+    }
+
+    private enum FilterCondition
+    {
+        ByDate,
+        BySupplier,
     }
 }
