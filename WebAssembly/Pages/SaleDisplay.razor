@@ -1,0 +1,173 @@
+﻿@page "/sales"
+@using static WebAssembly.Shared.Enum.GlobalEnum
+@using static WebAssembly.Shared.Enum.DataFilterEnum
+
+<PageTitle>@($"{GlobalConstant.AppName} | {SalesPageModel?.Title}")</PageTitle>
+
+<MainMenuContainer>
+    <RadzenText TextStyle="TextStyle.H5">@SalesPageModel?.Title</RadzenText>
+    <BreadCrumb breadCrumbs="@BreadCrumbs" />
+</MainMenuContainer>
+
+<MainMenuContainer>
+    <RadzenText TextStyle="TextStyle.Body1">This is your list of sales. It shows the transactions you have made with your customers and will deduct the number of product items in your inventory for each sale.</RadzenText>
+</MainMenuContainer>
+
+<MainMenuContainer>
+    <RadzenSplitButton Click=@(args => OnFilterButtonClick(args))
+                       Icon="@filterIcon"
+                       Text="@filterText"
+                       Variant="Variant.Outlined"
+                       Size="ButtonSize.Medium">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="By Transaction Date" Value="@nameof(FilterCondition.ByDate)" />
+            <RadzenSplitButtonItem Text="By Customer" Value="@nameof(FilterCondition.ByCustomer)" />
+        </ChildContent>
+    </RadzenSplitButton>
+
+    <MainMenuButton LoadDataClicked="EvReloadData"
+                    CreateNewClicked="EvCreateNew" />
+</MainMenuContainer>
+
+@if (SaleState.IsFilterByDateActive)
+{
+    <FilterByTransactionDate @bind-ParentSelectedValue="SaleState.FilterDateParentValue"
+                             @bind-DetailSelectedValue="SaleState.FilterDateDetailValue"
+                             @bind-StartDateValue="SaleState.FilterDateStartDate"
+                             @bind-EndDateValue="SaleState.FilterDateEndDate"
+                             @bind-IsFilterSet="SaleState.IsFilterSet"
+                             @bind-IsFilterByDateActive="SaleState.IsFilterByDateActive"
+                             ButtonClearFilterClicked="ButtonClearFilterClicked" />
+}
+
+
+@if (SaleState.IsFilterByCustomerActive)
+{
+    <FilterByCustomer @bind-CustomerIDValue="SaleState.FilterCustomerByID"
+                      @bind-CustomerNameValue="SaleState.FilterCustomerByName"
+                      @bind-IsFilterByCustomerActive="SaleState.IsFilterByCustomerActive"
+                      ButtonClearFilterClicked="ButtonClearFilterClicked" />
+}
+
+<RadzenDataGrid @ref="SaleGrid"
+                IsLoading=@isLoading
+                Data="@SaleState.SaleListForSummary"
+                TItem="SaleDtoForSummary"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowSorting="true"
+                AllowFiltering="false"
+                AllowColumnResize="true"
+                AllowColumnReorder="false"
+                GridLines="DataGridGridLines.Both"
+                ColumnWidth="150px"
+                class="my-4">
+    <Columns>
+        <RadzenDataGridColumn Width="50px"
+                              Title="#" Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @(SaleState.SaleListForSummary.IndexOf(data) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="SaleID"
+                              Visible=false
+                              Filterable="false"
+                              Title="ID"
+                              TextAlign="TextAlign.Center">
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="TransactionCode"
+                              Title="Code" />
+
+        <RadzenDataGridColumn Property="Date"
+                              Title="Date"
+                              FormatString="{0:g}"
+                              Frozen="true">
+            <Template Context="data">
+                @* @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:g}", date.Date) *@
+                @data.Date.ToString("dd/MM/yyyy HH:mm")
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="@nameof(SaleDtoForSummary.CustomerName)"
+                              Title="Customer" />
+
+        <RadzenDataGridColumn Property="@nameof(SaleDtoForSummary.TotalQuantity)"
+                              Title="Total Qty"
+                              TextAlign="TextAlign.Center"
+                              Width="80px"
+                              FormatString="{0:n0}" />
+
+        <RadzenDataGridColumn Property="@nameof(SaleDtoForSummary.GrandTotal)"
+                              Title="Grand Total"
+                              TextAlign="TextAlign.Right"
+                              FormatString="{0:c}" />
+
+        <RadzenDataGridColumn Property="@nameof(SaleDtoForSummary.Description)"
+                              Title="Description" />
+
+        <RadzenDataGridColumn Property="@nameof(SaleDtoForSummary.PaymentStatus)"
+                              Title="Status"
+                              Width="75px"
+                              TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (data.PaymentStatus)
+                {
+                    <RadzenLabel class="rz-background-color-success text-white py-1 px-2">Paid</RadzenLabel>
+                }
+                @if (!data.PaymentStatus)
+                {
+                    <RadzenLabel class="rz-background-color-danger text-white py-1 px-2">Unpaid</RadzenLabel>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Context="Action"
+                              Title="Action"
+                              Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Left"
+                              Frozen="true"
+                              FrozenPosition="FrozenColumnPosition.Right">
+
+            <Template Context="dto">
+                <RadzenButton Icon="edit"
+                              ButtonStyle="ButtonStyle.Light"
+                              Variant="Variant.Flat"
+                              Size="ButtonSize.Medium"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Edit.ToString()))"
+                              Click="@(args => EvEditRow(dto))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                              Icon="delete"
+                              Variant="Variant.Flat"
+                              Shade="Shade.Lighter"
+                              Size="ButtonSize.Medium"
+                              class="my-1 ms-1"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Delete.ToString()))"
+                              Click="@(args => EvDeleteRow(dto))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Info"
+                              Icon="visibility"
+                              Variant="Variant.Flat"
+                              Shade="Shade.Lighter"
+                              Size="ButtonSize.Medium"
+                              class="my-1 ms-1"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Detail.ToString()))"
+                              Click="@(args => EvSeeDetail(dto))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<Pager @ref="Pager"
+       PageSize="@SaleState.MetaData.PageSize"
+       TotalCount="@SaleState.MetaData.TotalCount"
+       CurrentPage="SaleState.SaleParameter.PageNumber"
+       PageChanged="@(args => PageChanged(args))" />

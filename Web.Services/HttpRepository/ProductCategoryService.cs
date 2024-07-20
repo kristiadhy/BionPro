@@ -23,9 +23,9 @@ internal class ProductCategoryService : IProductCategoryService
     {
         var queryStringParam = new Dictionary<string, string>
         {
-            ["pageNumber"] = productCategoryParam.PageNumber.ToString(),
-            ["searchTerm"] = productCategoryParam.SrcByName == null ? "" : productCategoryParam.SrcByName,
-            ["orderBy"] = productCategoryParam.OrderBy!
+            [$"{nameof(ProductCategoryParam.PageNumber)}"] = productCategoryParam.PageNumber.ToString(),
+            [$"{nameof(ProductCategoryParam.SrcByName)}"] = productCategoryParam.SrcByName == null ? "" : productCategoryParam.SrcByName,
+            [$"{nameof(ProductCategoryParam.OrderBy)}"] = productCategoryParam.OrderBy!
         };
 
         var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);

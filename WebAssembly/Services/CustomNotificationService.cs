@@ -4,16 +4,16 @@ namespace WebAssembly.Services;
 
 public class CustomNotificationService
 {
-    public NotificationService NotificationService { get; }
+    private readonly NotificationService _notificationService;
 
     public CustomNotificationService(NotificationService notificationService)
     {
-        NotificationService = notificationService;
+        _notificationService = notificationService;
     }
 
     public void SaveNotification(string detailText)
     {
-        NotificationService.Notify(
+        _notificationService.Notify(
            new NotificationMessage
            {
                Severity = NotificationSeverity.Info,
@@ -25,7 +25,7 @@ public class CustomNotificationService
 
     public void DeleteNotification(string detailText)
     {
-        NotificationService.Notify(
+        _notificationService.Notify(
            new NotificationMessage
            {
                Severity = NotificationSeverity.Success,

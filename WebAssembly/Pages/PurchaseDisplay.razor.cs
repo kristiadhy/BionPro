@@ -17,6 +17,8 @@ public partial class PurchaseDisplay
     [Inject]
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
+    CustomTooltipService CustomTooltipService { get; set; } = default!;
+    [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     DialogService DialogService { get; set; } = default!;
@@ -31,6 +33,7 @@ public partial class PurchaseDisplay
 
     private PageModel? PurchasesPageModel { get; set; }
     private IEnumerable<PageModel> BreadCrumbs { get; set; }
+    private Pager? Pager;
 
     public PurchaseDisplay()
     {
@@ -109,14 +112,14 @@ public partial class PurchaseDisplay
             await EvReloadData();
     }
 
-    private void OnFilterButtonClick(RadzenSplitButtonItem item)
+    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
         bool isFilterActiveBefore = PurchaseState.IsFilterActive;
 
         if (item is null)
         {
             //If the filter is active, then clear the filter
-            if(isFilterActiveBefore)
+            if (isFilterActiveBefore)
                 PurchaseState.ToggleFilterState();
 
             else //If there is no active filter, then set filter by transaction date as default
@@ -135,6 +138,7 @@ public partial class PurchaseDisplay
         if (isFilterActiveBefore != PurchaseState.IsFilterActive)
         {
             SetFilterButtonText();
+            await Pager?.NavigateToPage(1)!;
         }
     }
 

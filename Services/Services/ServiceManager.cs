@@ -19,7 +19,8 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<IAuthenticationService> _lazyAuthenticationService;
     private readonly Lazy<IPurchaseService> _lazyPurchaseService;
     private readonly Lazy<IPurchaseDetailService> _lazyPurchaseDetailService;
-
+    private readonly Lazy<ISaleService> _lazySaleService;
+    private readonly Lazy<ISaleDetailService> _lazySaleDetailService;
 
     public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, ILogger logger, UserManager<UserModel> userManager, IConfiguration configuration)
     {
@@ -30,6 +31,8 @@ public sealed class ServiceManager : IServiceManager
         _lazyAuthenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(repositoryManager, mapper, logger, userManager, configuration));
         _lazyPurchaseService = new Lazy<IPurchaseService>(() => new PurchaseService(repositoryManager, mapper, logger));
         _lazyPurchaseDetailService = new Lazy<IPurchaseDetailService>(() => new PurchaseDetailService(repositoryManager, mapper, logger));
+        _lazySaleService = new Lazy<ISaleService>(() => new SaleService(repositoryManager, mapper, logger));
+        _lazySaleDetailService = new Lazy<ISaleDetailService>(() => new SaleDetailService(repositoryManager, mapper, logger));
     }
 
     public ICustomerService CustomerService => _lazyCustomerService.Value;
@@ -39,4 +42,6 @@ public sealed class ServiceManager : IServiceManager
     public IAuthenticationService AuthenticationService => _lazyAuthenticationService.Value;
     public IPurchaseService PurchaseService => _lazyPurchaseService.Value;
     public IPurchaseDetailService PurchaseDetailService => _lazyPurchaseDetailService.Value;
+    public ISaleService SaleService => _lazySaleService.Value;
+    public ISaleDetailService SaleDetailService => _lazySaleDetailService.Value;
 }

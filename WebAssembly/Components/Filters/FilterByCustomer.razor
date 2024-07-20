@@ -1,0 +1,64 @@
+﻿<FilterHeaderText HeaderText="By Customer"
+                  OnButtonClearClick="OnButtonClearClick" />
+
+<MainMenuContainer>
+    <CustomerDropdown SelectedValue="@CustomerIDValue" SelectedValueChanged="OnCustomerChanged" />
+
+    <RadzenTextBox Name="FilterByCustomerName"
+                   Placeholder="Or search by customer name"
+                   @bind-Value="CustomerNameValue"
+                   Change="@((args) => OnTextChange(args))"
+                   Style="width: 250px"
+                   Disabled="@IsCustomerTextDisabled" />
+</MainMenuContainer>
+
+@code {
+    [Parameter]
+    public Guid? CustomerIDValue { get; set; }
+    [Parameter]
+    public string? CustomerNameValue { get; set; }
+    [Parameter]
+    public bool IsFilterByCustomerActive { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid?> CustomerIDValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<string?> CustomerNameValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsFilterByCustomerActiveChanged { get; set; }
+    [Parameter]
+    public EventCallback ButtonClearFilterClicked { get; set; }
+
+    private bool IsCustomerTextDisabled = false;
+
+
+    private async Task OnCustomerChanged(Guid? customerID)
+    {
+        CustomerIDValue = customerID;
+        await CustomerIDValueChanged.InvokeAsync(CustomerIDValue);
+        await OnTextChange(string.Empty);
+
+        if (customerID is null)
+            IsCustomerTextDisabled = false;
+        else
+        {
+            IsCustomerTextDisabled = true;
+        }
+    }
+
+    private async Task OnButtonClearClick()
+    {
+        IsFilterByCustomerActive = false;
+        await IsFilterByCustomerActiveChanged.InvokeAsync(IsFilterByCustomerActive);
+        CustomerIDValue = null;
+        await CustomerIDValueChanged.InvokeAsync(CustomerIDValue);
+
+        await ButtonClearFilterClicked.InvokeAsync();
+    }
+
+    private async Task OnTextChange(string text)
+    {
+        CustomerNameValue = text;
+        await CustomerNameValueChanged.InvokeAsync(CustomerNameValue);
+    }
+}

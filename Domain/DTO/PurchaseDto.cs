@@ -26,4 +26,5 @@ public class PurchaseDtoForSummary
     public int TotalItems { get; set; }
     public int TotalQuantity { get; set; }
     public decimal GrandTotal { get; set; }
+    public bool PaymentStatus { get; set; } = false;
 }

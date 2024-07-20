@@ -9,4 +9,6 @@ public interface IRepositoryManager
     IPurchaseRepo PurchaseRepo { get; }
     IUnitOfWorkRepo UnitOfWorkRepo { get; }
     IPurchaseDetailRepo PurchaseDetailRepo { get; }
+    ISaleRepo SaleRepo { get; }
+    ISaleDetailRepo SaleDetailRepo { get; }
 }

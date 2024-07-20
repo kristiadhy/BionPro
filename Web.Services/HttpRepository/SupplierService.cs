@@ -23,9 +23,9 @@ public class SupplierService : ISupplierService
     {
         var queryStringParam = new Dictionary<string, string>
         {
-            ["pageNumber"] = supplierParameter.PageNumber.ToString(),
-            ["searchTerm"] = supplierParameter.SrcByName == null ? "" : supplierParameter.SrcByName,
-            ["orderBy"] = supplierParameter.OrderBy!
+            [$"{nameof(SupplierParam.PageNumber)}"] = supplierParameter.PageNumber.ToString(),
+            [$"{nameof(SupplierParam.SrcByName)}"] = supplierParameter.SrcByName == null ? "" : supplierParameter.SrcByName,
+            [$"{nameof(SupplierParam.OrderBy)}"] = supplierParameter.OrderBy!
         };
 
         var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);

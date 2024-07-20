@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
-using System.ComponentModel.DataAnnotations;
 using Web.Services.IHttpRepository;
+using WebAssembly.Components;
 using WebAssembly.CustomEventArgs;
 
 namespace WebAssembly.Pages;
@@ -17,6 +17,8 @@ public partial class ProductDisplay
     [Inject]
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
+    CustomTooltipService CustomTooltipService { get; set; } = default!;
+    [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     ProductState ProductState { get; set; } = default!;
@@ -29,6 +31,7 @@ public partial class ProductDisplay
 
     private PageModel? ProductsPageModel { get; set; }
     private IEnumerable<PageModel> BreadCrumbs { get; set; }
+    private Pager? Pager;
 
     public ProductDisplay()
     {
@@ -97,10 +100,11 @@ public partial class ProductDisplay
             await EvReloadData();
     }
 
-    private void OnFilterButtonClick(RadzenSplitButtonItem item)
+    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
         bool isFilterActiveBefore = ProductState.IsFilterActive;
 
+        //Click default filter button
         if (item is null)
         {
             //If the filter is active, then clear the filter
@@ -123,6 +127,7 @@ public partial class ProductDisplay
         if (isFilterActiveBefore != ProductState.IsFilterActive)
         {
             SetFilterButtonText();
+            await Pager?.NavigateToPage(1)!;
         }
     }
 

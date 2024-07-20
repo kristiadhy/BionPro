@@ -1,7 +1,6 @@
 ﻿using Domain.DTO;
 using Domain.Parameters;
 using Web.Services.IHttpRepository;
-using static WebAssembly.Shared.Enum.DataFilterEnum;
 
 namespace WebAssembly.StateManagement;
 
@@ -50,6 +49,10 @@ public class ProductState
 
     private void UpdateProductParametersBasedOnActiveFilters()
     {
+        if (IsFilterActive)
+            //Always set the page to 1 when filters are active
+            ProductParameter.PageNumber = 1;
+
         if (IsFilterByProductCategoryActive)
         {
             ProductParameter.SrcByProductCategory = FilterProductCategoryValue;

@@ -6,6 +6,7 @@ public static class CustomComponentServices
     {
         services.AddScoped<CustomModalService>();
         services.AddScoped<CustomNotificationService>();
+        services.AddScoped<CustomTooltipService>();
 
         return services;
     }

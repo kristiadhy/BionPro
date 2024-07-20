@@ -23,9 +23,9 @@ public class CustomerService : ICustomerService
     {
         var queryStringParam = new Dictionary<string, string>
         {
-            ["pageNumber"] = customerParameter.PageNumber.ToString(),
-            ["searchTerm"] = customerParameter.SrcByName == null ? "" : customerParameter.SrcByName,
-            ["orderBy"] = customerParameter.OrderBy!
+            [$"{nameof(CustomerParam.PageNumber)}"] = customerParameter.PageNumber.ToString(),
+            [$"{nameof(CustomerParam.SrcByName)}"] = customerParameter.SrcByName == null ? "" : customerParameter.SrcByName,
+            [$"{nameof(CustomerParam.OrderBy)}"] = customerParameter.OrderBy!
         };
 
         var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);

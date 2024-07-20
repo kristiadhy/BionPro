@@ -1,0 +1,111 @@
+﻿@using Domain.Parameters
+@using Web.Services.IHttpRepository
+
+@inject DialogService DialogService
+@inject IServiceManager ServiceManager
+
+<RadzenDataGrid @ref="SaleDetailGrid"
+                IsLoading=@GridIsLoading
+                Data="@SaleDetails"
+                TItem="SaleDetailDto"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowSorting="true"
+                AllowFiltering="false"
+                AllowColumnResize="true"
+                AllowColumnReorder="false"
+                GridLines="DataGridGridLines.Both"
+                class="my-4">
+    <Columns>
+        <RadzenDataGridColumn Width="50px"
+                              Title="#" Filterable="false"
+                              Sortable="false"
+                              TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @(SaleDetails.IndexOf(data) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="ProductID"
+                              Visible=false
+                              Filterable="false"
+                              Title="ID"
+                              TextAlign="TextAlign.Center">
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="ProductName"
+                              Title="Product Name"
+                              Frozen="true" />
+
+        <RadzenDataGridColumn Property="Quantity"
+                              Title="Qty"
+                              Width="80px"
+                              TextAlign="TextAlign.Center"
+                              FormatString="{0:n0}">
+            <FooterTemplate>
+                <b>@SaleDetails.Sum(o => o.Quantity).ToString("n0")</b>
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="Price"
+                              Title="Price"
+                              Width="100px"
+                              TextAlign="TextAlign.Right"
+                              FormatString="{0:c}" />
+
+        <RadzenDataGridColumn Property="DiscountPercentage"
+                              Title="Discount"
+                              Width="100px"
+                              TextAlign="TextAlign.Right"
+                              FormatString="{0:p2}" />
+
+        <RadzenDataGridColumn Property="SubTotal"
+                              Title="SubTotal"
+                              Width="125px"
+                              TextAlign="TextAlign.Right"
+                              FormatString="{0:c}">
+            <FooterTemplate>
+                <b>@SaleDetails.Sum(o => o.SubTotal).ToString("C")</b>
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenStack Orientation="Orientation.Horizontal"
+             JustifyContent="JustifyContent.Left"
+             Gap="1rem"
+             Class="rz-my-4">
+
+    <RadzenButton ButtonStyle="ButtonStyle.Light"
+                  Variant="Variant.Flat"
+                  Click="@((args) => DialogService.Close(false))"
+                  Size="ButtonSize.Medium"
+                  Icon="clear"
+                  Text="Cancel" />
+</RadzenStack>
+
+@code {
+    private RadzenDataGrid<SaleDetailDto> SaleDetailGrid = default!;
+    private bool GridIsLoading = false;
+    private List<SaleDetailDto> SaleDetails = [];
+    private MetaData MetaData = new();
+
+    [Parameter] public int? saleID { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (saleID is not null)
+        {
+            await LoadData(saleID.Value);
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task LoadData(int saleID)
+    {
+        SaleDetailParam saleDetailParam = new();
+        var pagingResponse = await ServiceManager.SaleDetailService.GetSaleByID(saleID, saleDetailParam);
+        SaleDetails = pagingResponse.Items;
+        MetaData = pagingResponse.MetaData;
+    }
+}

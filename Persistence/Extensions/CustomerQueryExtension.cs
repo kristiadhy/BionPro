@@ -14,7 +14,7 @@ public static class CustomerQueryExtensions
 
         var lowerCaseTerm = searchTerm.Trim().ToLower();
 
-        return customers.Where(e => e.CustomerName!.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
+        return customers.Where(e => e.CustomerName!.Contains(lowerCaseTerm));
     }
 
     public static IQueryable<CustomerModel> Sort(this IQueryable<CustomerModel> customers, string? orderByQueryString)

@@ -1,0 +1,60 @@
+﻿<div class="rz-display-flex">
+    <RadzenDropDown TValue="Guid?"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterOperator="StringFilterOperator.StartsWith"
+                    AllowFiltering="true"
+                    Placeholder="Select Customer"
+                    Data=@CustomerState.CustomerListDropdown
+                    TextProperty="@nameof(CustomerDTO.CustomerName)"
+                    ValueProperty="@nameof(CustomerDTO.CustomerID)"
+                    AllowClear="true"
+                    AllowVirtualization="true"
+                    Change="(args=> OnValueChanged(args))"
+                    Disabled="@IsLoading"
+                    @bind-Value="@SelectedValue"
+                    Style="width: 100%; max-width: 400px;"
+                    Name="Customer" />
+
+    @if (IsLoading)
+    {
+        <RadzenProgressBarCircular Value="100"
+                                   ShowValue="false"
+                                   Mode="ProgressBarMode.Indeterminate"
+                                   Size="ProgressBarCircularSize.ExtraSmall"
+                                   class="ms-2 mt-2" />
+    }
+</div>
+@code {
+    [Inject]
+    CustomerState CustomerState { get; set; } = default!;
+
+    private bool IsLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!CustomerState.CustomerListDropdown.Any())
+        {
+            IsLoading = true;
+            await CustomerState.LoadCustomersDropDown();
+            IsLoading = false;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid?> SelectedValueChanged { get; set; }
+
+    [Parameter]
+    public Guid? SelectedValue { get; set; }
+
+    private async Task OnValueChanged(object e)
+    {
+        SelectedValue = e is not null ? (Guid)Convert.ChangeType(e, typeof(Guid)) : null;
+        await SelectedValueChanged.InvokeAsync(SelectedValue);
+        EditContext?.NotifyFieldChanged(EditContext.Field(nameof(CustomerDTO.CustomerID)));
+    }
+}

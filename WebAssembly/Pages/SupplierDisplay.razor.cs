@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Components;
 using WebAssembly.CustomEventArgs;
 
 namespace WebAssembly.Pages;
@@ -16,6 +17,8 @@ public partial class SupplierDisplay
     [Inject]
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
+    CustomTooltipService CustomTooltipService { get; set; } = default!;
+    [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     SupplierState SupplierState { get; set; } = default!;
@@ -23,8 +26,11 @@ public partial class SupplierDisplay
     internal static RadzenDataGrid<SupplierDto> SupplierGrid { get; set; } = default!;
 
     private bool isLoading = false;
+    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
     private PageModel? SupplierPageModel { get; set; }
     private IEnumerable<PageModel> BreadCrumbs { get; set; }
+    private Pager? Pager;
 
     public SupplierDisplay()
     {
@@ -83,5 +89,72 @@ public partial class SupplierDisplay
         SupplierState.SupplierParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
+    }
+
+    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
+    {
+        bool isFilterActiveBefore = SupplierState.IsFilterActive;
+
+        //Click default filter button
+        if (item is null)
+        {
+            //If the filter is active, then clear the filter
+            if (isFilterActiveBefore)
+                SupplierState.ToggleFilterState();
+
+            else //If there is no active filter, then set filter by customer name as default
+            {
+                SupplierState.IsFilterBySupplierNameActive = true;
+                SupplierState.IsFilterActive = true;
+            }
+        }
+        else
+        {
+            // Use a method to set the filter state based on item.Value
+            SetFilterStateBasedOnItemValue(item.Value);
+        }
+
+        // Update filter button appearance only if the filter activation state has changed
+        if (isFilterActiveBefore != SupplierState.IsFilterActive)
+        {
+            SetFilterButtonText();
+            await Pager?.NavigateToPage(1)!;
+        }
+    }
+
+    private void SetFilterStateBasedOnItemValue(string value)
+    {
+        switch (value)
+        {
+            case nameof(FilterCondition.BySupplierName):
+                SupplierState.IsFilterBySupplierNameActive = true;
+                break;
+        }
+        SupplierState.IsFilterActive = true;
+    }
+
+    private void SetFilterButtonText()
+    {
+        if (SupplierState.IsFilterActive)
+        {
+            filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
+            filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
+        }
+        else
+        {
+            filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+            filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+        }
+    }
+
+    private void ButtonClearFilterClicked()
+    {
+        SupplierState.SetGlobalFilterStateByFilters();
+        SetFilterButtonText();
+    }
+
+    private enum FilterCondition
+    {
+        BySupplierName
     }
 }

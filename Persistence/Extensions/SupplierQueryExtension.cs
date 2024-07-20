@@ -11,7 +11,7 @@ public static class SupplierQueryExtension
 
         var lowerCaseTerm = searchTerm.Trim().ToLower();
 
-        return suppliers.Where(e => e.SupplierName!.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
+        return suppliers.Where(e => e.SupplierName!.Contains(lowerCaseTerm));
     }
 
     public static IQueryable<SupplierModel> Sort(this IQueryable<SupplierModel> suppliers, string? orderByQueryString)

@@ -13,4 +13,5 @@ public class ProductModel : BaseEntity
     public ProductCategoryModel? Category { get; set; }
     public ICollection<ProductStockModel>? Stocks { get; set; }
     public ICollection<PurchaseDetailModel>? PurchaseDetails { get; set; }
+    public ICollection<SaleDetailModel>? SaleDetails { get; set; }
 }

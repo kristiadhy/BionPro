@@ -1,4 +1,5 @@
 ﻿@page "/purchases"
+@using static WebAssembly.Shared.Enum.GlobalEnum
 @using static WebAssembly.Shared.Enum.DataFilterEnum
 
 <PageTitle>@($"{GlobalConstant.AppName} | {PurchasesPageModel?.Title}")</PageTitle>
@@ -90,22 +91,38 @@
             </Template>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="SupplierName"
+        <RadzenDataGridColumn Property="@nameof(PurchaseDtoForSummary.SupplierName)"
                               Title="Supplier" />
 
-        <RadzenDataGridColumn Property="TotalQuantity"
+        <RadzenDataGridColumn Property="@nameof(PurchaseDtoForSummary.TotalQuantity)"
                               Title="Total Qty"
                               TextAlign="TextAlign.Center"
                               Width="80px"
                               FormatString="{0:n0}" />
 
-        <RadzenDataGridColumn Property="GrandTotal"
+        <RadzenDataGridColumn Property="@nameof(PurchaseDtoForSummary.GrandTotal)"
                               Title="Grand Total"
                               TextAlign="TextAlign.Right"
                               FormatString="{0:c}" />
 
-        <RadzenDataGridColumn Property="Description"
+        <RadzenDataGridColumn Property="@nameof(PurchaseDtoForSummary.Description)"
                               Title="Description" />
+
+        <RadzenDataGridColumn Property="@nameof(PurchaseDtoForSummary.PaymentStatus)"
+                              Title="Status"
+                              Width="75px"
+                              TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @if (data.PaymentStatus)
+                {
+                    <RadzenLabel class="rz-background-color-success text-white py-1 px-2">Paid</RadzenLabel>
+                }
+                @if (!data.PaymentStatus)
+                {
+                    <RadzenLabel class="rz-background-color-danger text-white py-1 px-2">Unpaid</RadzenLabel>
+                }
+            </Template>
+        </RadzenDataGridColumn>
 
         <RadzenDataGridColumn Context="Action"
                               Title="Action"
@@ -120,6 +137,7 @@
                               ButtonStyle="ButtonStyle.Light"
                               Variant="Variant.Flat"
                               Size="ButtonSize.Medium"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Edit.ToString()))"
                               Click="@(args => EvEditRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -129,6 +147,7 @@
                               Shade="Shade.Lighter"
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Delete.ToString()))"
                               Click="@(args => EvDeleteRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -138,6 +157,7 @@
                               Shade="Shade.Lighter"
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Detail.ToString()))"
                               Click="@(args => EvSeeDetail(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -146,7 +166,8 @@
     </Columns>
 </RadzenDataGrid>
 
-<Pager PageSize="@PurchaseState.MetaData.PageSize"
+<Pager @ref="Pager"
+       PageSize="@PurchaseState.MetaData.PageSize"
        TotalCount="@PurchaseState.MetaData.TotalCount"
        CurrentPage="PurchaseState.PurchaseParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

@@ -7,7 +7,7 @@ namespace Presentation.Controllers;
 [ApiVersion("1.0")]
 [ApiController]
 [Route("api/purchase/details")]
-public class PurchseDetailController(IServiceManager serviceManager) : ControllerBase
+public class PurchaseDetailController(IServiceManager serviceManager) : ControllerBase
 {
     private readonly IServiceManager _serviceManager = serviceManager;
 

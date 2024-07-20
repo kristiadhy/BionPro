@@ -11,5 +11,6 @@ public static class GlobalConstant
         new() { ID =3, Title ="Products", Path="/products" },
         new() { ID =4, Title ="Product Categories", Path="/products/categories" },
         new() { ID =5, Title ="Purchases", Path="/purchases" },
+        new() { ID =6, Title ="Sales", Path="/sales" },
     };
 }

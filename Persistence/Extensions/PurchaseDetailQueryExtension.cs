@@ -11,7 +11,7 @@ public static class PurchaseDetailQueryExtension
 
         var lowerCaseTerm = searchTerm.Trim().ToLower();
 
-        return products.Where(e => e.Product!.Name.Contains(lowerCaseTerm, StringComparison.CurrentCultureIgnoreCase));
+        return products.Where(e => e.Product!.Name.Contains(lowerCaseTerm));
     }
 
     public static IQueryable<PurchaseDetailModel> Sort(this IQueryable<PurchaseDetailModel> products, string? orderByQueryString)

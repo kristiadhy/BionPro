@@ -16,6 +16,8 @@ public partial class ProductCategoryDisplay
     [Inject]
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
+    CustomTooltipService CustomTooltipService { get; set; } = default!;
+    [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     ProductCategoryState ProductCategoryState { get; set; } = default!;

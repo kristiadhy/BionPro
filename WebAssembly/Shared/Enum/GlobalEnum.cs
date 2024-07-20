@@ -10,6 +10,14 @@ public class GlobalEnum
         Edit
     }
 
+    public enum TableAction
+    {
+        Add,
+        Edit,
+        Delete,
+        Detail
+    }
+
     public enum FilterText
     {
         [Display(Description = "Add Filter")]

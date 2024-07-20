@@ -65,6 +65,10 @@ public class PurchaseState
 
     private void UpdatePurchaseParametersBasedOnActiveFilters()
     {
+        if (IsFilterActive)
+            //Always set the page to 1 when filters are active
+            PurchaseParameter.PageNumber = 1;
+
         if (_isFilterByDateActive)
         {
             PurchaseParameter.SrcDateFrom = FilterDateStartDate;
@@ -104,7 +108,7 @@ public class PurchaseState
 
     internal void SetGlobalFilterStateByFilters()
     {
-        if(IsFilterBySupplierActive || IsFilterByDateActive)
+        if (IsFilterBySupplierActive || IsFilterByDateActive)
             IsFilterActive = true;
         else
             IsFilterActive = false;

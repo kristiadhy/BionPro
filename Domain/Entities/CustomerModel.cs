@@ -11,4 +11,6 @@ public class CustomerModel : BaseEntity
     public string? CPPhone { get; set; }
     public string? Note { get; set; }
     public bool? Active { get; set; }
+
+    public ICollection<SaleModel>? Sales { get; set; }
 }

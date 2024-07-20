@@ -8,4 +8,6 @@ public interface IServiceManager
     IProductService ProductService { get; }
     IPurchaseService PurchaseService { get; }
     IPurchaseDetailService PurchaseDetailService { get; }
+    ISaleService SaleService { get; }
+    ISaleDetailService SaleDetailService { get; }
 }

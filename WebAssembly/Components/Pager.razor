@@ -60,4 +60,13 @@
         var eventArgs = new PagerOnChangedEventArgs(CurrentPage, IsFromFirstRender);
         await PageChanged.InvokeAsync(eventArgs);
     }
+
+    // Public method to navigate to a specific page
+    public async Task NavigateToPage(int pageNumber)
+    {
+        if (CustomPager != null)
+        {
+            await CustomPager.GoToPage(pageNumber - 1, false);
+        }
+    }
 }

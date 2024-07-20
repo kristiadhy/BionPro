@@ -30,8 +30,10 @@
     {
         IsFilterByProductNameActive = false;
         await IsFilterByProductNameActiveChanged.InvokeAsync(IsFilterByProductNameActive);
+
         ProductNameValue = null;
         await ProductNameValueChanged.InvokeAsync(ProductNameValue);
+
         await ButtonClearFilterClicked.InvokeAsync();
     }
 

@@ -1,4 +1,5 @@
 ﻿@page "/customers"
+@using static WebAssembly.Shared.Enum.GlobalEnum
 
 <PageTitle>@($"{GlobalConstant.AppName} | {CustomerPageModel?.Title}")</PageTitle>
 
@@ -8,9 +9,25 @@
 </MainMenuContainer>
 
 <MainMenuContainer>
+    <RadzenSplitButton Click=@(args => OnFilterButtonClick(args))
+                       Icon="@filterIcon"
+                       Text="@filterText"
+                       Variant="Variant.Outlined"
+                       Size="ButtonSize.Medium">
+        <ChildContent>
+            <RadzenSplitButtonItem Text="By Customer" Value="@nameof(FilterCondition.ByCustomerName)" />
+        </ChildContent>
+    </RadzenSplitButton>
     <MainMenuButton LoadDataClicked="EvReloadData"
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
+
+@if (CustomerState.IsFilterByCustomerNameActive)
+{
+    <FilterByCustomerName @bind-CustomerNameValue="CustomerState.FilterCustomerNameValue"
+                          @bind-IsFilterByCustomerNameActive="CustomerState.IsFilterByCustomerNameActive"
+                          ButtonClearFilterClicked="ButtonClearFilterClicked" />
+}
 
 <RadzenDataGrid @ref="CustomerGrid"
                 IsLoading=@isLoading
@@ -74,6 +91,7 @@
                               ButtonStyle="ButtonStyle.Light"
                               Variant="Variant.Flat"
                               Size="ButtonSize.Medium"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Edit.ToString()))"
                               Click="@(args => EvEditRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -83,6 +101,7 @@
                               Shade="Shade.Lighter"
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
+                              MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Delete.ToString()))"
                               Click="@(async args => await EvDeleteRow(dto))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -91,7 +110,8 @@
     </Columns>
 </RadzenDataGrid>
 
-<Pager PageSize="@CustomerState.MetaData.PageSize"
+<Pager @ref="Pager"
+       PageSize="@CustomerState.MetaData.PageSize"
        TotalCount="@CustomerState.MetaData.TotalCount"
        CurrentPage="CustomerState.CustomerParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />
