@@ -1,7 +1,7 @@
 ﻿namespace Application.IRepositories;
 public interface IRepositoryBase<T>
 {
-    void CreateEntity(T entity, bool trackChanges);
-    void UpdateEntity(T entity, bool trackChanges);
-    void DeleteEntity(T entity, bool trackChanges);
+    void CreateEntity(T entity);
+    void UpdateEntity(T entity);
+    void DeleteEntity(T entity);
 }

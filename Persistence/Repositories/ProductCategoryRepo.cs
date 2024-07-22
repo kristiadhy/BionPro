@@ -49,17 +49,17 @@ public sealed class ProductCategoryRepo : MethodBase<ProductCategoryModel>, IPro
             return null;
     }
 
-    public void CreateEntity(ProductCategoryModel entity, bool trackChanges)
+    public void CreateEntity(ProductCategoryModel entity)
     {
         Create(entity);
     }
 
-    public void UpdateEntity(ProductCategoryModel entity, bool trackChanges)
+    public void UpdateEntity(ProductCategoryModel entity)
     {
         Update(entity);
     }
 
-    public void DeleteEntity(ProductCategoryModel entity, bool trackChanges)
+    public void DeleteEntity(ProductCategoryModel entity)
     {
         Delete(entity);
     }

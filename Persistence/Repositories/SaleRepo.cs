@@ -81,17 +81,17 @@ public class SaleRepo : MethodBase<SaleModel>, ISaleRepo
             return false;
     }
 
-    public void CreateEntity(SaleModel entity, bool trackChanges)
+    public void CreateEntity(SaleModel entity)
     {
         Create(entity);
     }
 
-    public void UpdateEntity(SaleModel entity, bool trackChanges)
+    public void UpdateEntity(SaleModel entity)
     {
         Update(entity);
     }
 
-    public void DeleteEntity(SaleModel entity, bool trackChanges)
+    public void DeleteEntity(SaleModel entity)
     {
         Delete(entity);
     }

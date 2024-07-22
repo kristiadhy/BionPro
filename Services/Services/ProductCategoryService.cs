@@ -47,7 +47,7 @@ public class ProductCategoryService : IProductCategoryService
         var validator = new ProductCategoryValidator();
         validator.ValidateInput(productCategoryModel);
 
-        _repositoryManager.ProductCategoryRepo.CreateEntity(productCategoryModel, trackChanges);
+        _repositoryManager.ProductCategoryRepo.CreateEntity(productCategoryModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
         var productCategoriesToReturn = _mapper.Map<ProductCategoryDto>(productCategoryModel);
@@ -61,7 +61,7 @@ public class ProductCategoryService : IProductCategoryService
         var validator = new ProductCategoryValidator();
         validator.ValidateInput(productCategoryToUpdate);
 
-        _repositoryManager.ProductCategoryRepo.UpdateEntity(productCategoryToUpdate, trackChanges);
+        _repositoryManager.ProductCategoryRepo.UpdateEntity(productCategoryToUpdate);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 
@@ -71,7 +71,7 @@ public class ProductCategoryService : IProductCategoryService
         if (productCategoryToDelete is null)
             throw new ProductCategoryNotFoundException(categoryID);
 
-        _repositoryManager.ProductCategoryRepo.DeleteEntity(productCategoryToDelete, trackChanges);
+        _repositoryManager.ProductCategoryRepo.DeleteEntity(productCategoryToDelete);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

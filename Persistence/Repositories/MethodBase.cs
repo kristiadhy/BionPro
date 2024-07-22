@@ -35,4 +35,6 @@ public abstract class MethodBase<T> : IMethodBase<T> where T : class
     public void Create(T entity) => appDBContext.Set<T>().Add(entity);
     public void Update(T entity) => appDBContext.Set<T>().Update(entity);
     public void Delete(T entity) => appDBContext.Set<T>().Remove(entity);
+    public void DeleteRange(IEnumerable<T> entities) => appDBContext.Set<T>().RemoveRange(entities);
+    public void Attach(T entity) => appDBContext.Set<T>().Attach(entity);
 }

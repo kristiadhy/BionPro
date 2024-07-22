@@ -5,6 +5,7 @@ using Domain.Parameters;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Extensions;
+using System.Linq.Expressions;
 
 namespace Persistence.Repositories;
 public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
@@ -71,6 +72,19 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
             return null;
     }
 
+    public async Task<PurchaseModel?> GetByConditionAsync(Expression<Func<PurchaseModel, bool>> expression, bool trackChanges, CancellationToken cancellationToken = default)
+    {
+        var purchase = await FindByCondition(expression, trackChanges)
+            .Include(x => x.Supplier)
+            .Include(x => x.PurchaseDetails!)
+            .ThenInclude(pd => pd.Product)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (purchase is not null)
+            return purchase;
+        else
+            return null;
+    }
+
     public async Task<bool> CheckTransactionCodeExistAsync(string transactionCode, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var purchase = await FindByCondition(x => x.TransactionCode == transactionCode, trackChanges)
@@ -81,19 +95,24 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
             return false;
     }
 
-    public void CreateEntity(PurchaseModel entity, bool trackChanges)
+    public void CreateEntity(PurchaseModel entity)
     {
         Create(entity);
     }
 
-    public void UpdateEntity(PurchaseModel entity, bool trackChanges)
+    public void UpdateEntity(PurchaseModel entity)
     {
         Update(entity);
     }
 
-    public void DeleteEntity(PurchaseModel entity, bool trackChanges)
+    public void DeleteEntity(PurchaseModel entity)
     {
         Delete(entity);
+    }
+
+    public void AttachEntity(PurchaseModel entity)
+    {
+        Attach(entity);
     }
 
     private IQueryable<PurchaseDtoForSummary> GetPurchaseWithSummary()

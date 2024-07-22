@@ -51,7 +51,7 @@ public class ProductService : IProductService
         var validator = new ProductValidator();
         validator.ValidateInput(productModel);
 
-        _repositoryManager.ProductRepo.CreateEntity(productModel, trackChanges);
+        _repositoryManager.ProductRepo.CreateEntity(productModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
         var productCategoriesToReturn = _mapper.Map<ProductDto>(productModel);
@@ -65,7 +65,7 @@ public class ProductService : IProductService
         var validator = new ProductValidator();
         validator.ValidateInput(productModel);
 
-        _repositoryManager.ProductRepo.UpdateEntity(productModel, trackChanges);
+        _repositoryManager.ProductRepo.UpdateEntity(productModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 
@@ -75,7 +75,7 @@ public class ProductService : IProductService
         if (productToDelete is null)
             throw new ProductNotFoundException(productID);
 
-        _repositoryManager.ProductRepo.DeleteEntity(productToDelete, trackChanges);
+        _repositoryManager.ProductRepo.DeleteEntity(productToDelete);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

@@ -49,17 +49,17 @@ public sealed class CustomerRepo : MethodBase<CustomerModel>, ICustomerRepo
             return null;
     }
 
-    public void CreateEntity(CustomerModel entity, bool trackChanges)
+    public void CreateEntity(CustomerModel entity)
     {
         Create(entity);
     }
 
-    public void UpdateEntity(CustomerModel entity, bool trackChanges)
+    public void UpdateEntity(CustomerModel entity)
     {
         Update(entity);
     }
 
-    public void DeleteEntity(CustomerModel entity, bool trackChanges)
+    public void DeleteEntity(CustomerModel entity)
     {
         Delete(entity);
     }

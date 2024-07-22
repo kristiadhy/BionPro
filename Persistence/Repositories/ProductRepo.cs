@@ -53,17 +53,17 @@ public sealed class ProductRepo : MethodBase<ProductModel>, IProductRepo
             return null;
     }
 
-    public void CreateEntity(ProductModel entity, bool trackChanges)
+    public void CreateEntity(ProductModel entity)
     {
         Create(entity);
     }
 
-    public void UpdateEntity(ProductModel entity, bool trackChanges)
+    public void UpdateEntity(ProductModel entity)
     {
         Update(entity);
     }
 
-    public void DeleteEntity(ProductModel entity, bool trackChanges)
+    public void DeleteEntity(ProductModel entity)
     {
         Delete(entity);
     }

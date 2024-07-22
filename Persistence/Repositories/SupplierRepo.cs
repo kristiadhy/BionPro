@@ -49,17 +49,17 @@ public sealed class SupplierRepo : MethodBase<SupplierModel>, ISupplierRepo
             return null;
     }
 
-    public void CreateEntity(SupplierModel entity, bool trackChanges)
+    public void CreateEntity(SupplierModel entity)
     {
         Create(entity);
     }
 
-    public void UpdateEntity(SupplierModel entity, bool trackChanges)
+    public void UpdateEntity(SupplierModel entity)
     {
         Update(entity);
     }
 
-    public void DeleteEntity(SupplierModel entity, bool trackChanges)
+    public void DeleteEntity(SupplierModel entity)
     {
         Delete(entity);
     }

@@ -54,7 +54,7 @@ internal sealed class SaleService : ISaleService
         var validator = new SaleValidator();
         validator.ValidateInput(saleModel);
 
-        _repositoryManager.SaleRepo.CreateEntity(saleModel, trackChanges);
+        _repositoryManager.SaleRepo.CreateEntity(saleModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
         var saleToReturn = _mapper.Map<SaleDto>(saleModel);
@@ -68,7 +68,7 @@ internal sealed class SaleService : ISaleService
         var validator = new SaleValidator();
         validator.ValidateInput(saleModel);
 
-        _repositoryManager.SaleRepo.UpdateEntity(saleModel, trackChanges);
+        _repositoryManager.SaleRepo.UpdateEntity(saleModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 
@@ -78,7 +78,7 @@ internal sealed class SaleService : ISaleService
         if (saleToDelete is null)
             throw new SaleIDNotFoundException(saleID);
 
-        _repositoryManager.SaleRepo.DeleteEntity(saleToDelete, trackChanges);
+        _repositoryManager.SaleRepo.DeleteEntity(saleToDelete);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

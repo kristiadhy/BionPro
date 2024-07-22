@@ -51,7 +51,7 @@ internal sealed class CustomerService : ICustomerService
         var validator = new CustomerValidator();
         validator.ValidateInput(customerModel);
 
-        _repositoryManager.CustomerRepo.CreateEntity(customerModel, trackChanges);
+        _repositoryManager.CustomerRepo.CreateEntity(customerModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
         var customerToReturn = _mapper.Map<CustomerDTO>(customerModel);
@@ -65,7 +65,7 @@ internal sealed class CustomerService : ICustomerService
         var validator = new CustomerValidator();
         validator.ValidateInput(customerModel);
 
-        _repositoryManager.CustomerRepo.UpdateEntity(customerModel, trackChanges);
+        _repositoryManager.CustomerRepo.UpdateEntity(customerModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 
@@ -81,7 +81,7 @@ internal sealed class CustomerService : ICustomerService
         if (customerToDelete is null)
             throw new CustomerIDNotFoundException(customerID);
 
-        _repositoryManager.CustomerRepo.DeleteEntity(customerToDelete, trackChanges);
+        _repositoryManager.CustomerRepo.DeleteEntity(customerToDelete);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

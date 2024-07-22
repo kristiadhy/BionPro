@@ -48,7 +48,7 @@ internal sealed class SupplierService : ISupplierService
         var validator = new SupplierValidator();
         validator.ValidateInput(supplierModel);
 
-        _repositoryManager.SupplierRepo.CreateEntity(supplierModel, trackChanges);
+        _repositoryManager.SupplierRepo.CreateEntity(supplierModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
         var suppliersToReturn = _mapper.Map<SupplierDto>(supplierModel);
@@ -62,7 +62,7 @@ internal sealed class SupplierService : ISupplierService
         var validator = new SupplierValidator();
         validator.ValidateInput(suppliersToUpdate);
 
-        _repositoryManager.SupplierRepo.UpdateEntity(suppliersToUpdate, trackChanges);
+        _repositoryManager.SupplierRepo.UpdateEntity(suppliersToUpdate);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 
@@ -72,7 +72,7 @@ internal sealed class SupplierService : ISupplierService
         if (supplierToDelete is null)
             throw new SupplierIDNotFoundException(suppliersID);
 
-        _repositoryManager.SupplierRepo.DeleteEntity(supplierToDelete, trackChanges);
+        _repositoryManager.SupplierRepo.DeleteEntity(supplierToDelete);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

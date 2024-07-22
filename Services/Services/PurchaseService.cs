@@ -54,7 +54,7 @@ internal sealed class PurchaseService : IPurchaseService
         var validator = new PurchaseValidator();
         validator.ValidateInput(purchaseModel);
 
-        _repositoryManager.PurchaseRepo.CreateEntity(purchaseModel, trackChanges);
+        _repositoryManager.PurchaseRepo.CreateEntity(purchaseModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
         var purchaseToReturn = _mapper.Map<PurchaseDto>(purchaseModel);
@@ -68,7 +68,22 @@ internal sealed class PurchaseService : IPurchaseService
         var validator = new PurchaseValidator();
         validator.ValidateInput(purchaseModel);
 
-        _repositoryManager.PurchaseRepo.UpdateEntity(purchaseModel, trackChanges);
+        // IMPORTANT : Updating and adding purchase details can be done by updating the parent, which is the purchase entity.
+        _repositoryManager.PurchaseRepo.UpdateEntity(purchaseModel);
+
+        // But to delete the details, we need to handle it separately because it is not handled by the parent entity.
+
+        // Here are the steps:
+        // 1. Create a list of product IDs to be retained
+        var dtoProductIDs = dto.PurchaseDetails.Select(pd => pd.ProductID).ToList();
+
+        // 2. Get all PurchaseDetail entities associated with the PurchaseID
+        var existingDetails = await _repositoryManager.PurchaseDetailRepo.GetListByConditionAsync(x => x.PurchaseID == purchaseModel.PurchaseID, false, cancellationToken);
+
+        // 3. Identify the PurchaseDetail entities to remove (which do not have the product IDs from the product ID list that we previously kept)
+        var detailsToRemove = existingDetails.Where(d => !dtoProductIDs.Contains(d.ProductID)).ToList();
+        _repositoryManager.PurchaseDetailRepo.DeleteEntityRange(detailsToRemove);
+
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 
@@ -78,7 +93,7 @@ internal sealed class PurchaseService : IPurchaseService
         if (purchaseToDelete is null)
             throw new PurchaseIDNotFoundException(purchaseID);
 
-        _repositoryManager.PurchaseRepo.DeleteEntity(purchaseToDelete, trackChanges);
+        _repositoryManager.PurchaseRepo.DeleteEntity(purchaseToDelete);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

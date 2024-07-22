@@ -13,8 +13,10 @@ internal class PurchaseMappingProfile : Profile
         CreateMap<PurchaseModel, PurchaseDto>()
             .ForMember(dest => dest.PurchaseDetails, opt => opt
             .MapFrom(src => src.PurchaseDetails))
+
             .ForMember(dest => dest.SupplierID, opt => opt
             .MapFrom(src => src.Supplier!.SupplierID))
+
              .ForMember(dest => dest.SupplierName, opt => opt
             .MapFrom(src => src.Supplier!.SupplierName));
         CreateMap<PurchaseDto, PurchaseModel>()

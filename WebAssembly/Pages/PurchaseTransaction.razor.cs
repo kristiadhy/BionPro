@@ -115,6 +115,7 @@ public partial class PurchaseTransaction
             purchaseDetail.ProductID = product.ProductID;
             purchaseDetail.ProductName = product.Name;
             purchaseDetail.Price = product.Price;
+
             PurchaseState.PurchaseForTransaction.PurchaseDetails.Add(purchaseDetail);
         }
         GridIsLoading = false;
