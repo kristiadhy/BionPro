@@ -51,6 +51,7 @@ internal sealed class CustomerService : ICustomerService
         var validator = new CustomerValidator();
         validator.ValidateInput(customerModel);
 
+        customerModel.SetDataCreate();
         _repositoryManager.CustomerRepo.CreateEntity(customerModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
@@ -65,6 +66,7 @@ internal sealed class CustomerService : ICustomerService
         var validator = new CustomerValidator();
         validator.ValidateInput(customerModel);
 
+        customerModel.SetDataUpdate();
         _repositoryManager.CustomerRepo.UpdateEntity(customerModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }

@@ -1,4 +1,5 @@
 ﻿using Application.IRepositories;
+using Domain;
 using Domain.DTO;
 using Domain.Entities;
 using Domain.Parameters;
@@ -103,6 +104,8 @@ public class PurchaseRepo : MethodBase<PurchaseModel>, IPurchaseRepo
     public void UpdateEntity(PurchaseModel entity)
     {
         Update(entity);
+        Console.WriteLine(appDBContext.Entry(entity).State);
+        IgnorePropertiesForUpdate(entity, nameof(BaseEntity.DateCreated), nameof(BaseEntity.CreatedBy));
     }
 
     public void DeleteEntity(PurchaseModel entity)

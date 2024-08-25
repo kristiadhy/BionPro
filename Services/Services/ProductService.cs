@@ -51,6 +51,7 @@ public class ProductService : IProductService
         var validator = new ProductValidator();
         validator.ValidateInput(productModel);
 
+        productModel.SetDataCreate();
         _repositoryManager.ProductRepo.CreateEntity(productModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
@@ -65,6 +66,7 @@ public class ProductService : IProductService
         var validator = new ProductValidator();
         validator.ValidateInput(productModel);
 
+        productModel.SetDataUpdate();
         _repositoryManager.ProductRepo.UpdateEntity(productModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }

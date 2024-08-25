@@ -54,6 +54,7 @@ internal sealed class SaleService : ISaleService
         var validator = new SaleValidator();
         validator.ValidateInput(saleModel);
 
+        saleModel.SetDataCreate();
         _repositoryManager.SaleRepo.CreateEntity(saleModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
@@ -68,7 +69,23 @@ internal sealed class SaleService : ISaleService
         var validator = new SaleValidator();
         validator.ValidateInput(saleModel);
 
+        saleModel.SetDataUpdate();
+        // IMPORTANT : Updating and adding sale details can be done by updating the parent, which is the sale entity.
         _repositoryManager.SaleRepo.UpdateEntity(saleModel);
+
+        // But to delete the details, we need to handle it separately because it is not handled by the parent entity.
+
+        // Here are the steps:
+        // 1. Create a list of product IDs to be retained
+        var dtoProductIDs = dto.SaleDetails.Select(pd => pd.ProductID).ToList();
+
+        // 2. Get all SaleDetail entities associated with the SaleID
+        var existingDetails = await _repositoryManager.SaleDetailRepo.GetListByConditionAsync(x => x.SaleID == saleModel.SaleID, false, cancellationToken);
+
+        // 3. Identify the SaleDetail entities to remove (which do not have the product IDs from the product ID list that we previously kept)
+        var detailsToRemove = existingDetails.Where(d => !dtoProductIDs.Contains(d.ProductID)).ToList();
+        _repositoryManager.SaleDetailRepo.DeleteEntityRange(detailsToRemove);
+
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }
 

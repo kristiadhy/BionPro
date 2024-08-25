@@ -4,6 +4,7 @@ using Domain.Parameters;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Extensions;
+using System.Linq.Expressions;
 
 namespace Persistence.Repositories;
 public class SaleDetailRepo : MethodBase<SaleDetailModel>, ISaleDetailRepo
@@ -26,5 +27,18 @@ public class SaleDetailRepo : MethodBase<SaleDetailModel>, ISaleDetailRepo
             .CountAsync(cancellationToken);
 
         return new PagedList<SaleDetailModel>(sales, count, saleDetailParam.PageNumber, saleDetailParam.PageSize);
+    }
+
+    public async Task<IEnumerable<SaleDetailModel>> GetListByConditionAsync(Expression<Func<SaleDetailModel, bool>> expression, bool trackChanges, CancellationToken cancellationToken = default)
+    {
+        var sales = await FindByCondition(expression, trackChanges)
+            .ToListAsync(cancellationToken);
+
+        return sales;
+    }
+
+    public void DeleteEntityRange(IEnumerable<SaleDetailModel> entities)
+    {
+        DeleteRange(entities);
     }
 }

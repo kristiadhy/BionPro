@@ -10,5 +10,5 @@ public class SaleModel : BaseEntity
 
     public Guid? CustomerID { get; set; }
     public CustomerModel? Customer { get; set; }
-    public ICollection<SaleDetailModel>? SaleDetails { get; set; }
+    public ICollection<SaleDetailModel> SaleDetails { get; set; } = [];
 }

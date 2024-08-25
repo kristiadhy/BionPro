@@ -12,10 +12,10 @@ public abstract class BaseEntity
     public string? UpdatedBy { get; set; } = string.Empty;
     public EntityStatus EntityStatus { get; set; }
 
-    public BaseEntity()
+    public void SetDataCreate()
     {
         DateCreated = DateTimeOffset.Now;
-        EntityStatus = EntityStatus.Active;
+        ActivateEntity();
     }
 
     public void SetDataUpdate()
@@ -38,10 +38,6 @@ public abstract class BaseEntity
         EntityStatus = EntityStatus.Active;
     }
 
-    public void OnEntityModified()
-    {
-        DateUpdated = DateTime.UtcNow;
-    }
 }
 
 public enum EntityStatus

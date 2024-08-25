@@ -84,7 +84,11 @@ public partial class SaleTransaction
             if (FormStatus == GlobalEnum.FormStatus.New)
                 response = await ServiceManager.SaleService.Create(sale);
             else
+            {
                 response = await ServiceManager.SaleService.Update(sale);
+                //IMPORTANT : After updating the sale, SaleID need to be assigned to all of the sale details. It's important because EF Core determine the the entity state of each details based on the ID. If there is no ID on the details, it will be identified as ADD state, otherwise it will be identified as UPDATE state. Since the new details are already added after update is executed, then the data model should be updated too.
+                SaleState.SaleForTransaction.SaleDetails.ForEach(s => s.SaleID = SaleState.SaleForTransaction.SaleID);
+            }
 
             if (response.IsSuccessStatusCode)
             {

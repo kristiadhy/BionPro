@@ -48,6 +48,7 @@ internal sealed class SupplierService : ISupplierService
         var validator = new SupplierValidator();
         validator.ValidateInput(supplierModel);
 
+        supplierModel.SetDataCreate();
         _repositoryManager.SupplierRepo.CreateEntity(supplierModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
@@ -62,6 +63,7 @@ internal sealed class SupplierService : ISupplierService
         var validator = new SupplierValidator();
         validator.ValidateInput(suppliersToUpdate);
 
+        suppliersToUpdate.SetDataUpdate();
         _repositoryManager.SupplierRepo.UpdateEntity(suppliersToUpdate);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }

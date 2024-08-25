@@ -1,4 +1,5 @@
 ﻿using Application.IRepositories;
+using Domain;
 using Domain.Entities;
 using Domain.Parameters;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +58,7 @@ public sealed class CustomerRepo : MethodBase<CustomerModel>, ICustomerRepo
     public void UpdateEntity(CustomerModel entity)
     {
         Update(entity);
+        IgnorePropertiesForUpdate(entity, nameof(BaseEntity.DateCreated), nameof(BaseEntity.CreatedBy));
     }
 
     public void DeleteEntity(CustomerModel entity)

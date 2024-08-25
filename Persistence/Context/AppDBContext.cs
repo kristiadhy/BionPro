@@ -10,11 +10,11 @@ namespace Persistence.Context;
 //We can turn domain classes into entities by specifying them as DbSet<TEntity> type properties. This will allow Entity Framework to track their changes and perform CRUD operations accordingly.
 //The DbSet<TEntity> type allows EF Core to query and save instances of the specified entity to the database. LINQ queries against a DbSet<TEntity> will be translated into queries against the database
 //Reference link: https://www.entityframeworktutorial.net/efcore/entity-framework-core-dbcontext.aspx
-//We don't use this app db context that way that's why we don't need to set the entities like in the code below
+//We don't use this app db context that way, that's the reason we don't need to set the entities like in the code below
 //public DbSet<CustomerModel> Customers { get; set; }
-//Please see how we make transaction to the database in the repository classes
+//Please take a look on how we make transaction to the database in the repository classes
 
-//Our class now inherits from the IdentityDbContext class and not DbContext because we want to integrate our context with Identity
+//Our class now inherits from the IdentityDbContext class and not DbContext because we want to integrate our context with ASP NET Core Identity
 public class AppDBContext : IdentityDbContext<UserModel>
 {
     private IConfiguration _configuration;

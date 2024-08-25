@@ -7,8 +7,8 @@ public class PurchaseDetailModel
     public decimal DiscountAmount { get; set; }
     public decimal SubTotal { get; set; }
 
-    public int? PurchaseID { get; set; }
-    public PurchaseModel? Purchase { get; set; }
-    public Guid? ProductID { get; set; }
-    public ProductModel? Product { get; set; }
+    public int PurchaseID { get; set; }
+    public PurchaseModel Purchase { get; set; } = null!;
+    public Guid ProductID { get; set; }
+    public ProductModel Product { get; set; } = null!;
 }

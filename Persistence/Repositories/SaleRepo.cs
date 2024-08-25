@@ -1,4 +1,5 @@
 ﻿using Application.IRepositories;
+using Domain;
 using Domain.DTO;
 using Domain.Entities;
 using Domain.Parameters;
@@ -89,6 +90,7 @@ public class SaleRepo : MethodBase<SaleModel>, ISaleRepo
     public void UpdateEntity(SaleModel entity)
     {
         Update(entity);
+        IgnorePropertiesForUpdate(entity, nameof(BaseEntity.DateCreated), nameof(BaseEntity.CreatedBy));
     }
 
     public void DeleteEntity(SaleModel entity)

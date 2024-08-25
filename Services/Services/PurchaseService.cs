@@ -54,6 +54,7 @@ internal sealed class PurchaseService : IPurchaseService
         var validator = new PurchaseValidator();
         validator.ValidateInput(purchaseModel);
 
+        purchaseModel.SetDataCreate();
         _repositoryManager.PurchaseRepo.CreateEntity(purchaseModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
@@ -68,6 +69,7 @@ internal sealed class PurchaseService : IPurchaseService
         var validator = new PurchaseValidator();
         validator.ValidateInput(purchaseModel);
 
+        purchaseModel.SetDataUpdate();
         // IMPORTANT : Updating and adding purchase details can be done by updating the parent, which is the purchase entity.
         _repositoryManager.PurchaseRepo.UpdateEntity(purchaseModel);
 

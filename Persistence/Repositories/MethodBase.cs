@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System.Linq.Expressions;
 
@@ -37,4 +38,10 @@ public abstract class MethodBase<T> : IMethodBase<T> where T : class
     public void Delete(T entity) => appDBContext.Set<T>().Remove(entity);
     public void DeleteRange(IEnumerable<T> entities) => appDBContext.Set<T>().RemoveRange(entities);
     public void Attach(T entity) => appDBContext.Set<T>().Attach(entity);
+
+    public void IgnorePropertiesForUpdate(T entity, string dateCreated, string CreatedBy)
+    {
+        appDBContext.Entry(entity).Property(dateCreated).IsModified = false;
+        appDBContext.Entry(entity).Property(CreatedBy).IsModified = false;
+    }
 }

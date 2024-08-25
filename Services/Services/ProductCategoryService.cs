@@ -47,6 +47,7 @@ public class ProductCategoryService : IProductCategoryService
         var validator = new ProductCategoryValidator();
         validator.ValidateInput(productCategoryModel);
 
+        productCategoryModel.SetDataCreate();
         _repositoryManager.ProductCategoryRepo.CreateEntity(productCategoryModel);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
 
@@ -61,6 +62,7 @@ public class ProductCategoryService : IProductCategoryService
         var validator = new ProductCategoryValidator();
         validator.ValidateInput(productCategoryToUpdate);
 
+        productCategoryToUpdate.SetDataUpdate();
         _repositoryManager.ProductCategoryRepo.UpdateEntity(productCategoryToUpdate);
         await _repositoryManager.UnitOfWorkRepo.SaveChangesAsync(cancellationToken);
     }

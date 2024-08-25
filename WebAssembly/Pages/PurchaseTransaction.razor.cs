@@ -84,7 +84,11 @@ public partial class PurchaseTransaction
             if (FormStatus == GlobalEnum.FormStatus.New)
                 response = await ServiceManager.PurchaseService.Create(purchase);
             else
+            {
                 response = await ServiceManager.PurchaseService.Update(purchase);
+                //IMPORTANT : After updating the purchase, PurchaseID need to be assigned to all of the purchase details. It's important because EF Core determine the the entity state of each details based on the ID. If there is no ID on the details, it will be identified as ADD state, otherwise it will be identified as UPDATE state. Since the new details are already added after update is executed, then the data model should be updated too.
+                PurchaseState.PurchaseForTransaction.PurchaseDetails.ForEach(s => s.PurchaseID = PurchaseState.PurchaseForTransaction.PurchaseID);
+            }
 
             if (response.IsSuccessStatusCode)
             {

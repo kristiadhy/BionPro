@@ -9,6 +9,5 @@ public sealed class UnitOfWorkRepo : IUnitOfWorkRepo
 
     public UnitOfWorkRepo(AppDBContext dbContext) => _dbContext = dbContext;
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-        _dbContext.SaveChangesAsync(cancellationToken);
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => _dbContext.SaveChangesAsync(cancellationToken);
 }
