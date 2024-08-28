@@ -6,6 +6,7 @@ public class WebAssemblyHostedInstaller : IServiceInstallers
 {
     public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
     {
+        //services.AddControllersWithViews();
         services.AddRazorPages();
     }
 }
