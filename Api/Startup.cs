@@ -107,7 +107,6 @@ public static class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapRazorPages();
         //By using .RequireAuthorization() we don't need to put [Authorize] on every controller, it's implemented by default.
         //If you want to allow controller to be access publicly, you can set [AllowAnonymous] on controller.
         app.MapControllers().RequireAuthorization();
