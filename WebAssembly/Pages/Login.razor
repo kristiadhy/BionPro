@@ -6,42 +6,77 @@
 
     </Authorized>
     <NotAuthorized>
-        <RadzenRow Gap="2rem"
-                   Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10"
-                   Style="width: 95%; max-width: 800px; overflow: hidden;">
+        <div class="d-flex justify-content-center align-items-center vh-100">
+            <RadzenRow Gap="0"
+                       Class="rz-border-radius-4 rz-shadow-4 rz-background-color-white"
+                       Style="width: 100%; max-width: 800px; overflow: hidden;">
 
-            <RadzenColumn Size="12"
-                          SizeMD="6">
-                <RadzenCard Class="rz-shadow-0 rz-border-radius-0 rz-text-align-center rz-p-12" Style="height: 100%; background: var(--rz-primary-light)">
-                    <RadzenText TextStyle="TextStyle.DisplayH3" TagName="TagName.H2" Class="rz-color-white rz-mb-6">Welcome!</RadzenText>
-                    <RadzenText TextStyle="TextStyle.H6" Class="rz-color-white">Join the world's largest community!</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body2" Class="rz-color-white">Let's get started with your <strong>30 days</strong> trial.</RadzenText>
-                </RadzenCard>
-            </RadzenColumn>
+                <RadzenColumn Size="12"
+                              SizeMD="6">
+                    <RadzenStack Gap="0"
+                                 Orientation="Orientation.Vertical"
+                                 AlignItems="AlignItems.Center"
+                                 JustifyContent="JustifyContent.Center"
+                                 Wrap="FlexWrap.Wrap"
+                                 Style="height: 100%;"
+                                 class="rz-background-color-primary-light">
+                        <RadzenText TextStyle="TextStyle.DisplayH4"
+                                    TagName="TagName.H2" class="text-white">
+                            Welcome
+                        </RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="text-white">
+                            To the ERP web app
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
 
-            <RadzenColumn Size="12"
-                          SizeMD="6">
-                <RadzenCard Class="rz-shadow-0 rz-border-radius-0 rz-p-12">
-                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-                        Login
-                    </RadzenText>
-                    <RadzenTemplateForm Context="LoginContext"
-                                        Data=@("SimpleLogin")>
-                        <RadzenLogin AllowRegister="true"
-                                     AllowResetPassword="false"
-                                     Login=@OnLogin
-                                     ResetPassword=@OnResetPassword
-                                     Register=@OnRegister />
-                    </RadzenTemplateForm>
-                    <RadzenAlert AlertStyle="AlertStyle.Danger"
-                                 Variant="Variant.Flat"
-                                 Shade="Shade.Lighter"
-                                 @bind-Visible="AlertVisible">
-                        @ErrorMessage
-                    </RadzenAlert>
-                </RadzenCard>
-            </RadzenColumn>
+                <RadzenColumn Size="12"
+                              SizeMD="6">
+                    <RadzenStack Gap="0"
+                                 Orientation="Orientation.Vertical"
+                                 Wrap="FlexWrap.Wrap"
+                                 Style="height: 100%;"
+                                 class="rz-p-12">
+                        <RadzenText TextStyle="TextStyle.H5"
+                                    TagName="TagName.H2"
+                                    Class="rz-mb-6 mx-auto">
+                            Login
+                        </RadzenText>
+                        <RadzenTemplateForm Context="LoginContext"
+                                            Data="@loginData"
+                                            Submit="@((UserAuthenticationDTO args) => OnLogin(args))">
+                            <FluentValidationValidator />
 
-        </RadzenRow>
+                            <RadzenStack Gap="1.2rem"
+                                         Orientation="Orientation.Vertical">
+                                <RadzenTextBox Name="Email"
+                                               Placeholder="Email"
+                                               @bind-Value="loginData.UserName" />
+
+                                <RadzenPassword Name="Password"
+                                                Placeholder="Password"
+                                                @bind-Value="loginData.Password" />
+
+                                <ValidationSummary />
+                                <RadzenButton Text="Login"
+                                              ButtonType="ButtonType.Submit"
+                                              ButtonStyle="ButtonStyle.Primary"
+                                              IsBusy="@IsSaving" />
+                                <RadzenButton Click="@OnRegister"
+                                              Text="Register"
+                                              ButtonStyle="ButtonStyle.Secondary" />
+                            </RadzenStack>
+                        </RadzenTemplateForm>
+                        <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                     Variant="Variant.Flat"
+                                     Shade="Shade.Lighter"
+                                     @bind-Visible="AlertVisible">
+                            @ErrorMessage
+                        </RadzenAlert>
+                    </RadzenStack>
+                </RadzenColumn>
+
+            </RadzenRow>
+        </div>
     </NotAuthorized>
 </AuthorizeView>

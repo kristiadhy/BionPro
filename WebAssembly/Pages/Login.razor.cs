@@ -14,12 +14,15 @@ public partial class Login
     bool AlertVisible = false;
     string ErrorMessage = string.Empty;
 
-    async Task OnLogin(LoginArgs args)
+    protected UserAuthenticationDTO loginData = new();
+    protected bool IsSaving = false;
+
+    async Task OnLogin(UserAuthenticationDTO userDto)
     {
-        UserAuthenticationDTO userDTO = new(args.Username, args.Password);
+        IsSaving = true;
         try
         {
-            var tokenResponse = await AuthService.Login(userDTO);
+            var tokenResponse = await AuthService.Login(userDto);
         }
         catch
         {
@@ -27,13 +30,17 @@ public partial class Login
             ErrorMessage = "Wrong username/password";
             return;
         }
-
+        finally
+        {
+            IsSaving = false;
+        }
         AlertVisible = false;
         NavigationManager.NavigateTo($"/");
     }
 
     void OnRegister()
     {
+        NavigationManager.NavigateTo($"/registration");
         //Console.WriteLine($"{name} -> Register");
     }
 
