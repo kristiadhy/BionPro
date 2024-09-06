@@ -124,7 +124,7 @@ public class CustomHttpClient
             if (_hostEnvironment.IsDevelopment && serviceResponse?.Error != null)
             {
                 foreach (var err in serviceResponse.Error)
-                    errorResponse += $"{Environment.NewLine}- {err}";
+                    errorResponse += $"\n• {err}";
             }
 
             throw new ApplicationException($"{errorResponse}");

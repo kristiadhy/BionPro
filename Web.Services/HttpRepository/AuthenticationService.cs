@@ -32,13 +32,12 @@ public class AuthenticationService : IAuthenticationService
             return string.Empty;
     }
 
-    public async Task<ResponseDto> RegisterUser(UserRegistrationDTO userForRegistration)
+    public async Task RegisterUser(UserRegistrationDTO userForRegistration)
     {
         var response = await _client.PostAsync("authentication/registration", userForRegistration);
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseWithContent(response, content, _options);
-        //We return the response dto here only if the response is successful, otherwise it is handle in the CheckErrorResponseWithContent method
-        return new ResponseDto { IsSuccess = true };
+        return;
     }
 
     public async Task<TokenDTO> Login(UserAuthenticationDTO userForAuthentication)
