@@ -40,7 +40,7 @@ namespace Api.Middleware
             var response = new ResponseDto
             {
                 IsSuccess = false,
-                Error = exception.Message
+                Error = [exception.Message]
             };
 
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));

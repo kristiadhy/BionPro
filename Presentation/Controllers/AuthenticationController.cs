@@ -13,7 +13,7 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
 {
     private readonly IServiceManager _serviceManager = serviceManager;
 
-    [HttpPost, AllowAnonymous]
+    [HttpPost("registration"), AllowAnonymous]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> RegisterUser([FromBody] UserRegistrationDTO userForRegistration)
     {
@@ -21,10 +21,18 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         var result = await _serviceManager.AuthenticationService.RegisterUser(userForRegistration);
         if (!result.Succeeded)
         {
-            foreach (var error in result.Errors)
-                ModelState.TryAddModelError(error.Code, error.Description);
+            var response = new ResponseDto
+            {
+                IsSuccess = false,
+                Error = result.Errors.Select(e => e.Description).ToList()
+            };
+            return BadRequest(response);
 
-            return BadRequest(ModelState);
+            //This is another way to return the error messages, I got this from Code Maze, but need to check it again since it is not working.
+            //foreach (var error in result.Errors)
+            //    ModelState.TryAddModelError(error.Code, error.Description);
+
+            //return BadRequest(ModelState);
         }
 
         //If there is no error, then new user and its role is created sucessfully.

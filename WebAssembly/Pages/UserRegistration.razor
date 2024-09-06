@@ -4,13 +4,14 @@
 <PageTitle>@($"{GlobalConstant.AppName} | User Registration")</PageTitle>
 
 <div class="d-flex justify-content-center align-items-center vh-100">
-    <RadzenRow Gap="2rem"
-               Class="rz-border-radius-4 rz-shadow-4"
+    <RadzenRow Gap="0"
+               Class="rz-mx-6 rz-border-radius-4 rz-shadow-4"
                Style="width: 100%; max-width: 500px; overflow: hidden;">
 
         <RadzenColumn Size="12">
             <RadzenCard class="rz-p-12">
-                <RadzenStack Gap="1.2rem" Orientation="Orientation.Vertical">
+                <RadzenStack Gap="1.2rem"
+                             Orientation="Orientation.Vertical">
                     <RadzenButton Variant="Variant.Text"
                                   Click=@(args => EvBackToPrevious())
                                   Icon="keyboard_return"
@@ -23,28 +24,42 @@
                                 Class="rz-mb-3 mx-auto">
                         Register
                     </RadzenText>
-                    <RadzenTextBox Name="Email"
-                                   Placeholder="Email" />
 
-                    <RadzenPassword Name="Password"
-                                    Placeholder="Password" />
+                    <RadzenTemplateForm Context="RegistrationContext"
+                                        Data="@initialRegistrationData"
+                                        Submit="@((UserInitialRegistrationDto args) => RegisterUser(args))">
+                        <FluentValidationValidator />
 
-                    <RadzenPassword Name="ConfirmPassword"
-                                    Placeholder="Confirm Password" />
+                        <RadzenStack Gap="1.2rem"
+                                     Orientation="Orientation.Vertical">
 
-                    <RadzenButton Text="Register" ButtonStyle="ButtonStyle.Secondary" />
+                            <RadzenTextBox Name="Email"
+                                           Placeholder="Email"
+                                           @bind-Value="initialRegistrationData.Email" />
+
+                            <RadzenPassword Name="Password"
+                                            Placeholder="Password"
+                                            @bind-Value="initialRegistrationData.Password" />
+
+                            <RadzenPassword Name="ConfirmPassword"
+                                            Placeholder="Confirm Password"
+                                            @bind-Value="initialRegistrationData.ConfirmPassword" />
+
+                            <ValidationSummary />
+                            <RadzenButton Text="Register"
+                                          ButtonStyle="ButtonStyle.Secondary"
+                                          ButtonType="ButtonType.Submit" />
+
+                        </RadzenStack>
+                    </RadzenTemplateForm>
+                    <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                 Variant="Variant.Flat"
+                                 Shade="Shade.Lighter"
+                                 @bind-Visible="AlertVisible">
+                        @ErrorMessage
+                    </RadzenAlert>
                 </RadzenStack>
             </RadzenCard>
         </RadzenColumn>
     </RadzenRow>
 </div>
-
-@code {
-    [Inject]
-    NavigationManager NavigationManager { get; set; } = default!;
-
-    public void EvBackToPrevious()
-    {
-        NavigationManager.NavigateTo($"/login");
-    }
-}

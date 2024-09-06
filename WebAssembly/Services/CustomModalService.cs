@@ -11,6 +11,16 @@ public class CustomModalService
         _dialogService = dialogService;
     }
 
+    public async Task<bool> CustomSaveConfirmation(string title, string message)
+    {
+        bool? confirmationStatus = await _dialogService.Confirm(message, title, new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+        if (confirmationStatus is not null)
+            if ((bool)confirmationStatus)
+                return true;
+
+        return false;
+    }
+
     public async Task<bool> SavingConfirmation(string transactionName)
     {
         bool? confirmationStatus = await _dialogService.Confirm($"Are you sure want to save this {transactionName}?", $"Save {transactionName}", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });

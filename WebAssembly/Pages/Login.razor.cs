@@ -17,7 +17,7 @@ public partial class Login
     protected UserAuthenticationDTO loginData = new();
     protected bool IsSaving = false;
 
-    async Task OnLogin(UserAuthenticationDTO userDto)
+    protected async Task OnLogin(UserAuthenticationDTO userDto)
     {
         IsSaving = true;
         try
@@ -36,16 +36,5 @@ public partial class Login
         }
         AlertVisible = false;
         NavigationManager.NavigateTo($"/");
-    }
-
-    void OnRegister()
-    {
-        NavigationManager.NavigateTo($"/registration");
-        //Console.WriteLine($"{name} -> Register");
-    }
-
-    void OnResetPassword()
-    {
-        //Console.WriteLine($"{name} -> ResetPassword for user: {value}");
     }
 }

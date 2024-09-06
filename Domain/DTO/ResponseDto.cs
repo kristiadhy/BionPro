@@ -3,5 +3,5 @@
 public class ResponseDto
 {
     public bool IsSuccess { get; set; }
-    public string Error { get; set; } = string.Empty;
+    public ICollection<string>? Error { get; set; }
 }

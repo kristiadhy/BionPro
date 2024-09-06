@@ -37,7 +37,7 @@ public class AuthenticationService : IAuthenticationService
         var response = await _client.PostAsync("authentication/registration", userForRegistration);
         var content = await response.Content.ReadAsStringAsync();
         _client.CheckErrorResponseWithContent(response, content, _options);
-
+        //We return the response dto here only if the response is successful, otherwise it is handle in the CheckErrorResponseWithContent method
         return new ResponseDto { IsSuccess = true };
     }
 

@@ -121,8 +121,11 @@ public class CustomHttpClient
             var serviceResponse = JsonConvert.DeserializeObject<ResponseDto>(content, options);
             //Show error detail if host environment mode is "Development"
             string errorResponse = $"{response.ReasonPhrase}";
-            if (_hostEnvironment.IsDevelopment)
-                errorResponse += $" - {serviceResponse?.Error}";
+            if (_hostEnvironment.IsDevelopment && serviceResponse?.Error != null)
+            {
+                foreach (var err in serviceResponse.Error)
+                    errorResponse += $"{Environment.NewLine}- {err}";
+            }
 
             throw new ApplicationException($"{errorResponse}");
         }
