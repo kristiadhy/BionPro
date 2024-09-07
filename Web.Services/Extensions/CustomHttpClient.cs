@@ -117,14 +117,15 @@ public class CustomHttpClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            //If there is an error in the server, the server's middleware will return ResponseDto
-            var serviceResponse = JsonConvert.DeserializeObject<ResponseDto>(content, options);
-            //Show error detail if host environment mode is "Development"
+            // The ReasonPhrase is a property that provides a textual description of the HTTP status code
             string errorResponse = $"{response.ReasonPhrase}";
-            if (_hostEnvironment.IsDevelopment && serviceResponse?.Error != null)
+
+            //If there is an error in the server, the server's middleware will return ResponseDto
+            if (_hostEnvironment.IsDevelopment)
             {
-                foreach (var err in serviceResponse.Error)
-                    errorResponse += $"\n• {err}";
+                var serviceResponse = JsonConvert.DeserializeObject<ResponseDto>(content, options);
+                if (serviceResponse is not null)
+                    errorResponse += $" - {serviceResponse.Message}";
             }
 
             throw new ApplicationException($"{errorResponse}");

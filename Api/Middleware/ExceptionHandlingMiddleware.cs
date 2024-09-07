@@ -34,13 +34,13 @@ namespace Api.Middleware
                 ValidationException => StatusCodes.Status400BadRequest,
                 BadRequestException => StatusCodes.Status400BadRequest,
                 NotFoundException => StatusCodes.Status404NotFound,
-                _ => StatusCodes.Status500InternalServerError
+                _ => throw new NotImplementedException()
             };
 
             var response = new ResponseDto
             {
                 IsSuccess = false,
-                Error = [exception.Message]
+                Message = exception.Message
             };
 
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));

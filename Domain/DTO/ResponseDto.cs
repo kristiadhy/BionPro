@@ -3,5 +3,6 @@
 public class ResponseDto
 {
     public bool IsSuccess { get; set; }
-    public ICollection<string>? Error { get; set; }
+    public string? Message { get; set; }
+    public ICollection<string>? Errors { get; set; }
 }

@@ -49,7 +49,7 @@ internal sealed class CustomerService : ICustomerService
     {
         var customerModel = _mapper.Map<CustomerModel>(customerDto);
         var validator = new CustomerValidator();
-        validator.ValidateInput(customerModel);
+        await validator.ValidateInput(customerModel);
 
         customerModel.SetDataCreate();
         _repositoryManager.CustomerRepo.CreateEntity(customerModel);
@@ -64,7 +64,7 @@ internal sealed class CustomerService : ICustomerService
     {
         var customerModel = _mapper.Map<CustomerModel>(customerDto);
         var validator = new CustomerValidator();
-        validator.ValidateInput(customerModel);
+        await validator.ValidateInput(customerModel);
 
         customerModel.SetDataUpdate();
         _repositoryManager.CustomerRepo.UpdateEntity(customerModel);

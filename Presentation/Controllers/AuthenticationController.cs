@@ -21,18 +21,17 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         var result = await _serviceManager.AuthenticationService.RegisterUser(userForRegistration);
         if (!result.Succeeded)
         {
-            var response = new ResponseDto
+            foreach (var error in result.Errors)
             {
-                IsSuccess = false,
-                Error = result.Errors.Select(e => e.Description).ToList()
-            };
-            return BadRequest(response);
-
-            //This is another way to return the error messages, I got this from Code Maze, but need to check it again since it is not working.
-            //foreach (var error in result.Errors)
-            //    ModelState.TryAddModelError(error.Code, error.Description);
-
-            //return BadRequest(ModelState);
+                ModelState.TryAddModelError(error.Code, error.Description);
+                ResponseDto registerResponse = new()
+                {
+                    IsSuccess = false,
+                    Message = "Registration attempt failed",
+                    Errors = result.Errors.Select(e => e.Description).ToList()
+                };
+                return BadRequest(registerResponse);
+            }
         }
 
         //If there is no error, then new user and its role is created sucessfully.

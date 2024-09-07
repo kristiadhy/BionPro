@@ -30,27 +30,28 @@ public partial class UserRegistration
             return;
 
         IsSaving = true;
+        StateHasChanged();
+
         UserRegistrationDTO userDto = new()
         {
+            FirstName = userInitialRegistrationDto.FirstName,
+            LastName = userInitialRegistrationDto.LastName,
             Email = userInitialRegistrationDto.Email,
+            UserName = userInitialRegistrationDto.Email,
             Password = userInitialRegistrationDto.ConfirmPassword,
             Roles = ["Administrator"]
         };
-        try
-        {
-            await AuthService.RegisterUser(userDto);
-        }
-        catch (Exception ex)
+        var response = await AuthService.RegisterUser(userDto);
+        if (response is not null && !response.IsSuccess)
         {
             AlertVisible = true;
-            ErrorMessage = ex.Message;
-            return;
+            foreach (var error in response.Errors!)
+                ErrorMessage = $"• {error}";
         }
-        finally
-        {
-            IsSaving = false;
-        }
-        IsSuccess = true;
+        else
+            IsSuccess = true;
+
+        IsSaving = false;
     }
 
     protected void EvBackToPrevious()

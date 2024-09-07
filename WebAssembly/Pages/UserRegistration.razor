@@ -34,6 +34,14 @@
                             <RadzenStack Gap="1.2rem"
                                          Orientation="Orientation.Vertical">
 
+                                <RadzenTextBox Name="FirstName"
+                                               Placeholder="First Name"
+                                               @bind-Value="initialRegistrationData.FirstName" />
+
+                                <RadzenTextBox Name="LastName"
+                                               Placeholder="Last Name"
+                                               @bind-Value="initialRegistrationData.LastName" />
+
                                 <RadzenTextBox Name="Email"
                                                Placeholder="Email"
                                                @bind-Value="initialRegistrationData.Email" />
@@ -50,7 +58,7 @@
                                 <RadzenButton Text="Register"
                                               ButtonStyle="ButtonStyle.Secondary"
                                               ButtonType="ButtonType.Submit"
-                                              IsBusy="@IsSaving"/>
+                                              IsBusy="@IsSaving" />
 
                             </RadzenStack>
                         </RadzenTemplateForm>
