@@ -103,11 +103,11 @@ public class CustomHttpClient
         if (!response.IsSuccessStatusCode)
         {
             //We use this as an alternative, because we still confuse either to return empty data as not found status response or success with empty value
-            if (response.StatusCode.Equals(HttpStatusCode.NotFound))
-                return false;
+            //if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+            //    return false;
 
             //response.EnsureSuccessStatusCode();
-            throw new ApplicationException($"{response.ReasonPhrase}");
+            throw new HttpRequestException($"{response.ReasonPhrase}");
         }
 
         return true;
@@ -128,7 +128,7 @@ public class CustomHttpClient
                     errorResponse += $" - {serviceResponse.Message}";
             }
 
-            throw new ApplicationException($"{errorResponse}");
+            throw new HttpRequestException($"{errorResponse}");
         }
     }
 

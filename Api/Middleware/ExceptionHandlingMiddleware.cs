@@ -52,6 +52,7 @@ namespace Api.Middleware
             else
             {
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                response.Message = "An error occurred while processing your request.";
             }
 
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));

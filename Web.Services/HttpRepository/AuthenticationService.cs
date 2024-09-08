@@ -36,12 +36,8 @@ public class AuthenticationService : IAuthenticationService
     {
         var response = await _client.PostAsync("authentication/registration", userForRegistration);
         var content = await response.Content.ReadAsStringAsync();
-        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-        {
-            var errorResponse = JsonConvert.DeserializeObject<ResponseDto>(content, _options);
-            return errorResponse;
-        }
-        return null;
+        var errorResponse = JsonConvert.DeserializeObject<ResponseDto>(content, _options);
+        return errorResponse;
     }
 
     public async Task<TokenDTO> Login(UserAuthenticationDTO userForAuthentication)

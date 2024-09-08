@@ -23,11 +23,11 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         {
             foreach (var error in result.Errors)
             {
-                ModelState.TryAddModelError(error.Code, error.Description);
+                //ModelState.TryAddModelError(error.Code, error.Description);
                 ResponseDto registerResponse = new()
                 {
                     IsSuccess = false,
-                    Message = "Registration attempt failed",
+                    Message = "INVALID_VALIDATION",
                     Errors = result.Errors.Select(e => e.Description).ToList()
                 };
                 return BadRequest(registerResponse);

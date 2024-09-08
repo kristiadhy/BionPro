@@ -55,6 +55,15 @@
                                                 @bind-Value="initialRegistrationData.ConfirmPassword" />
 
                                 <ValidationSummary />
+                                @if(ValidationErrorMessage is not null)
+                                {
+                                    <ul style="color: Red;">
+                                        @foreach (var error in ValidationErrorMessage)
+                                        {
+                                            <li>@error</li>
+                                        }
+                                    </ul>
+                                }
                                 <RadzenButton Text="Register"
                                               ButtonStyle="ButtonStyle.Secondary"
                                               ButtonType="ButtonType.Submit"

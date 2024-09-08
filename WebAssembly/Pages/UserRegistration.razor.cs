@@ -19,9 +19,7 @@ public partial class UserRegistration
     protected bool IsSuccess = false;
     private bool AlertVisible = false;
     private string? ErrorMessage;
-    protected ErrorBoundary? errorBoundary;
-
-    protected override void OnParametersSet() => errorBoundary?.Recover();
+    protected List<string>? ValidationErrorMessage;
 
     protected async Task RegisterUser(UserInitialRegistrationDto userInitialRegistrationDto)
     {
@@ -32,6 +30,8 @@ public partial class UserRegistration
         IsSaving = true;
         StateHasChanged();
 
+        ValidationErrorMessage = null;
+
         UserRegistrationDTO userDto = new()
         {
             FirstName = userInitialRegistrationDto.FirstName,
@@ -41,12 +41,18 @@ public partial class UserRegistration
             Password = userInitialRegistrationDto.ConfirmPassword,
             Roles = ["Administrator"]
         };
-        var response = await AuthService.RegisterUser(userDto);
-        if (response is not null && !response.IsSuccess)
+        var responseDto = await AuthService.RegisterUser(userDto);
+        if (responseDto is not null)
         {
-            AlertVisible = true;
-            foreach (var error in response.Errors!)
-                ErrorMessage = $"• {error}";
+            if (responseDto?.Message == "INVALID_VALIDATION")
+            {
+                ValidationErrorMessage = responseDto?.Errors?.ToList();
+            }
+            else
+            {
+                AlertVisible = true;
+                ErrorMessage = responseDto?.Message;
+            }
         }
         else
             IsSuccess = true;

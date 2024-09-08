@@ -26,8 +26,8 @@ internal sealed class CustomerService : ICustomerService
     public async Task<(IEnumerable<CustomerDTO> customerDTO, MetaData metaData)> GetByParametersAsync(Guid customerID, CustomerParam customerParam, bool trackChanges, CancellationToken cancellationToken = default)
     {
         var customers = await _repositoryManager.CustomerRepo.GetByParametersAsync(customerParam, trackChanges, cancellationToken);
-        if (!customers.Any())
-            throw new NoCustomerFoundException();
+        //if (!customers.Any())
+        //    throw new NoCustomerFoundException();
 
         var customersToReturn = _mapper.Map<IEnumerable<CustomerDTO>>(customers);
 
