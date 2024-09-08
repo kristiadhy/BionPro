@@ -20,7 +20,6 @@ namespace Api.Middleware
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-
                 await HandleExceptionAsync(context, e);
             }
         }
@@ -29,19 +28,31 @@ namespace Api.Middleware
         {
             httpContext.Response.ContentType = "application/json";
 
-            httpContext.Response.StatusCode = exception switch
-            {
-                ValidationException => StatusCodes.Status400BadRequest,
-                BadRequestException => StatusCodes.Status400BadRequest,
-                NotFoundException => StatusCodes.Status404NotFound,
-                _ => throw new NotImplementedException()
-            };
-
             var response = new ResponseDto
             {
-                IsSuccess = false,
-                Message = exception.Message
+                IsSuccess = false
             };
+
+            if (exception is ValidationException)
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "INVALID_VALIDATION";
+                response.Errors = (exception as ValidationException)?.Errors;
+            }
+            else if (exception is NotFoundException)
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = exception.Message;
+            }
+            else if (exception is BadRequestException)
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = exception.Message;
+            }
+            else
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
 
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
