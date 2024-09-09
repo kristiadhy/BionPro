@@ -51,7 +51,7 @@
                                                 @bind-Value="UserRegistrationState.UserRegistration.ConfirmPassword" />
 
                                 <ValidationSummary />
-                                @if(ValidationErrorMessage is not null)
+                                @if (ValidationErrorMessage is not null)
                                 {
                                     <ul style="color: Red;">
                                         @foreach (var error in ValidationErrorMessage)
@@ -85,9 +85,10 @@
                                         Class="rz-mb-3">
                                 Registration Successful
                             </RadzenText>
-                            <RadzenText Text="You have successfully registered. Please check your email for the verification link."
-                                        TagName="TagName.P"
-                                        Class="" />
+                            <RadzenText TextAlign="TextAlign.Center"
+                                        TagName="TagName.P">
+                                You have successfully registered. Please check your email <strong>@SuccessfulEmailRegistered</strong> for the verification link.
+                            </RadzenText>
                         </RadzenStack>
                     }
                 </RadzenStack>

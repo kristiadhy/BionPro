@@ -1,7 +1,6 @@
 ﻿using Domain.DTO;
 using Domain.Enum;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Web.Services.IHttpRepository;
 
 namespace WebAssembly.Pages;
@@ -21,6 +20,7 @@ public partial class UserRegistration
     protected bool IsSuccess = false;
     private bool AlertVisible = false;
     private string? ErrorMessage;
+    private string? SuccessfulEmailRegistered;
     protected List<string>? ValidationErrorMessage;
 
     protected async Task RegisterUser(UserInitialRegistrationDto userInitialRegistrationDto)
@@ -63,6 +63,8 @@ public partial class UserRegistration
         else
         {
             IsSuccess = true;
+            //Need to set the email that has been registered successfully because the state will be reset
+            SuccessfulEmailRegistered = UserRegistrationState.UserRegistration.Email;
             UserRegistrationState.ResetUserRegistration();
         }
 
