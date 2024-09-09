@@ -1,4 +1,5 @@
 ﻿using Domain.DTO;
+using Domain.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.ActionFilters;
@@ -27,7 +28,8 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
                 ResponseDto registerResponse = new()
                 {
                     IsSuccess = false,
-                    Message = "INVALID_VALIDATION",
+                    Type = ErrorMessageEnum.InvalidValidation,
+                    Message = "Invalid Validation",
                     Errors = result.Errors.Select(e => e.Description).ToList()
                 };
                 return BadRequest(registerResponse);

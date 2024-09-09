@@ -7,6 +7,9 @@ public class UserValidator : AbstractValidator<UserRegistrationDTO>
 {
     public UserValidator()
     {
+        RuleFor(prop => prop.UserName)
+            .NotEmpty();
+
         RuleFor(prop => prop.Roles)
             .NotEmpty();
 

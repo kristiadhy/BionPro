@@ -27,32 +27,28 @@
                             Register
                         </RadzenText>
                         <RadzenTemplateForm Context="RegistrationContext"
-                                            Data="@initialRegistrationData"
+                                            Data="@UserRegistrationState.UserRegistration"
                                             Submit="@((UserInitialRegistrationDto args) => RegisterUser(args))">
                             <FluentValidationValidator />
 
                             <RadzenStack Gap="1.2rem"
                                          Orientation="Orientation.Vertical">
 
-                                <RadzenTextBox Name="FirstName"
-                                               Placeholder="First Name"
-                                               @bind-Value="initialRegistrationData.FirstName" />
-
-                                <RadzenTextBox Name="LastName"
-                                               Placeholder="Last Name"
-                                               @bind-Value="initialRegistrationData.LastName" />
+                                <RadzenTextBox Name="UserName"
+                                               Placeholder="Username"
+                                               @bind-Value="UserRegistrationState.UserRegistration.Username" />
 
                                 <RadzenTextBox Name="Email"
                                                Placeholder="Email"
-                                               @bind-Value="initialRegistrationData.Email" />
+                                               @bind-Value="UserRegistrationState.UserRegistration.Email" />
 
                                 <RadzenPassword Name="Password"
                                                 Placeholder="Password"
-                                                @bind-Value="initialRegistrationData.Password" />
+                                                @bind-Value="UserRegistrationState.UserRegistration.Password" />
 
                                 <RadzenPassword Name="ConfirmPassword"
                                                 Placeholder="Confirm Password"
-                                                @bind-Value="initialRegistrationData.ConfirmPassword" />
+                                                @bind-Value="UserRegistrationState.UserRegistration.ConfirmPassword" />
 
                                 <ValidationSummary />
                                 @if(ValidationErrorMessage is not null)

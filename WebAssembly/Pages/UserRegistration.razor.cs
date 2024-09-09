@@ -1,4 +1,5 @@
 ﻿using Domain.DTO;
+using Domain.Enum;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Web.Services.IHttpRepository;
@@ -13,8 +14,9 @@ public partial class UserRegistration
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
     IAuthenticationService AuthService { get; set; } = default!;
+    [Inject]
+    UserRegistrationState UserRegistrationState { get; set; } = default!;
 
-    protected UserInitialRegistrationDto initialRegistrationData = new();
     protected bool IsSaving = false;
     protected bool IsSuccess = false;
     private bool AlertVisible = false;
@@ -30,32 +32,39 @@ public partial class UserRegistration
         IsSaving = true;
         StateHasChanged();
 
+        //Need to reset the valdation error message before calling the service
         ValidationErrorMessage = null;
 
         UserRegistrationDTO userDto = new()
         {
-            FirstName = userInitialRegistrationDto.FirstName,
-            LastName = userInitialRegistrationDto.LastName,
+            UserName = userInitialRegistrationDto.Username,
             Email = userInitialRegistrationDto.Email,
-            UserName = userInitialRegistrationDto.Email,
             Password = userInitialRegistrationDto.ConfirmPassword,
             Roles = ["Administrator"]
         };
         var responseDto = await AuthService.RegisterUser(userDto);
+        //If responseDto is not null, it means there is an error
         if (responseDto is not null)
         {
-            if (responseDto?.Message == "INVALID_VALIDATION")
+            //Check the error type, is it validation error or not
+            //Validation error will be recognized with the message "INVALID_VALIDATION"
+            if (responseDto?.Type == ErrorMessageEnum.InvalidValidation)
             {
                 ValidationErrorMessage = responseDto?.Errors?.ToList();
             }
+            //If it is not a validation error, then show the error as an alert
             else
             {
                 AlertVisible = true;
                 ErrorMessage = responseDto?.Message;
             }
         }
+        // If responseDto is null, it means there is no error, then the registration is successful
         else
+        {
             IsSuccess = true;
+            UserRegistrationState.ResetUserRegistration();
+        }
 
         IsSaving = false;
     }

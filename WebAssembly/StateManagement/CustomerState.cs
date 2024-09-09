@@ -6,7 +6,7 @@ namespace WebAssembly.StateManagement;
 
 public class CustomerState
 {
-    private IServiceManager ServiceManager;
+    private readonly IServiceManager ServiceManager;
     public List<CustomerDTO> CustomerList { get; set; } = [];
     public IEnumerable<CustomerDTO> CustomerListDropdown { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
@@ -67,7 +67,6 @@ public class CustomerState
     internal void ToggleFilterState()
     {
         IsFilterByCustomerNameActive = false;
-
         IsFilterActive = false;
     }
 

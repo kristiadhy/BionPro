@@ -22,6 +22,9 @@ public class UserInitialRegistrationValidator : AbstractValidator<UserInitialReg
             .NotEmpty()
             .EmailAddress()
             ;
+
+        RuleFor(prop => prop.Username)
+            .NotEmpty();
     }
 }
 
