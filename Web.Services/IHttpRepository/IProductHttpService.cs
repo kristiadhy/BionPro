@@ -3,7 +3,7 @@ using Domain.Parameters;
 using Web.Services.Features;
 
 namespace Web.Services.IHttpRepository;
-public interface IProductService
+public interface IProductHttpService
 {
     public Task<PagingResponse<ProductDtoForProductQueries>> GetProducts(ProductParam productParam);
     public Task<ProductDto> GetProductByID(Guid productID);

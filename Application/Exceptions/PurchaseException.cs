@@ -1,4 +1,6 @@
-﻿namespace Application.Exceptions;
+﻿using Application.Exceptions.Abstractions;
+
+namespace Application.Exceptions;
 
 public sealed class PurchaseIDNotFoundException(int purchaseID) : NotFoundException($"Purchase with id: {purchaseID} doesn't exist in the database.");
 

@@ -7,13 +7,13 @@ using Web.Services.Features;
 using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
-internal class SaleDetailService : ISaleDetailService
+internal class SaleDetailHttpService : ISaleDetailHttpService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "sale/details";
 
-    public SaleDetailService(CustomHttpClient client, JsonSerializerSettings options)
+    public SaleDetailHttpService(CustomHttpClient client, JsonSerializerSettings options)
     {
         _client = client;
         _options = options;

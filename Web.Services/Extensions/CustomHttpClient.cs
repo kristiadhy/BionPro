@@ -2,7 +2,6 @@
 using Domain.DTO;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using System.Net;
 using System.Net.Http.Json;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 using Web.Services.Features;
@@ -103,11 +102,11 @@ public class CustomHttpClient
         if (!response.IsSuccessStatusCode)
         {
             //We use this as an alternative, because we still confuse either to return empty data as not found status response or success with empty value
-            if (response.StatusCode.Equals(HttpStatusCode.NotFound))
-                return false;
+            //if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+            //    return false;
 
             //response.EnsureSuccessStatusCode();
-            throw new ApplicationException($"{response.ReasonPhrase}");
+            throw new HttpRequestException($"{response.ReasonPhrase}");
         }
 
         return true;
@@ -117,17 +116,19 @@ public class CustomHttpClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            //If there is an error in the server, the server's middleware will return ResponseDto
-            var serviceResponse = JsonConvert.DeserializeObject<ResponseDto>(content, options);
-            //Show error detail if host environment mode is "Development"
-            string errorResponse = $"{response.ReasonPhrase}";
-            if (_hostEnvironment.IsDevelopment && serviceResponse?.Error != null)
-            {
-                foreach (var err in serviceResponse.Error)
-                    errorResponse += $"{Environment.NewLine}- {err}";
-            }
+            var serviceResponse = JsonConvert.DeserializeObject<ApiResponseDto<string>>(content, options);
+            // The ReasonPhrase is a property that provides a textual description of the HTTP status code
+            string errorResponse = $"{serviceResponse?.ErrorMessage}";
 
-            throw new ApplicationException($"{errorResponse}");
+            ////If there is an error in the server, the server's middleware will return ResponseDto
+            //if (_hostEnvironment.IsDevelopment)
+            //{
+            //    var serviceResponse = JsonConvert.DeserializeObject<ApiResponseDto<string>>(content, options);
+            //    if (serviceResponse is not null)
+            //        errorResponse += $" - {serviceResponse.ErrorMessage}";
+            //}
+
+            throw new HttpRequestException($"{errorResponse}");
         }
     }
 

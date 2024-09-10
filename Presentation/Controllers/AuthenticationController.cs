@@ -21,18 +21,17 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         var result = await _serviceManager.AuthenticationService.RegisterUser(userForRegistration);
         if (!result.Succeeded)
         {
-            var response = new ResponseDto
+            foreach (var error in result.Errors)
             {
-                IsSuccess = false,
-                Error = result.Errors.Select(e => e.Description).ToList()
-            };
-            return BadRequest(response);
-
-            //This is another way to return the error messages, I got this from Code Maze, but need to check it again since it is not working.
-            //foreach (var error in result.Errors)
-            //    ModelState.TryAddModelError(error.Code, error.Description);
-
-            //return BadRequest(ModelState);
+                //ModelState.TryAddModelError(error.Code, error.Description);
+                ApiResponseDto<List<string>> apiResponseDto = new()
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Invalid Validation",
+                    Data = result.Errors.Select(e => e.Description).ToList()
+                };
+                return BadRequest(apiResponseDto);
+            }
         }
 
         //If there is no error, then new user and its role is created sucessfully.
@@ -43,13 +42,13 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Authenticate([FromBody] UserAuthenticationDTO user)
     {
-        if (!await _serviceManager.AuthenticationService.ValidateUser(user))
-            return Unauthorized();
+        var responseDto = await _serviceManager.AuthenticationService.ValidateUser(user);
+        if (!responseDto.IsSuccess)
+            return Unauthorized(responseDto);
 
         //Create a JWT token after a successfull login
         var tokenDTO = await _serviceManager.AuthenticationService.CreateToken(populateExp: true);
-        return Ok(tokenDTO);
-
+        return Ok(new ApiResponseDto<TokenDTO> { IsSuccess = true, Data = tokenDTO });
     }
 
     [HttpPost("refresh"), AllowAnonymous]

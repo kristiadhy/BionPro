@@ -8,14 +8,14 @@ using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationHttpService : IAuthenticationHttpService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
     private readonly AuthenticationStateProvider _authStateProvider;
     private readonly ILocalStorageService _localStorage;
 
-    public AuthenticationService(CustomHttpClient client, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage, JsonSerializerSettings options)
+    public AuthenticationHttpService(CustomHttpClient client, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage, JsonSerializerSettings options)
     {
         _client = client;
         _options = options;
@@ -32,29 +32,29 @@ public class AuthenticationService : IAuthenticationService
             return string.Empty;
     }
 
-    public async Task<ResponseDto> RegisterUser(UserRegistrationDTO userForRegistration)
+    public async Task<ApiResponseDto<List<string>>?> RegisterUser(UserRegistrationDTO userForRegistration)
     {
         var response = await _client.PostAsync("authentication/registration", userForRegistration);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        //We return the response dto here only if the response is successful, otherwise it is handle in the CheckErrorResponseWithContent method
-        return new ResponseDto { IsSuccess = true };
+
+        // We don't check the exception error here because we want to display it differently since we are not in the main application yet. In this form, we handle the exception error manually and display it on the Razor page.
+        var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<List<string>>>(content, _options);
+        return apiResponse;
     }
 
-    public async Task<TokenDTO> Login(UserAuthenticationDTO userForAuthentication)
+    public async Task Login(UserAuthenticationDTO userForAuthentication)
     {
         var response = await _client.PostAsync("authentication/login", userForAuthentication);
         var content = await response.Content.ReadAsStringAsync();
-
         _client.CheckErrorResponseWithContent(response, content, _options);
 
-        var result = JsonConvert.DeserializeObject<TokenDTO>(content, _options);
-
-        await _localStorage.SetItemAsync("authToken", result!.AccessToken);
-        await _localStorage.SetItemAsync("refreshToken", result.RefreshToken);
-        ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.AccessToken);
-
-        return result;
+        var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<TokenDTO>>(content, _options);
+        if (apiResponse is not null && apiResponse.IsSuccess)
+        {
+            await _localStorage.SetItemAsync("authToken", apiResponse!.Data!.AccessToken);
+            await _localStorage.SetItemAsync("refreshToken", apiResponse!.Data!.RefreshToken);
+            ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(apiResponse!.Data!.AccessToken);
+        }
     }
 
     public async Task Logout()

@@ -2,12 +2,12 @@
 
 public interface IServiceManager
 {
-    ICustomerService CustomerService { get; }
-    ISupplierService SupplierService { get; }
-    IProductCategoryService ProductCategoryService { get; }
-    IProductService ProductService { get; }
-    IPurchaseService PurchaseService { get; }
-    IPurchaseDetailService PurchaseDetailService { get; }
-    ISaleService SaleService { get; }
-    ISaleDetailService SaleDetailService { get; }
+    ICustomerHttpService CustomerService { get; }
+    ISupplierHttpService SupplierService { get; }
+    IProductCategoryHttpService ProductCategoryService { get; }
+    IProductHttpService ProductService { get; }
+    IPurchaseHttpService PurchaseService { get; }
+    IPurchaseDetailHttpService PurchaseDetailService { get; }
+    ISaleHttpService SaleService { get; }
+    ISaleDetailHttpService SaleDetailService { get; }
 }

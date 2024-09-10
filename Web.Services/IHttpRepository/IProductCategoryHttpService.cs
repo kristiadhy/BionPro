@@ -3,7 +3,7 @@ using Domain.Parameters;
 using Web.Services.Features;
 
 namespace Web.Services.IHttpRepository;
-public interface IProductCategoryService
+public interface IProductCategoryHttpService
 {
     public Task<PagingResponse<ProductCategoryDto>> GetProductCategories(ProductCategoryParam productCategoryParam);
     public Task<ProductCategoryDto> GetProductCategoryByID(int productCategoryID);

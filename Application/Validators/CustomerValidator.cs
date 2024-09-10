@@ -36,9 +36,9 @@ public class CustomerValidator : AbstractValidator<CustomerModel>
         return email?.ToLower() != "mail@my.com";
     }
 
-    public void ValidateInput(CustomerModel customerMD)
+    public async Task ValidateInput(CustomerModel customerMD)
     {
-        var validationResult = Validate(customerMD);
+        var validationResult = await ValidateAsync(customerMD);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult);
     }

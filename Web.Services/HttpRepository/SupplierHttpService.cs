@@ -7,13 +7,13 @@ using Web.Services.Features;
 using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
-public class SupplierService : ISupplierService
+public class SupplierHttpService : ISupplierHttpService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "suppliers";
 
-    public SupplierService(CustomHttpClient client, JsonSerializerSettings options)
+    public SupplierHttpService(CustomHttpClient client, JsonSerializerSettings options)
     {
         _client = client;
         _options = options;

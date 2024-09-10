@@ -8,7 +8,7 @@ public partial class AuthLink
     [Inject]
     NavigationManager NavigationHelper { get; set; } = default!;
     [Inject]
-    IAuthenticationService AuthService { get; set; } = default!;
+    IAuthenticationHttpService AuthService { get; set; } = default!;
 
     private void Logout()
     {

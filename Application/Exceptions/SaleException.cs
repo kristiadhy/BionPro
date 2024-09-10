@@ -1,4 +1,6 @@
-﻿namespace Application.Exceptions;
+﻿using Application.Exceptions.Abstractions;
+
+namespace Application.Exceptions;
 
 public sealed class SaleIDNotFoundException(int saleID) : NotFoundException($"Sale with id: {saleID} doesn't exist in the database.");
 

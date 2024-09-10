@@ -7,13 +7,13 @@ using Web.Services.Features;
 using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
-internal class ProductCategoryService : IProductCategoryService
+internal class ProductCategoryHttpService : IProductCategoryHttpService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "products/categories";
 
-    public ProductCategoryService(CustomHttpClient client, JsonSerializerSettings options)
+    public ProductCategoryHttpService(CustomHttpClient client, JsonSerializerSettings options)
     {
         _client = client;
         _options = options;

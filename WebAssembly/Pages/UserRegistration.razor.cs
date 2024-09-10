@@ -11,46 +11,62 @@ public partial class UserRegistration
     [Inject]
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
-    IAuthenticationService AuthService { get; set; } = default!;
+    IAuthenticationHttpService AuthService { get; set; } = default!;
+    [Inject]
+    UserRegistrationState UserRegistrationState { get; set; } = default!;
 
-    protected UserInitialRegistrationDto initialRegistrationData = new();
     protected bool IsSaving = false;
-    private string ErrorMessage = string.Empty;
+    protected bool IsSuccess = false;
     private bool AlertVisible = false;
+    private string? ErrorMessage;
+    private string? SuccessfulEmailRegistered;
+    protected List<string>? ValidationErrorMessage;
 
     protected async Task RegisterUser(UserInitialRegistrationDto userInitialRegistrationDto)
     {
-        bool confirmationStatus = await ConfirmationModalService.CustomSaveConfirmation("User registration", "Save this registration?");
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.CustomSaveConfirmation("Registration", "Save this registration?"))
             return;
 
         IsSaving = true;
-        try
+        StateHasChanged();
+
+        ValidationErrorMessage = null;
+
+        var userDto = new UserRegistrationDTO
         {
-            UserRegistrationDTO userDto = new()
+            UserName = userInitialRegistrationDto.Username,
+            Email = userInitialRegistrationDto.Email,
+            Password = userInitialRegistrationDto.ConfirmPassword,
+            Roles = ["Administrator"]
+        };
+
+        var responseDto = await AuthService.RegisterUser(userDto);
+
+        // if the response is not null, then there is an error
+        if (responseDto != null)
+        {
+            // if the data exists, then there are validation errors
+            if (responseDto.Data?.Count > 0)
             {
-                Email = userInitialRegistrationDto.Email,
-                Password = userInitialRegistrationDto.ConfirmPassword,
-                Roles = ["Administrator"]
-            };
-            var responseDto = await AuthService.RegisterUser(userDto);
-            if (!responseDto.IsSuccess)
-                ErrorMessage = responseDto.Error;
+                ValidationErrorMessage = responseDto.Data.ToList();
+            }
+            // Otherwise, it's an exception error
+            else
+            {
+                AlertVisible = true;
+                ErrorMessage = responseDto.ErrorMessage;
+            }
         }
-        catch
+        else
         {
-            AlertVisible = true;
-            ErrorMessage = "Registration Failed";
-            return;
+            IsSuccess = true;
+            SuccessfulEmailRegistered = UserRegistrationState.UserRegistration.Email;
+            UserRegistrationState.ResetUserRegistration();
         }
-        finally
-        {
-            IsSaving = false;
-        }
-        AlertVisible = false;
 
         IsSaving = false;
     }
+
 
     protected void EvBackToPrevious()
     {

@@ -9,6 +9,7 @@ public class IdentityInstaller : IServiceInstallers
 {
     public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
     {
+        //We can add IdentityUsre or IdentityRole to the services. But here we create our own custom user and role class that inherit from IdentityUser and IdentityRole
         var builder = services.AddIdentity<UserModel, IdentityRole>(o =>
         {
             //Set rule for password

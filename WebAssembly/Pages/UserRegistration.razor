@@ -19,45 +19,78 @@
                                   ButtonStyle="ButtonStyle.Primary"
                                   Size="ButtonSize.Medium" class="col-4" />
 
-                    <RadzenText TextStyle="TextStyle.H5"
-                                TagName="TagName.H2"
-                                Class="rz-mb-3 mx-auto">
-                        Register
-                    </RadzenText>
+                    @if (!IsSuccess)
+                    {
+                        <RadzenText TextStyle="TextStyle.H5"
+                                    TagName="TagName.H2"
+                                    Class="rz-mb-3 mx-auto">
+                            Register
+                        </RadzenText>
+                        <RadzenTemplateForm Context="RegistrationContext"
+                                            Data="@UserRegistrationState.UserRegistration"
+                                            Submit="@((UserInitialRegistrationDto args) => RegisterUser(args))">
+                            <FluentValidationValidator />
 
-                    <RadzenTemplateForm Context="RegistrationContext"
-                                        Data="@initialRegistrationData"
-                                        Submit="@((UserInitialRegistrationDto args) => RegisterUser(args))">
-                        <FluentValidationValidator />
+                            <RadzenStack Gap="1.2rem"
+                                         Orientation="Orientation.Vertical">
 
+                                <RadzenTextBox Name="UserName"
+                                               Placeholder="Username"
+                                               @bind-Value="UserRegistrationState.UserRegistration.Username" />
+
+                                <RadzenTextBox Name="Email"
+                                               Placeholder="Email"
+                                               @bind-Value="UserRegistrationState.UserRegistration.Email" />
+
+                                <RadzenPassword Name="Password"
+                                                Placeholder="Password"
+                                                @bind-Value="UserRegistrationState.UserRegistration.Password" />
+
+                                <RadzenPassword Name="ConfirmPassword"
+                                                Placeholder="Confirm Password"
+                                                @bind-Value="UserRegistrationState.UserRegistration.ConfirmPassword" />
+
+                                <ValidationSummary />
+                                @if (ValidationErrorMessage is not null)
+                                {
+                                    <ul style="color: Red;">
+                                        @foreach (var error in ValidationErrorMessage)
+                                        {
+                                            <li>@error</li>
+                                        }
+                                    </ul>
+                                }
+                                <RadzenButton Text="Register"
+                                              ButtonStyle="ButtonStyle.Secondary"
+                                              ButtonType="ButtonType.Submit"
+                                              IsBusy="@IsSaving" />
+
+                            </RadzenStack>
+                        </RadzenTemplateForm>
+                        <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                     Variant="Variant.Flat"
+                                     Shade="Shade.Lighter"
+                                     @bind-Visible="AlertVisible">
+                            @ErrorMessage
+                        </RadzenAlert>
+                    }
+                    else
+                    {
                         <RadzenStack Gap="1.2rem"
-                                     Orientation="Orientation.Vertical">
-
-                            <RadzenTextBox Name="Email"
-                                           Placeholder="Email"
-                                           @bind-Value="initialRegistrationData.Email" />
-
-                            <RadzenPassword Name="Password"
-                                            Placeholder="Password"
-                                            @bind-Value="initialRegistrationData.Password" />
-
-                            <RadzenPassword Name="ConfirmPassword"
-                                            Placeholder="Confirm Password"
-                                            @bind-Value="initialRegistrationData.ConfirmPassword" />
-
-                            <ValidationSummary />
-                            <RadzenButton Text="Register"
-                                          ButtonStyle="ButtonStyle.Secondary"
-                                          ButtonType="ButtonType.Submit" />
-
+                                     Orientation="Orientation.Vertical"
+                                     AlignItems="AlignItems.Center">
+                            <RadzenIcon Icon="task_alt" IconStyle="IconStyle.Success" />
+                            <RadzenText TextStyle="TextStyle.H5"
+                                        TagName="TagName.H2"
+                                        Class="rz-mb-3">
+                                Registration Successful
+                            </RadzenText>
+                            <RadzenText TextAlign="TextAlign.Center"
+                                        TagName="TagName.P">
+                                You have successfully registered. Please check your email <strong>@SuccessfulEmailRegistered</strong> for the verification link.
+                            </RadzenText>
                         </RadzenStack>
-                    </RadzenTemplateForm>
-                    <RadzenAlert AlertStyle="AlertStyle.Danger"
-                                 Variant="Variant.Flat"
-                                 Shade="Shade.Lighter"
-                                 @bind-Visible="AlertVisible">
-                        @ErrorMessage
-                    </RadzenAlert>
+                    }
                 </RadzenStack>
             </RadzenCard>
         </RadzenColumn>

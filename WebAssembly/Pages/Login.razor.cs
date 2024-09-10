@@ -1,6 +1,5 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
-using Radzen;
 using Web.Services.IHttpRepository;
 
 namespace WebAssembly.Pages;
@@ -10,7 +9,7 @@ public partial class Login
     [Inject]
     NavigationManager NavigationManager { get; set; } = default!;
     [Inject]
-    IAuthenticationService AuthService { get; set; } = default!;
+    IAuthenticationHttpService AuthService { get; set; } = default!;
     bool AlertVisible = false;
     string ErrorMessage = string.Empty;
 
@@ -22,12 +21,12 @@ public partial class Login
         IsSaving = true;
         try
         {
-            var tokenResponse = await AuthService.Login(userDto);
+            await AuthService.Login(userDto);
         }
-        catch
+        catch (Exception ex)
         {
             AlertVisible = true;
-            ErrorMessage = "Wrong username/password";
+            ErrorMessage = ex.Message;
             return;
         }
         finally

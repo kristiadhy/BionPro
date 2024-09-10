@@ -1,2 +1,4 @@
-﻿namespace Application.Exceptions;
+﻿using Application.Exceptions.Abstractions;
+
+namespace Application.Exceptions;
 public sealed class PathNotFoundException() : NotFoundException($"Path not found in the server");
