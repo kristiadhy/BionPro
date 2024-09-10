@@ -3,7 +3,7 @@ using Domain.Parameters;
 using Web.Services.Features;
 
 namespace Web.Services.IHttpRepository;
-public interface ISaleService
+public interface ISaleHttpService
 {
     public Task<PagingResponse<SaleDtoForSummary>> GetSalesForSummary(SaleParam saleParam);
     public Task<SaleDto> GetSaleByID(int saleID);

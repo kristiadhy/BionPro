@@ -8,33 +8,33 @@ namespace Web.Services.HttpRepository;
 
 public sealed class ServiceManager : IServiceManager
 {
-    private readonly Lazy<ICustomerService> _lazyCustomerService;
-    private readonly Lazy<ISupplierService> _lazySupplierService;
-    private readonly Lazy<IProductCategoryService> _lazyProductCategoryService;
-    private readonly Lazy<IProductService> _lazyProductService;
-    private readonly Lazy<IPurchaseService> _lazyPurchaseService;
-    private readonly Lazy<IPurchaseDetailService> _lazyPurchaseDetailService;
-    private readonly Lazy<ISaleService> _lazySaleService;
-    private readonly Lazy<ISaleDetailService> _lazySaleDetailService;
+    private readonly Lazy<ICustomerHttpService> _lazyCustomerService;
+    private readonly Lazy<ISupplierHttpService> _lazySupplierService;
+    private readonly Lazy<IProductCategoryHttpService> _lazyProductCategoryService;
+    private readonly Lazy<IProductHttpService> _lazyProductService;
+    private readonly Lazy<IPurchaseHttpService> _lazyPurchaseService;
+    private readonly Lazy<IPurchaseDetailHttpService> _lazyPurchaseDetailService;
+    private readonly Lazy<ISaleHttpService> _lazySaleService;
+    private readonly Lazy<ISaleDetailHttpService> _lazySaleDetailService;
 
     public ServiceManager(CustomHttpClient apiService, JsonSerializerSettings settings, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage)
     {
-        _lazyCustomerService = new Lazy<ICustomerService>(() => new CustomerService(apiService, settings));
-        _lazySupplierService = new Lazy<ISupplierService>(() => new SupplierService(apiService, settings));
-        _lazyProductCategoryService = new Lazy<IProductCategoryService>(() => new ProductCategoryService(apiService, settings));
-        _lazyProductService = new Lazy<IProductService>(() => new ProductService(apiService, settings));
-        _lazyPurchaseService = new Lazy<IPurchaseService>(() => new PurchaseService(apiService, settings));
-        _lazyPurchaseDetailService = new Lazy<IPurchaseDetailService>(() => new PurchaseDetailService(apiService, settings));
-        _lazySaleService = new Lazy<ISaleService>(() => new SaleService(apiService, settings));
-        _lazySaleDetailService = new Lazy<ISaleDetailService>(() => new SaleDetailService(apiService, settings));
+        _lazyCustomerService = new Lazy<ICustomerHttpService>(() => new CustomerHttpService(apiService, settings));
+        _lazySupplierService = new Lazy<ISupplierHttpService>(() => new SupplierHttpService(apiService, settings));
+        _lazyProductCategoryService = new Lazy<IProductCategoryHttpService>(() => new ProductCategoryHttpService(apiService, settings));
+        _lazyProductService = new Lazy<IProductHttpService>(() => new ProductHttpService(apiService, settings));
+        _lazyPurchaseService = new Lazy<IPurchaseHttpService>(() => new PurchaseHttpService(apiService, settings));
+        _lazyPurchaseDetailService = new Lazy<IPurchaseDetailHttpService>(() => new PurchaseDetailHttpService(apiService, settings));
+        _lazySaleService = new Lazy<ISaleHttpService>(() => new SaleHttpService(apiService, settings));
+        _lazySaleDetailService = new Lazy<ISaleDetailHttpService>(() => new SaleDetailHttpService(apiService, settings));
     }
 
-    public ICustomerService CustomerService => _lazyCustomerService.Value;
-    public ISupplierService SupplierService => _lazySupplierService.Value;
-    public IProductCategoryService ProductCategoryService => _lazyProductCategoryService.Value;
-    public IProductService ProductService => _lazyProductService.Value;
-    public IPurchaseService PurchaseService => _lazyPurchaseService.Value;
-    public IPurchaseDetailService PurchaseDetailService => _lazyPurchaseDetailService.Value;
-    public ISaleService SaleService => _lazySaleService.Value;
-    public ISaleDetailService SaleDetailService => _lazySaleDetailService.Value;
+    public ICustomerHttpService CustomerService => _lazyCustomerService.Value;
+    public ISupplierHttpService SupplierService => _lazySupplierService.Value;
+    public IProductCategoryHttpService ProductCategoryService => _lazyProductCategoryService.Value;
+    public IProductHttpService ProductService => _lazyProductService.Value;
+    public IPurchaseHttpService PurchaseService => _lazyPurchaseService.Value;
+    public IPurchaseDetailHttpService PurchaseDetailService => _lazyPurchaseDetailService.Value;
+    public ISaleHttpService SaleService => _lazySaleService.Value;
+    public ISaleDetailHttpService SaleDetailService => _lazySaleDetailService.Value;
 }

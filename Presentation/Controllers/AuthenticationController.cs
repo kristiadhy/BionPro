@@ -1,5 +1,4 @@
 ﻿using Domain.DTO;
-using Domain.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.ActionFilters;
@@ -25,14 +24,13 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
             foreach (var error in result.Errors)
             {
                 //ModelState.TryAddModelError(error.Code, error.Description);
-                ResponseDto registerResponse = new()
+                ApiResponseDto<List<string>> apiResponseDto = new()
                 {
                     IsSuccess = false,
-                    Type = ErrorMessageEnum.InvalidValidation,
-                    Message = "Invalid Validation",
-                    Errors = result.Errors.Select(e => e.Description).ToList()
+                    ErrorMessage = "Invalid Validation",
+                    Data = result.Errors.Select(e => e.Description).ToList()
                 };
-                return BadRequest(registerResponse);
+                return BadRequest(apiResponseDto);
             }
         }
 
@@ -44,13 +42,13 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Authenticate([FromBody] UserAuthenticationDTO user)
     {
-        if (!await _serviceManager.AuthenticationService.ValidateUser(user))
-            return Unauthorized();
+        var responseDto = await _serviceManager.AuthenticationService.ValidateUser(user);
+        if (!responseDto.IsSuccess)
+            return Unauthorized(responseDto);
 
         //Create a JWT token after a successfull login
         var tokenDTO = await _serviceManager.AuthenticationService.CreateToken(populateExp: true);
-        return Ok(tokenDTO);
-
+        return Ok(new ApiResponseDto<TokenDTO> { IsSuccess = true, Data = tokenDTO });
     }
 
     [HttpPost("refresh"), AllowAnonymous]

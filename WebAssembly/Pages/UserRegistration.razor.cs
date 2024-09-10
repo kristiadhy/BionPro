@@ -1,5 +1,4 @@
 ﻿using Domain.DTO;
-using Domain.Enum;
 using Microsoft.AspNetCore.Components;
 using Web.Services.IHttpRepository;
 
@@ -12,7 +11,7 @@ public partial class UserRegistration
     [Inject]
     CustomModalService ConfirmationModalService { get; set; } = default!;
     [Inject]
-    IAuthenticationService AuthService { get; set; } = default!;
+    IAuthenticationHttpService AuthService { get; set; } = default!;
     [Inject]
     UserRegistrationState UserRegistrationState { get; set; } = default!;
 
@@ -25,51 +24,49 @@ public partial class UserRegistration
 
     protected async Task RegisterUser(UserInitialRegistrationDto userInitialRegistrationDto)
     {
-        bool confirmationStatus = await ConfirmationModalService.CustomSaveConfirmation("Registration", "Save this registration?");
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.CustomSaveConfirmation("Registration", "Save this registration?"))
             return;
 
         IsSaving = true;
         StateHasChanged();
 
-        //Need to reset the valdation error message before calling the service
         ValidationErrorMessage = null;
 
-        UserRegistrationDTO userDto = new()
+        var userDto = new UserRegistrationDTO
         {
             UserName = userInitialRegistrationDto.Username,
             Email = userInitialRegistrationDto.Email,
             Password = userInitialRegistrationDto.ConfirmPassword,
             Roles = ["Administrator"]
         };
+
         var responseDto = await AuthService.RegisterUser(userDto);
-        //If responseDto is not null, it means there is an error
-        if (responseDto is not null)
+
+        // if the response is not null, then there is an error
+        if (responseDto != null)
         {
-            //Check the error type, is it validation error or not
-            //Validation error will be recognized with the message "INVALID_VALIDATION"
-            if (responseDto?.Type == ErrorMessageEnum.InvalidValidation)
+            // if the data exists, then there are validation errors
+            if (responseDto.Data?.Count > 0)
             {
-                ValidationErrorMessage = responseDto?.Errors?.ToList();
+                ValidationErrorMessage = responseDto.Data.ToList();
             }
-            //If it is not a validation error, then show the error as an alert
+            // Otherwise, it's an exception error
             else
             {
                 AlertVisible = true;
-                ErrorMessage = responseDto?.Message;
+                ErrorMessage = responseDto.ErrorMessage;
             }
         }
-        // If responseDto is null, it means there is no error, then the registration is successful
         else
         {
             IsSuccess = true;
-            //Need to set the email that has been registered successfully because the state will be reset
             SuccessfulEmailRegistered = UserRegistrationState.UserRegistration.Email;
             UserRegistrationState.ResetUserRegistration();
         }
 
         IsSaving = false;
     }
+
 
     protected void EvBackToPrevious()
     {

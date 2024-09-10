@@ -2,7 +2,6 @@
 using Domain.DTO;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using System.Net;
 using System.Net.Http.Json;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 using Web.Services.Features;
@@ -117,16 +116,17 @@ public class CustomHttpClient
     {
         if (!response.IsSuccessStatusCode)
         {
+            var serviceResponse = JsonConvert.DeserializeObject<ApiResponseDto<string>>(content, options);
             // The ReasonPhrase is a property that provides a textual description of the HTTP status code
-            string errorResponse = $"{response.ReasonPhrase}";
+            string errorResponse = $"{serviceResponse?.ErrorMessage}";
 
-            //If there is an error in the server, the server's middleware will return ResponseDto
-            if (_hostEnvironment.IsDevelopment)
-            {
-                var serviceResponse = JsonConvert.DeserializeObject<ResponseDto>(content, options);
-                if (serviceResponse is not null)
-                    errorResponse += $" - {serviceResponse.Message}";
-            }
+            ////If there is an error in the server, the server's middleware will return ResponseDto
+            //if (_hostEnvironment.IsDevelopment)
+            //{
+            //    var serviceResponse = JsonConvert.DeserializeObject<ApiResponseDto<string>>(content, options);
+            //    if (serviceResponse is not null)
+            //        errorResponse += $" - {serviceResponse.ErrorMessage}";
+            //}
 
             throw new HttpRequestException($"{errorResponse}");
         }

@@ -7,13 +7,13 @@ using Web.Services.Features;
 using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
-internal class PurchaseService : IPurchaseService
+internal class PurchaseHttpService : IPurchaseHttpService
 {
     private readonly CustomHttpClient _client;
     private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "purchases";
 
-    public PurchaseService(CustomHttpClient client, JsonSerializerSettings options)
+    public PurchaseHttpService(CustomHttpClient client, JsonSerializerSettings options)
     {
         _client = client;
         _options = options;

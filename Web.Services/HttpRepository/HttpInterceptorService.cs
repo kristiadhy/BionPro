@@ -6,10 +6,10 @@ namespace Web.Services.HttpRepository;
 public class HttpInterceptorService
 {
     private readonly HttpClientInterceptor _interceptor;
-    private readonly RefreshTokenService _refreshTokenService;
+    private readonly RefreshTokenHttpService _refreshTokenService;
     private readonly SemaphoreSlim _refreshTokenLock = new(1, 1);
 
-    public HttpInterceptorService(HttpClientInterceptor interceptor, RefreshTokenService refreshTokenService)
+    public HttpInterceptorService(HttpClientInterceptor interceptor, RefreshTokenHttpService refreshTokenService)
     {
         _interceptor = interceptor ?? throw new ArgumentNullException(nameof(interceptor));
         _refreshTokenService = refreshTokenService ?? throw new ArgumentNullException(nameof(refreshTokenService));

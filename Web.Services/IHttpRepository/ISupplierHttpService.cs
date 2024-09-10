@@ -3,7 +3,7 @@ using Domain.Parameters;
 using Web.Services.Features;
 namespace Web.Services.IHttpRepository;
 
-public interface ISupplierService
+public interface ISupplierHttpService
 {
     public Task<PagingResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParam);
     public Task<SupplierDto> GetSupplierByID(Guid supplierID);

@@ -3,7 +3,7 @@ using Domain.Parameters;
 using Web.Services.Features;
 
 namespace Web.Services.IHttpRepository;
-public interface IPurchaseService
+public interface IPurchaseHttpService
 {
     public Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam);
     public Task<PurchaseDto> GetPurchaseByID(int purchaseID);

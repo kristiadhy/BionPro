@@ -4,12 +4,12 @@ using Web.Services.IHttpRepository;
 
 namespace Web.Services.HttpRepository;
 
-public class RefreshTokenService
+public class RefreshTokenHttpService
 {
     private readonly AuthenticationStateProvider _authStateProvider;
-    private readonly IAuthenticationService _authService;
+    private readonly IAuthenticationHttpService _authService;
 
-    public RefreshTokenService(AuthenticationStateProvider authStateProvider, IAuthenticationService authService)
+    public RefreshTokenHttpService(AuthenticationStateProvider authStateProvider, IAuthenticationHttpService authService)
     {
         _authStateProvider = authStateProvider;
         _authService = authService;

@@ -20,18 +20,21 @@ public class AuthenticationService : IAuthenticationService
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMapper _mapper;
     private readonly ILogger _logger;
-    private readonly UserManager<UserModel> _userManager; //This class is use to provide the APIs for managing users in a persistence store
+    //This class is use to provide the APIs for managing users and roles in a persistence store
+    private readonly UserManager<UserModel> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
 
     private UserModel? _user;
     private readonly JwtConfiguration _jwtConfiguration;
 
-    public AuthenticationService(IRepositoryManager repositoryManager, IMapper mapper, ILogger logger, UserManager<UserModel> userManager, IConfiguration configuration)
+    public AuthenticationService(IRepositoryManager repositoryManager, IMapper mapper, ILogger logger, UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
     {
         _repositoryManager = repositoryManager;
         _mapper = mapper;
         _logger = logger;
         _userManager = userManager;
+        _roleManager = roleManager;
         _configuration = configuration;
 
         //We want to use JWT configuration model instead of taking it from the appsettings.json.
@@ -42,27 +45,60 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<IdentityResult> RegisterUser(UserRegistrationDTO userForRegistration)
     {
+        _logger.Information("Checking user's default role");
+        if (!await _roleManager.RoleExistsAsync(userForRegistration.Roles?.First()!))
+            throw new RoleNotFoundException();
+
+        _logger.Information("Validating user for registration");
         var validator = new UserValidator();
         validator.ValidateInput(userForRegistration);
+        _logger.Information("User validated");
 
         var user = _mapper.Map<UserModel>(userForRegistration);
         //The create async method and add to roles async method are the built in method provided by the microsoft identity class
+        _logger.Information("Creating new user", userForRegistration.UserName);
         var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
         if (result.Succeeded)
+        {
+            _logger.Information("New user created");
+            _logger.Information("Setting up role for user");
             await _userManager.AddToRolesAsync(user, userForRegistration.Roles!);
+            _logger.Information("New user and its role successfully created");
+        }
 
         return result;
     }
 
-    public async Task<bool> ValidateUser(UserAuthenticationDTO userForAuth)
+    public async Task<ApiResponseDto<string>> ValidateUser(UserAuthenticationDTO userForAuth)
     {
+        //Don't log the user or password here as we don't want to expose the error reason
+        //_logger.Information("Trying to find a user by Username: {username}", userForAuth.UserName);
         _user = await _userManager.FindByNameAsync(userForAuth.UserName!);
-        var resultStatus = (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password!));
-        if (!resultStatus)
-            _logger.Warning($"{nameof(ValidateUser)}: Authentication failed. Wrong user name or password.");
+        //_logger.Information("User with username: {username} found", userForAuth.UserName);
 
-        return resultStatus;
+        if (_user == null || !await _userManager.CheckPasswordAsync(_user, userForAuth.Password!))
+        {
+            _logger.Warning("Authentication failed. Invalid username or password.");
+            return new ApiResponseDto<string>
+            {
+                IsSuccess = false,
+                ErrorMessage = "Authentication failed. Invalid username or password."
+            };
+        }
+
+        if (!await _userManager.IsEmailConfirmedAsync(_user))
+        {
+            _logger.Warning("Email hasn't been confirmed.");
+            return new ApiResponseDto<string>
+            {
+                IsSuccess = false,
+                ErrorMessage = "Your email hasn't been confirmed yet. Please confirm it."
+            };
+        }
+
+        return new ApiResponseDto<string> { IsSuccess = true };
     }
+
 
     public async Task<TokenDTO> CreateToken(bool populateExp)
     {
@@ -76,14 +112,17 @@ public class AuthenticationService : IAuthenticationService
             _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
 
         //Update user data in the database
+        _logger.Information("Updating refresh token");
         await _userManager.UpdateAsync(_user);
         var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        _logger.Information("New token created");
 
         return new TokenDTO(accessToken, refreshToken);
     }
 
     public async Task<TokenDTO> RefreshToken(TokenDTO tokenDto)
     {
+        _logger.Information("Refresh JWT token");
         var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
         var user = await _userManager.FindByNameAsync(principal.Identity!.Name!);
         if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
