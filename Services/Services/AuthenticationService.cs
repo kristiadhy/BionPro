@@ -72,7 +72,7 @@ public partial class AuthenticationService : IAuthenticationService
                 };
             }
         }
-        await SendConfirmationLink(userForRegistration);
+        await SendConfirmationLink(userForRegistration, userModel);
         await CreateDefaultRole(userForRegistration, userModel);
 
         return new ApiResponseDto<List<string>> { IsSuccess = true };
@@ -113,7 +113,10 @@ public partial class AuthenticationService : IAuthenticationService
         var user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException();
         var identityResult = await _userManager.ConfirmEmailAsync(user, token);
         if (!identityResult.Succeeded)
+        {
+            _logger.Debug("Error {@error}", identityResult.Errors);
             throw new EmailConfirmationFailedException();
+        }
         _logger.Information("Email confirmed");
         _logger.Debug("Email confirmed: {email}", email);
     }

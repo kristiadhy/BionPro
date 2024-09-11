@@ -36,21 +36,21 @@ public partial class AuthenticationService
             throw new RoleNotFoundException();
     }
 
-    private async Task SendConfirmationLink(UserRegistrationDTO userForRegistration)
+    private async Task SendConfirmationLink(UserRegistrationDTO userForRegistration, UserModel userModel)
     {
         //This method is used to generate a confirmation link for the user to confirm their email.
         //We use the GenerateEmailConfirmationTokenAsync method from the UserManager class to generate a token for the user.
         //The token is then used to generate a confirmation link that is sent to the user's email.
-        var user = _mapper.Map<UserModel>(userForRegistration);
         _logger.Information("Generating email confirmation token");
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(userModel);
         var encodedToken = WebUtility.UrlEncode(token);
         var param = new Dictionary<string, string>()
         {
             { "token", token },
             { "email", userForRegistration.Email!}
         };
-        userForRegistration.ClientUri = $"https://localhost:7229/api/authentication/emailconfirmation";
+        //userForRegistration.ClientUri = $"https://localhost:7229/api/authentication/emailconfirmation";
+        userForRegistration.ClientUri = $"https://localhost:7229/email-confirmation";
         var callBack = QueryHelpers.AddQueryString(userForRegistration.ClientUri!, param!);
 
         //Send the confirmation link to the user's email
