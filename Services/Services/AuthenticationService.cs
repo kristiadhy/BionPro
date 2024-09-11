@@ -5,7 +5,6 @@ using Domain.DTO;
 using Domain.Entities;
 using EmailService;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -123,6 +122,7 @@ public partial class AuthenticationService : IAuthenticationService
 
     public async Task<TokenDTO> CreateToken(bool populateExp)
     {
+        _logger.Information("Preparing the token");
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims();
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -156,7 +156,7 @@ public partial class AuthenticationService : IAuthenticationService
 
     private SigningCredentials GetSigningCredentials()
     {
-        var secretKey = Environment.GetEnvironmentVariable("SECRET");
+        string? secretKey = Environment.GetEnvironmentVariable("SECRET");
         var key = Encoding.UTF8.GetBytes(secretKey!);
         var secret = new SymmetricSecurityKey(key);
 

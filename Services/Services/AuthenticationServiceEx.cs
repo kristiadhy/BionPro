@@ -1,11 +1,10 @@
 ﻿using Application.Exceptions;
-using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Application.Validators;
 using Domain.DTO;
-using Microsoft.AspNetCore.WebUtilities;
+using Domain.Entities;
 using EmailService;
-using MimeKit;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Net;
 
 namespace Services.Services;

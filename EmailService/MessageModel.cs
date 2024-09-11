@@ -1,5 +1,4 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
+﻿using MimeKit;
 
 namespace EmailService;
 public class MessageModel
