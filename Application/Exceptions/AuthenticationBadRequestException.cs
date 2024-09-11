@@ -1,3 +1,9 @@
-﻿namespace Application.Exceptions;
+﻿using Application.Exceptions.Abstractions;
 
-public sealed class RoleNotFoundException() : Exception($"Default role not found") { }
+namespace Application.Exceptions;
+
+public sealed class RoleNotFoundException() : NotFoundException($"Default role not found") { }
+
+public sealed class UserNotFoundException() : BadRequestException($"user not found") { }
+
+public sealed class EmailConfirmationFailedException() : BadRequestException($"Email confirmation failed") { }

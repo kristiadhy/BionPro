@@ -1,0 +1,71 @@
+﻿@page "/email-confirmation"
+@attribute [AllowAnonymous]
+
+@using Web.Services.IHttpRepository
+
+<PageTitle>@($"{GlobalConstant.AppName} | Email Confimation")</PageTitle>
+
+<div class="d-flex justify-content-center align-items-baseline vh-100">
+    <RadzenStack Gap="1.2rem"
+                 Orientation="Orientation.Vertical"
+                 AlignItems="AlignItems.Center"
+                 class="rz-mx-6 mt-12 p-12 rz-border-radius-4 rz-shadow-4"
+                 Style="width: 100%; max-width: 500px;">
+        <RadzenIcon Icon="task_alt" IconStyle="IconStyle.Success" />
+        <RadzenText TextStyle="TextStyle.H5"
+                    TagName="TagName.H2"
+                    Class="rz-mb-3">
+            Registration Successful
+        </RadzenText>
+        <RadzenText TextAlign="TextAlign.Center"
+                    TagName="TagName.P">
+            You are confirmed! Now you can sign in to your account.
+        </RadzenText>
+        <RadzenButton Text="Sign in now"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Click="@(() => Navigation.NavigateTo("/login"))" />
+        @if (AlertVisible)
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Danger"
+                         Variant="Variant.Flat"
+                         Shade="Shade.Lighter"
+                         @bind-Visible="AlertVisible">
+                @ErrorMessage. <br /> <RadzenLink Path="/login" Text="Back to the login page" />
+            </RadzenAlert>
+        }
+    </RadzenStack>
+</div>
+
+@code {
+    [Inject]
+    NavigationManager Navigation { get; set; } = default!;
+    [Inject]
+    IAuthenticationHttpService AuthService { get; set; } = default!;
+
+    private bool AlertVisible = false;
+    private string ErrorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var email = query["email"];
+            var token = query["token"];
+
+            if (email is not null && token is not null)
+            {
+                await AuthService.ConfirmEmail(email, token);
+            }
+            Console.WriteLine("OnInitializedAsync ended");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Gotcha buddy!");
+            AlertVisible = true;
+            ErrorMessage = ex.Message;
+            return;
+        }
+    }
+}

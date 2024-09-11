@@ -21,9 +21,9 @@ public class UserValidator : AbstractValidator<UserRegistrationDTO>
           .EmailAddress();
     }
 
-    public void ValidateInput(UserRegistrationDTO userRegistrationDTO)
+    public async Task ValidateInput(UserRegistrationDTO userRegistrationDTO)
     {
-        var validationResult = Validate(userRegistrationDTO);
+        var validationResult = await ValidateAsync(userRegistrationDTO);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult);
     }

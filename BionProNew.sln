@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Services", "Web.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarcodeService", "BarcodeService\BarcodeService.csproj", "{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailService", "EmailService\EmailService.csproj", "{BBB583D1-9FA5-44E3-9215-CDC586AF451F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02914EDA-B88D-4EE4-846F-A1808E9EEFC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBB583D1-9FA5-44E3-9215-CDC586AF451F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBB583D1-9FA5-44E3-9215-CDC586AF451F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBB583D1-9FA5-44E3-9215-CDC586AF451F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBB583D1-9FA5-44E3-9215-CDC586AF451F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
