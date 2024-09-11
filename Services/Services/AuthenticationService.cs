@@ -5,6 +5,7 @@ using Domain.DTO;
 using Domain.Entities;
 using EmailService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -53,8 +54,12 @@ public partial class AuthenticationService : IAuthenticationService
 
     public async Task<ApiResponseDto<List<string>>> RegisterAndSendConfirmationLink(UserRegistrationDTO userForRegistration)
     {
+        //Validate user and default role first before registering the user. If it throws an exception, then cancel the registration process.
         await ValidateUserModel(userForRegistration);
-        var identityResult = await RegisterUser(userForRegistration);
+        await CheckingUserDefaultRole(userForRegistration);
+
+        var userModel = _mapper.Map<UserModel>(userForRegistration);
+        var identityResult = await RegisterUser(userForRegistration, userModel);
         if (!identityResult.Succeeded)
         {
             foreach (var error in identityResult.Errors)
@@ -68,6 +73,7 @@ public partial class AuthenticationService : IAuthenticationService
             }
         }
         await SendConfirmationLink(userForRegistration);
+        await CreateDefaultRole(userForRegistration, userModel);
 
         return new ApiResponseDto<List<string>> { IsSuccess = true };
     }
@@ -105,8 +111,8 @@ public partial class AuthenticationService : IAuthenticationService
         _logger.Information("Confirm an email");
         _logger.Debug("Confirm an email: {email}", email);
         var user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException();
-        var result = await _userManager.ConfirmEmailAsync(user, token);
-        if (!result.Succeeded)
+        var identityResult = await _userManager.ConfirmEmailAsync(user, token);
+        if (!identityResult.Succeeded)
             throw new EmailConfirmationFailedException();
         _logger.Information("Email confirmed");
         _logger.Debug("Email confirmed: {email}", email);

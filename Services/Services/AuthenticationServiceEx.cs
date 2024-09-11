@@ -6,29 +6,34 @@ using Domain.DTO;
 using Microsoft.AspNetCore.WebUtilities;
 using EmailService;
 using MimeKit;
+using System.Net;
 
 namespace Services.Services;
 public partial class AuthenticationService
 {
-    private async Task<IdentityResult> RegisterUser(UserRegistrationDTO userForRegistration)
+    private async Task<IdentityResult> RegisterUser(UserRegistrationDTO userForRegistration, UserModel userModel)
+    {
+        //The create async method and add to roles async method are the built in method provided by the microsoft identity class
+        _logger.Information("Creating new user", userForRegistration.UserName);
+        var result = await _userManager.CreateAsync(userModel, userForRegistration.Password!);
+        if (result.Succeeded)
+            _logger.Information("New user created");
+
+        return result;
+    }
+
+    private async Task CreateDefaultRole(UserRegistrationDTO userForRegistration, UserModel userModel)
+    {
+        _logger.Information("Setting up role for user");
+        await _userManager.AddToRolesAsync(userModel, userForRegistration.Roles!);
+        _logger.Information("New user and its role successfully created");
+    }
+
+    private async Task CheckingUserDefaultRole(UserRegistrationDTO userForRegistration)
     {
         _logger.Information("Checking user's default role");
         if (!await _roleManager.RoleExistsAsync(userForRegistration.Roles?.First()!))
             throw new RoleNotFoundException();
-
-        var user = _mapper.Map<UserModel>(userForRegistration);
-        //The create async method and add to roles async method are the built in method provided by the microsoft identity class
-        _logger.Information("Creating new user", userForRegistration.UserName);
-        var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
-        if (result.Succeeded)
-        {
-            _logger.Information("New user created");
-            _logger.Information("Setting up role for user");
-            await _userManager.AddToRolesAsync(user, userForRegistration.Roles!);
-            _logger.Information("New user and its role successfully created");
-        }
-
-        return result;
     }
 
     private async Task SendConfirmationLink(UserRegistrationDTO userForRegistration)
@@ -39,12 +44,13 @@ public partial class AuthenticationService
         var user = _mapper.Map<UserModel>(userForRegistration);
         _logger.Information("Generating email confirmation token");
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var encodedToken = WebUtility.UrlEncode(token);
         var param = new Dictionary<string, string>()
         {
             { "token", token },
             { "email", userForRegistration.Email!}
         };
-        userForRegistration.ClientUri = $"https://localhost:7229/api/emailconfirmation";
+        userForRegistration.ClientUri = $"https://localhost:7229/api/authentication/emailconfirmation";
         var callBack = QueryHelpers.AddQueryString(userForRegistration.ClientUri!, param!);
 
         //Send the confirmation link to the user's email

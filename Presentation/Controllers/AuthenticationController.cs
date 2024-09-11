@@ -46,7 +46,7 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
     }
 
     [HttpGet("emailconfirmation"), AllowAnonymous]
-    public async Task<IActionResult> ConfirmEmail([FromQuery] string email, string token)
+    public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string email)
     {
         await _serviceManager.AuthenticationService.EmailConfirmation(email, token);
         return Ok();
