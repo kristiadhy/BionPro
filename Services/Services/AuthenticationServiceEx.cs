@@ -44,7 +44,7 @@ public partial class AuthenticationService
             { "token", token },
             { "email", userForRegistration.Email!}
         };
-        userForRegistration.ClientUri = $"https://localhost:7229/email-confirmation";
+        userForRegistration.ClientUri = $"https://localhost:7229/api/emailconfirmation";
         var callBack = QueryHelpers.AddQueryString(userForRegistration.ClientUri!, param!);
 
         //Send the confirmation link to the user's email
