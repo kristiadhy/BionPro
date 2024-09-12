@@ -24,7 +24,7 @@ public class SupplierHttpService : ISupplierHttpService
         var queryStringParam = new Dictionary<string, string>
         {
             [$"{nameof(SupplierParam.PageNumber)}"] = supplierParameter.PageNumber.ToString(),
-            [$"{nameof(SupplierParam.SrcByName)}"] = supplierParameter.SrcByName == null ? "" : supplierParameter.SrcByName,
+            [$"{nameof(SupplierParam.SrcByName)}"] = supplierParameter.SrcByName ?? "",
             [$"{nameof(SupplierParam.OrderBy)}"] = supplierParameter.OrderBy!
         };
 

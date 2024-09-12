@@ -24,7 +24,7 @@ public class CustomerHttpService : ICustomerHttpService
         var queryStringParam = new Dictionary<string, string>
         {
             [$"{nameof(CustomerParam.PageNumber)}"] = customerParameter.PageNumber.ToString(),
-            [$"{nameof(CustomerParam.SrcByName)}"] = customerParameter.SrcByName == null ? "" : customerParameter.SrcByName,
+            [$"{nameof(CustomerParam.SrcByName)}"] = customerParameter.SrcByName ?? "",
             [$"{nameof(CustomerParam.OrderBy)}"] = customerParameter.OrderBy!
         };
 
