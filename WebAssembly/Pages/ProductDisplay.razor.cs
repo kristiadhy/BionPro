@@ -80,10 +80,7 @@ public partial class ProductDisplay
         if (products.ImageUrl is not null)
             await ServiceManager.ProductService.DeleteProductImage(products.ImageUrl);
 
-        var response = await ServiceManager.ProductService.Delete(productID);
-        if (!response.IsSuccessStatusCode)
-            return;
-
+        await ServiceManager.ProductService.Delete(productID);
         NotificationService.DeleteNotification("Product has been deleted");
         await EvReloadData();
     }

@@ -62,20 +62,16 @@ public partial class SupplierTransaction
 
         try
         {
-            HttpResponseMessage response;
             if (FormStatus == GlobalEnum.FormStatus.New)
             {
                 supplier.SupplierID = null;
-                response = await ServiceManager.SupplierService.Create(supplier);
+                await ServiceManager.SupplierService.Create(supplier);
             }
             else
-                response = await ServiceManager.SupplierService.Update(supplier);
+                await ServiceManager.SupplierService.Update(supplier);
 
-            if (response.IsSuccessStatusCode)
-            {
-                string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new supplier added" : "Supplier updated";
-                NotificationService.SaveNotification(notificationMessage);
-            }
+            string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new supplier added" : "Supplier updated";
+            NotificationService.SaveNotification(notificationMessage);
         }
         finally
         {

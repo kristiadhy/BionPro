@@ -60,19 +60,15 @@ public partial class ProductCategoryTransaction
         IsSaving = true;
         try
         {
-            HttpResponseMessage? response;
             if (FormStatus == GlobalEnum.FormStatus.New)
             {
-                response = await ServiceManager.ProductCategoryService.Create(productCategory);
+                await ServiceManager.ProductCategoryService.Create(productCategory);
             }
             else
-                response = await ServiceManager.ProductCategoryService.Update(productCategory);
+                await ServiceManager.ProductCategoryService.Update(productCategory);
 
-            if (response.IsSuccessStatusCode)
-            {
-                string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product category added" : "Product category updated";
-                NotificationService.SaveNotification(notificationMessage);
-            }
+            string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product category added" : "Product category updated";
+            NotificationService.SaveNotification(notificationMessage);
 
             await ProductCategoryState.LoadProductCategories();
         }

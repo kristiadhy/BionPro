@@ -71,9 +71,7 @@ public partial class CustomerDisplay
             return;
 
         Guid customerID = (Guid)customer.CustomerID!;
-        var response = await ServiceManager.CustomerService.Delete(customerID);
-        if (!response.IsSuccessStatusCode)
-            return;
+        await ServiceManager.CustomerService.Delete(customerID);
 
         NotificationService.DeleteNotification("Customer has been deleted");
         await EvReloadData();

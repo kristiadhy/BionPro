@@ -67,10 +67,7 @@ public partial class ProductCategoryDisplay
             return;
 
         int productCategoryID = (int)productCategory.CategoryID!;
-        var response = await ServiceManager.ProductCategoryService.Delete(productCategoryID);
-        if (!response.IsSuccessStatusCode)
-            return;
-
+        await ServiceManager.ProductCategoryService.Delete(productCategoryID);
         NotificationService.DeleteNotification("Product category has been deleted");
         await EvReloadData();
     }

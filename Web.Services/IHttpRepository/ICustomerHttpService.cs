@@ -8,7 +8,7 @@ public interface ICustomerHttpService
 {
     public Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter);
     public Task<CustomerDTO> GetCustomerByID(Guid customerID);
-    public Task<HttpResponseMessage> Create(CustomerDTO customerDTO);
-    public Task<HttpResponseMessage> Update(CustomerDTO customerDTO);
-    public Task<HttpResponseMessage> Delete(Guid customerID);
+    public Task Create(CustomerDTO customerDTO);
+    public Task Update(CustomerDTO customerDTO);
+    public Task Delete(Guid customerID);
 }

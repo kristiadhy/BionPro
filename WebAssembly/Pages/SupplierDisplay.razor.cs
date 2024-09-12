@@ -71,10 +71,7 @@ public partial class SupplierDisplay
             return;
 
         Guid supplierID = (Guid)supplier.SupplierID!;
-        var response = await ServiceManager.SupplierService.Delete(supplierID);
-        if (!response.IsSuccessStatusCode)
-            return;
-
+        await ServiceManager.SupplierService.Delete(supplierID);
         NotificationService.DeleteNotification("Supplier has been deleted");
         await EvReloadData();
     }

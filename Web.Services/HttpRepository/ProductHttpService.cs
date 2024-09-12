@@ -35,8 +35,8 @@ internal class ProductHttpService : IProductHttpService
 
         var pagingResponse = new PagingResponse<ProductDtoForProductQueries>()
         {
-            Items = JsonConvert.DeserializeObject<List<ProductDtoForProductQueries>>(content, _options)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
+            Items = JsonConvert.DeserializeObject<List<ProductDtoForProductQueries>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;
@@ -44,65 +44,63 @@ internal class ProductHttpService : IProductHttpService
 
     public async Task<ProductDto> GetProductByID(Guid productID)
     {
-        var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{productID}");
-        var result = JsonConvert.DeserializeObject<ProductDto>(content, _options);
-        if (!string.IsNullOrEmpty(content) && result is not null)
+        var response = await _client.GetResponseAsync($"{additionalResourceName}/{productID}");
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<ProductDto>(content);
+        if (result is not null)
             return result;
         else
             return new();
     }
 
-    public async Task<HttpResponseMessage> Create(ProductDto productDto)
+    public async Task Create(ProductDto productDto)
     {
         var response = await _client.PostAsync(additionalResourceName, productDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Update(ProductDto productDto)
+    public async Task Update(ProductDto productDto)
     {
         var response = await _client.PutAsync(additionalResourceName, productDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Delete(Guid productID)
+    public async Task Delete(Guid productID)
     {
         var response = await _client.DeleteAsync($"{additionalResourceName}/{productID}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
     public async Task<string> UploadProductImage(MultipartFormDataContent multiContent)
     {
         var response = await _client.PostMultiContentAsync($"{additionalResourceName}/upload", multiContent);
         var postContent = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, postContent, _options);
+        _client.CheckErrorResponse(response, postContent);
         return postContent.Trim('"');
     }
 
     public async Task<byte[]?> GetProductImage(string fileName)
     {
-        var responseMessage = await _client.GetResponseAsync($"{additionalResourceName}/upload/{fileName}");
-        bool responseStatus = _client.CheckErrorResponseForGetMethod(responseMessage);
-        if (responseStatus)
+        var response = await _client.GetResponseAsync($"{additionalResourceName}/upload/{fileName}");
+        var content = await response.Content.ReadAsStringAsync();
+        _client.CheckErrorResponse(response, content);
+        if (content is not null)
         {
-            var fileBytes = await responseMessage.Content.ReadAsByteArrayAsync();
+            var fileBytes = await response.Content.ReadAsByteArrayAsync();
             return fileBytes;
         }
         else
             return null;
     }
 
-    public async Task<HttpResponseMessage> DeleteProductImage(string imageUrl)
+    public async Task DeleteProductImage(string imageUrl)
     {
         string fileName = Path.GetFileName(imageUrl);
         var response = await _client.DeleteAsync($"{additionalResourceName}/upload/{fileName}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 }

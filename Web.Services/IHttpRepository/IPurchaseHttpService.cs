@@ -7,7 +7,7 @@ public interface IPurchaseHttpService
 {
     public Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam);
     public Task<PurchaseDto> GetPurchaseByID(int purchaseID);
-    public Task<HttpResponseMessage> Create(PurchaseDto purchaseDto);
-    public Task<HttpResponseMessage> Update(PurchaseDto purchaseDto);
-    public Task<HttpResponseMessage> Delete(int purchaseID);
+    public Task Create(PurchaseDto purchaseDto);
+    public Task Update(PurchaseDto purchaseDto);
+    public Task Delete(int purchaseID);
 }

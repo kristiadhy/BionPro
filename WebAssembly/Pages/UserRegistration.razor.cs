@@ -34,9 +34,9 @@ public partial class UserRegistration
 
         var userDto = new UserRegistrationDTO
         {
-            UserName = userInitialRegistrationDto.Username,
-            Email = userInitialRegistrationDto.Email,
-            Password = userInitialRegistrationDto.ConfirmPassword,
+            UserName = userInitialRegistrationDto.Username!,
+            Email = userInitialRegistrationDto.Email!,
+            Password = userInitialRegistrationDto.ConfirmPassword!,
             Roles = ["Administrator"]
         };
 

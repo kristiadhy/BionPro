@@ -8,37 +8,24 @@ namespace Presentation.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
+[AllowAnonymous]
 [Route("api/authentication")]
 public class AuthenticationController(IServiceManager serviceManager) : ControllerBase
 {
     private readonly IServiceManager _serviceManager = serviceManager;
 
-    [HttpPost("registration"), AllowAnonymous]
+    [HttpPost("registration")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> RegisterUser([FromBody] UserRegistrationDTO userForRegistration)
     {
-        //Look into identityresult class from asp.net core identity for more details.
-        var result = await _serviceManager.AuthenticationService.RegisterUser(userForRegistration);
-        if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
-            {
-                //ModelState.TryAddModelError(error.Code, error.Description);
-                ApiResponseDto<List<string>> apiResponseDto = new()
-                {
-                    IsSuccess = false,
-                    ErrorMessage = "Invalid Validation",
-                    Data = result.Errors.Select(e => e.Description).ToList()
-                };
-                return BadRequest(apiResponseDto);
-            }
-        }
+        var apiResponseDto = await _serviceManager.AuthenticationService.RegisterAndSendConfirmationLink(userForRegistration);
+        if (!apiResponseDto.IsSuccess)
+            return BadRequest(apiResponseDto);
 
-        //If there is no error, then new user and its role is created sucessfully.
         return Created();
     }
 
-    [HttpPost("login"), AllowAnonymous]
+    [HttpPost("login")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Authenticate([FromBody] UserAuthenticationDTO user)
     {
@@ -51,11 +38,18 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         return Ok(new ApiResponseDto<TokenDTO> { IsSuccess = true, Data = tokenDTO });
     }
 
-    [HttpPost("refresh"), AllowAnonymous]
+    [HttpPost("refresh")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Refresh([FromBody] TokenDTO tokenDto)
     {
         var tokenDtoToReturn = await _serviceManager.AuthenticationService.RefreshToken(tokenDto);
         return Ok(tokenDtoToReturn);
+    }
+
+    [HttpGet("emailconfirmation")]
+    public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string email)
+    {
+        await _serviceManager.AuthenticationService.EmailConfirmation(email, token);
+        return Ok();
     }
 }

@@ -8,5 +8,6 @@ public interface IAuthenticationHttpService
     Task<ApiResponseDto<List<string>>?> RegisterUser(UserRegistrationDTO userForRegistration);
     Task Login(UserAuthenticationDTO userForAuthentication);
     Task Logout();
+    Task ConfirmEmail(string email, string token);
     Task<string> RefreshToken();
 }

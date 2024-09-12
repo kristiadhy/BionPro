@@ -34,8 +34,8 @@ internal class ProductCategoryHttpService : IProductCategoryHttpService
 
         var pagingResponse = new PagingResponse<ProductCategoryDto>()
         {
-            Items = JsonConvert.DeserializeObject<List<ProductCategoryDto>>(content, _options)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
+            Items = JsonConvert.DeserializeObject<List<ProductCategoryDto>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;
@@ -43,35 +43,33 @@ internal class ProductCategoryHttpService : IProductCategoryHttpService
 
     public async Task<ProductCategoryDto> GetProductCategoryByID(int categoryID)
     {
-        var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{categoryID}");
-        var result = JsonConvert.DeserializeObject<ProductCategoryDto>(content, _options);
-        if (!string.IsNullOrEmpty(content) && result is not null)
+        var response = await _client.GetResponseAsync($"{additionalResourceName}/{categoryID}");
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<ProductCategoryDto>(content);
+        if (result is not null)
             return result;
         else
             return new();
     }
 
-    public async Task<HttpResponseMessage> Create(ProductCategoryDto productCategoryDto)
+    public async Task Create(ProductCategoryDto productCategoryDto)
     {
         var response = await _client.PostAsync(additionalResourceName, productCategoryDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Update(ProductCategoryDto productCategoryDto)
+    public async Task Update(ProductCategoryDto productCategoryDto)
     {
         var response = await _client.PutAsync(additionalResourceName, productCategoryDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Delete(int categoryID)
+    public async Task Delete(int categoryID)
     {
         var response = await _client.DeleteAsync($"{additionalResourceName}/{categoryID}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 }

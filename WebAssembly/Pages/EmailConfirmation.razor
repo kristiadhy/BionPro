@@ -1,0 +1,89 @@
+﻿@page "/email-confirmation"
+@attribute [AllowAnonymous]
+
+@using Web.Services.IHttpRepository
+
+<PageTitle>@($"{GlobalConstant.AppName} | Email Confimation")</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    @if (IsSuccess is null)
+    {
+        <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary"
+                                   Value="100"
+                                   ShowValue="false"
+                                   Mode="ProgressBarMode.Indeterminate" />
+    }
+    else
+    {
+        <RadzenRow Gap="0"
+                   Class="rz-mx-6 rz-border-radius-4 rz-shadow-4"
+                   Style="width: 100%; max-width: 500px; overflow: hidden;">
+
+            <RadzenColumn Size="12">
+                <RadzenCard class="rz-p-12">
+                    <RadzenStack Gap="1.2rem"
+                                 Orientation="Orientation.Vertical"
+                                 AlignItems="AlignItems.Center">
+                        @if ((bool)IsSuccess)
+                        {
+                            <RadzenIcon Icon="task_alt" IconStyle="IconStyle.Success" />
+                            <RadzenText TextStyle="TextStyle.H5"
+                                        TagName="TagName.H2"
+                                        Class="rz-mb-3">
+                                Registration Successful
+                            </RadzenText>
+                            <RadzenText TextAlign="TextAlign.Center"
+                                        TagName="TagName.P">
+                                Your account has been verified! Please log in now.
+                            </RadzenText>
+                            <RadzenButton Text="Sign in now"
+                                          ButtonStyle="ButtonStyle.Primary"
+                                          Click="@(() => Navigation.NavigateTo("/login"))" />
+                        }
+                        else
+                        {
+                            <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                         Variant="Variant.Flat"
+                                         Shade="Shade.Lighter">
+                                @ErrorMessage. <br /> <RadzenLink Path="/login" Text="Back to the login page" />
+                            </RadzenAlert>
+                        }
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+    }
+</div>
+
+@code {
+    [Inject]
+    NavigationManager Navigation { get; set; } = default!;
+    [Inject]
+    IAuthenticationHttpService AuthService { get; set; } = default!;
+
+    private bool? IsSuccess;
+    private string ErrorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var email = query["email"];
+            var token = query["token"];
+
+            if (email is not null && token is not null)
+            {
+                await AuthService.ConfirmEmail(email, token);
+                IsSuccess = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            IsSuccess = false;
+            ErrorMessage = ex.Message;
+            return;
+        }
+    }
+}

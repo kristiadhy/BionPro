@@ -1,9 +1,9 @@
 ﻿using Application.Exceptions;
 using Application.IRepositories;
-using Application.Validators;
 using AutoMapper;
 using Domain.DTO;
 using Domain.Entities;
+using EmailService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace Services.Services;
-public class AuthenticationService : IAuthenticationService
+public partial class AuthenticationService : IAuthenticationService
 {
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMapper _mapper;
@@ -24,11 +24,18 @@ public class AuthenticationService : IAuthenticationService
     private readonly UserManager<UserModel> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
+    private readonly IEmailSender _emailSender;
 
     private UserModel? _user;
     private readonly JwtConfiguration _jwtConfiguration;
 
-    public AuthenticationService(IRepositoryManager repositoryManager, IMapper mapper, ILogger logger, UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthenticationService(IRepositoryManager repositoryManager,
+                                 IMapper mapper,
+                                 ILogger logger,
+                                 UserManager<UserModel> userManager,
+                                 RoleManager<IdentityRole> roleManager,
+                                 IConfiguration configuration,
+                                 IEmailSender emailSender)
     {
         _repositoryManager = repositoryManager;
         _mapper = mapper;
@@ -36,6 +43,7 @@ public class AuthenticationService : IAuthenticationService
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
+        _emailSender = emailSender;
 
         //We want to use JWT configuration model instead of taking it from the appsettings.json.
         //Please take a look at the JwtInstaller class for more details.
@@ -43,39 +51,36 @@ public class AuthenticationService : IAuthenticationService
         _configuration.Bind(_jwtConfiguration.Section, _jwtConfiguration);
     }
 
-    public async Task<IdentityResult> RegisterUser(UserRegistrationDTO userForRegistration)
+    public async Task<ApiResponseDto<List<string>>> RegisterAndSendConfirmationLink(UserRegistrationDTO userForRegistration)
     {
-        _logger.Information("Checking user's default role");
-        if (!await _roleManager.RoleExistsAsync(userForRegistration.Roles?.First()!))
-            throw new RoleNotFoundException();
+        //Validate user and default role first before registering the user. If it throws an exception, then cancel the registration process.
+        await ValidateUserModel(userForRegistration);
+        await CheckingUserDefaultRole(userForRegistration);
 
-        _logger.Information("Validating user for registration");
-        var validator = new UserValidator();
-        validator.ValidateInput(userForRegistration);
-        _logger.Information("User validated");
-
-        var user = _mapper.Map<UserModel>(userForRegistration);
-        //The create async method and add to roles async method are the built in method provided by the microsoft identity class
-        _logger.Information("Creating new user", userForRegistration.UserName);
-        var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
-        if (result.Succeeded)
+        var userModel = _mapper.Map<UserModel>(userForRegistration);
+        var identityResult = await RegisterUser(userForRegistration, userModel);
+        if (!identityResult.Succeeded)
         {
-            _logger.Information("New user created");
-            _logger.Information("Setting up role for user");
-            await _userManager.AddToRolesAsync(user, userForRegistration.Roles!);
-            _logger.Information("New user and its role successfully created");
+            foreach (var error in identityResult.Errors)
+            {
+                return new ApiResponseDto<List<string>>
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Invalid Validation",
+                    Data = identityResult.Errors.Select(e => e.Description).ToList()
+                };
+            }
         }
+        await SendConfirmationLink(userForRegistration, userModel);
+        await CreateDefaultRole(userForRegistration, userModel);
 
-        return result;
+        return new ApiResponseDto<List<string>> { IsSuccess = true };
     }
 
     public async Task<ApiResponseDto<string>> ValidateUser(UserAuthenticationDTO userForAuth)
     {
-        //Don't log the user or password here as we don't want to expose the error reason
-        //_logger.Information("Trying to find a user by Username: {username}", userForAuth.UserName);
+        //Don't log anything related to the sensitive information
         _user = await _userManager.FindByNameAsync(userForAuth.UserName!);
-        //_logger.Information("User with username: {username} found", userForAuth.UserName);
-
         if (_user == null || !await _userManager.CheckPasswordAsync(_user, userForAuth.Password!))
         {
             _logger.Warning("Authentication failed. Invalid username or password.");
@@ -100,8 +105,24 @@ public class AuthenticationService : IAuthenticationService
     }
 
 
+    public async Task EmailConfirmation(string email, string token)
+    {
+        _logger.Information("Confirm an email");
+        _logger.Debug("Confirm an email: {email}", email);
+        var user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException();
+        var identityResult = await _userManager.ConfirmEmailAsync(user, token);
+        if (!identityResult.Succeeded)
+        {
+            _logger.Debug("Error {@error}", identityResult.Errors);
+            throw new EmailConfirmationFailedException();
+        }
+        _logger.Information("Email confirmed");
+        _logger.Debug("Email confirmed: {email}", email);
+    }
+
     public async Task<TokenDTO> CreateToken(bool populateExp)
     {
+        _logger.Information("Preparing the token");
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims();
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -135,7 +156,7 @@ public class AuthenticationService : IAuthenticationService
 
     private SigningCredentials GetSigningCredentials()
     {
-        var secretKey = Environment.GetEnvironmentVariable("SECRET");
+        string? secretKey = Environment.GetEnvironmentVariable("SECRET");
         var key = Encoding.UTF8.GetBytes(secretKey!);
         var secret = new SymmetricSecurityKey(key);
 
