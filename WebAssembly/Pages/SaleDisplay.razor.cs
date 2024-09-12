@@ -79,9 +79,7 @@ public partial class SaleDisplay
             return;
 
         int saleID = (int)sales.SaleID!;
-        var response = await ServiceManager.SaleService.Delete(saleID);
-        if (!response.IsSuccessStatusCode)
-            return;
+        await ServiceManager.SaleService.Delete(saleID);
 
         NotificationService.DeleteNotification("Sale data has been deleted");
         await EvReloadData();

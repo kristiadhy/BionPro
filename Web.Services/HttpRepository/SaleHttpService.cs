@@ -37,8 +37,8 @@ internal class SaleHttpService : ISaleHttpService
 
         var pagingResponse = new PagingResponse<SaleDtoForSummary>()
         {
-            Items = JsonConvert.DeserializeObject<List<SaleDtoForSummary>>(content, _options)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
+            Items = JsonConvert.DeserializeObject<List<SaleDtoForSummary>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;
@@ -46,35 +46,33 @@ internal class SaleHttpService : ISaleHttpService
 
     public async Task<SaleDto> GetSaleByID(int saleID)
     {
-        var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{saleID}");
-        var result = JsonConvert.DeserializeObject<SaleDto>(content, _options);
-        if (!string.IsNullOrEmpty(content) && result is not null)
+        var response = await _client.GetResponseAsync($"{additionalResourceName}/{saleID}");
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<SaleDto>(content);
+        if (result is not null)
             return result;
         else
             return new();
     }
 
-    public async Task<HttpResponseMessage> Create(SaleDto saleDto)
+    public async Task Create(SaleDto saleDto)
     {
         var response = await _client.PostAsync(additionalResourceName, saleDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Update(SaleDto saleDto)
+    public async Task Update(SaleDto saleDto)
     {
         var response = await _client.PutAsync(additionalResourceName, saleDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Delete(int saleID)
+    public async Task Delete(int saleID)
     {
         var response = await _client.DeleteAsync($"{additionalResourceName}/{saleID}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 }

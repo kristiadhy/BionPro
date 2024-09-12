@@ -34,8 +34,8 @@ public class SupplierHttpService : ISupplierHttpService
 
         var pagingResponse = new PagingResponse<SupplierDto>()
         {
-            Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content, _options)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
+            Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;
@@ -43,35 +43,33 @@ public class SupplierHttpService : ISupplierHttpService
 
     public async Task<SupplierDto> GetSupplierByID(Guid supplierID)
     {
-        var content = await _client.GetResponseAndContentAsync($"{additionalResourceName}/{supplierID}");
-        var result = JsonConvert.DeserializeObject<SupplierDto>(content, _options);
-        if (!string.IsNullOrEmpty(content) && result is not null)
+        var response = await _client.GetResponseAsync($"{additionalResourceName}/{supplierID}");
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<SupplierDto>(content);
+        if (result is not null)
             return result;
         else
             return new();
     }
 
-    public async Task<HttpResponseMessage> Create(SupplierDto supplierDto)
+    public async Task Create(SupplierDto supplierDto)
     {
         var response = await _client.PostAsync(additionalResourceName, supplierDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Update(SupplierDto supplierDto)
+    public async Task Update(SupplierDto supplierDto)
     {
         var response = await _client.PutAsync(additionalResourceName, supplierDto);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 
-    public async Task<HttpResponseMessage> Delete(Guid supplierID)
+    public async Task Delete(Guid supplierID)
     {
         var response = await _client.DeleteAsync($"{additionalResourceName}/{supplierID}");
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponseWithContent(response, content, _options);
-        return response;
+        _client.CheckErrorResponse(response, content);
     }
 }

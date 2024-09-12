@@ -7,7 +7,7 @@ public interface ISaleHttpService
 {
     public Task<PagingResponse<SaleDtoForSummary>> GetSalesForSummary(SaleParam saleParam);
     public Task<SaleDto> GetSaleByID(int saleID);
-    public Task<HttpResponseMessage> Create(SaleDto saleDto);
-    public Task<HttpResponseMessage> Update(SaleDto saleDto);
-    public Task<HttpResponseMessage> Delete(int saleID);
+    public Task Create(SaleDto saleDto);
+    public Task Update(SaleDto saleDto);
+    public Task Delete(int saleID);
 }

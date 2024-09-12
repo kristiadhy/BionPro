@@ -18,8 +18,9 @@ public class CustomHttpClient
     private readonly HttpClient HttpClient;
     private readonly ILocalStorageService _localStorage;
     private readonly WebHostEnvironment _hostEnvironment;
+    private readonly JsonSerializerSettings _options;
 
-    public CustomHttpClient(HttpClient httpClient, ILocalStorageService localStorage, IServiceProvider sp, WebHostEnvironment hostEnvironment)
+    public CustomHttpClient(HttpClient httpClient, ILocalStorageService localStorage, IServiceProvider sp, WebHostEnvironment hostEnvironment, JsonSerializerSettings options)
     {
         HttpClient = httpClient;
         //We move address config setting in the service registration
@@ -29,37 +30,39 @@ public class CustomHttpClient
 
         _localStorage = localStorage;
         _hostEnvironment = hostEnvironment;
+        _options = options;
     }
 
     public async Task<HttpResponseMessage> GetResponseAsync(string uriRequest)
     {
         HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
-        CheckErrorResponseForGetMethod(response);
+        var content = await response.Content.ReadAsStringAsync();
+        CheckErrorResponse(response, content);
         return response;
     }
 
-    public async Task<string> GetResponseAndContentAsync(string uriRequest)
-    {
-        HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
-        var content = await response.Content.ReadAsStringAsync();
-        CheckErrorResponseForGetMethod(response);
+    //public async Task<string> GetResponseAndContentAsync(string uriRequest)
+    //{
+    //    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
+    //    var content = await response.Content.ReadAsStringAsync();
+    //    CheckErrorResponseForGetMethod(response);
 
-        return content!;
-    }
+    //    return content!;
+    //}
 
-    public async Task<IEnumerable<T1>> GetAsync<T1>(JsonSerializerSettings options, string uriRequest)
-    {
-        HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
-        var content = await response.Content.ReadAsStringAsync();
-        if (!CheckErrorResponseForGetMethod(response))
-            return [];
+    //public async Task<IEnumerable<T1>> GetAsync<T1>(JsonSerializerSettings options, string uriRequest)
+    //{
+    //    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
+    //    var content = await response.Content.ReadAsStringAsync();
+    //    if (!CheckErrorResponseForGetMethod(response))
+    //        return [];
 
-        var result = JsonConvert.DeserializeObject<IEnumerable<T1>>(content, options);
-        if (string.IsNullOrEmpty(content))
-            return [];
+    //    var result = JsonConvert.DeserializeObject<IEnumerable<T1>>(content, options);
+    //    if (string.IsNullOrEmpty(content))
+    //        return [];
 
-        return result!;
-    }
+    //    return result!;
+    //}
 
     public async Task<HttpResponseMessage> PostAsync<T>(string uriRequest, T bodyContent)
     {
@@ -97,37 +100,17 @@ public class CustomHttpClient
         HttpClient.DefaultRequestHeaders.Authorization = null;
     }
 
-    public bool CheckErrorResponseForGetMethod(HttpResponseMessage response)
+    public void CheckErrorResponse(HttpResponseMessage response, string content)
     {
         if (!response.IsSuccessStatusCode)
         {
-            //We use this as an alternative, because we still confuse either to return empty data as not found status response or success with empty value
-            //if (response.StatusCode.Equals(HttpStatusCode.NotFound))
-            //    return false;
-
-            //response.EnsureSuccessStatusCode();
-            throw new HttpRequestException($"{response.ReasonPhrase}");
-        }
-
-        return true;
-    }
-
-    public void CheckErrorResponseWithContent(HttpResponseMessage response, string content, JsonSerializerSettings options)
-    {
-        if (!response.IsSuccessStatusCode)
-        {
-            var serviceResponse = JsonConvert.DeserializeObject<ApiResponseDto<string>>(content, options);
-            // The ReasonPhrase is a property that provides a textual description of the HTTP status code
-            string errorResponse = $"{serviceResponse?.ErrorMessage}";
-
-            ////If there is an error in the server, the server's middleware will return ResponseDto
-            //if (_hostEnvironment.IsDevelopment)
-            //{
-            //    var serviceResponse = JsonConvert.DeserializeObject<ApiResponseDto<string>>(content, options);
-            //    if (serviceResponse is not null)
-            //        errorResponse += $" - {serviceResponse.ErrorMessage}";
-            //}
-
+            string errorResponse = $"{response?.ReasonPhrase}";
+            if (_hostEnvironment.IsDevelopment)
+            {
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<List<string>>>(content, _options);
+                if (apiResponse is not null)
+                    errorResponse += $" - {apiResponse.ErrorMessage}";
+            }
             throw new HttpRequestException($"{errorResponse}");
         }
     }

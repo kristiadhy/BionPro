@@ -79,9 +79,7 @@ public partial class PurchaseDisplay
             return;
 
         int purchaseID = (int)purchases.PurchaseID!;
-        var response = await ServiceManager.PurchaseService.Delete(purchaseID);
-        if (!response.IsSuccessStatusCode)
-            return;
+        await ServiceManager.PurchaseService.Delete(purchaseID);
 
         NotificationService.DeleteNotification("Purchase data has been deleted");
         await EvReloadData();

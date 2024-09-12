@@ -60,20 +60,16 @@ public partial class CustomerTransaction
         IsSaving = true;
         try
         {
-            HttpResponseMessage response;
             if (FormStatus == GlobalEnum.FormStatus.New)
             {
                 customer.CustomerID = null;
-                response = await ServiceManager.CustomerService.Create(customer);
+                await ServiceManager.CustomerService.Create(customer);
             }
             else
-                response = await ServiceManager.CustomerService.Update(customer);
+                await ServiceManager.CustomerService.Update(customer);
 
-            if (response.IsSuccessStatusCode)
-            {
-                string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new customer added" : "Customer updated";
-                NotificationService.SaveNotification(notificationMessage);
-            }
+            string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new customer added" : "Customer updated";
+            NotificationService.SaveNotification(notificationMessage);
 
             await CustomerState.LoadCustomers();
         }

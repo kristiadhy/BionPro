@@ -35,8 +35,8 @@ internal class SaleDetailHttpService : ISaleDetailHttpService
 
         var pagingResponse = new PagingResponse<SaleDetailDto>()
         {
-            Items = JsonConvert.DeserializeObject<List<SaleDetailDto>>(content, _options)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First(), _options)!
+            Items = JsonConvert.DeserializeObject<List<SaleDetailDto>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;

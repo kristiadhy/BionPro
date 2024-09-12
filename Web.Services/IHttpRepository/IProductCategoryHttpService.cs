@@ -7,7 +7,7 @@ public interface IProductCategoryHttpService
 {
     public Task<PagingResponse<ProductCategoryDto>> GetProductCategories(ProductCategoryParam productCategoryParam);
     public Task<ProductCategoryDto> GetProductCategoryByID(int productCategoryID);
-    public Task<HttpResponseMessage> Create(ProductCategoryDto productCategoryDto);
-    public Task<HttpResponseMessage> Update(ProductCategoryDto productCategoryDto);
-    public Task<HttpResponseMessage> Delete(int productCategoryID);
+    public Task Create(ProductCategoryDto productCategoryDto);
+    public Task Update(ProductCategoryDto productCategoryDto);
+    public Task Delete(int productCategoryID);
 }

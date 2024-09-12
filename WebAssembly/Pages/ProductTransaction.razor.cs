@@ -75,17 +75,13 @@ public partial class ProductTransaction
                 product.ImageUrl = await ProductImageUploadRef!.StartUpload();
             }
 
-            HttpResponseMessage response;
             if (FormStatus == GlobalEnum.FormStatus.New)
-                response = await ServiceManager.ProductService.Create(product);
+                await ServiceManager.ProductService.Create(product);
             else
-                response = await ServiceManager.ProductService.Update(product);
+                await ServiceManager.ProductService.Update(product);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product added" : "Product updated";
-                NotificationService.SaveNotification(notificationMessage);
-            }
+            var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product added" : "Product updated";
+            NotificationService.SaveNotification(notificationMessage);
 
             await ProductState.LoadProducts();
         }

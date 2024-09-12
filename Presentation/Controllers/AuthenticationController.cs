@@ -8,12 +8,13 @@ namespace Presentation.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
+[AllowAnonymous]
 [Route("api/authentication")]
 public class AuthenticationController(IServiceManager serviceManager) : ControllerBase
 {
     private readonly IServiceManager _serviceManager = serviceManager;
 
-    [HttpPost("registration"), AllowAnonymous]
+    [HttpPost("registration")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> RegisterUser([FromBody] UserRegistrationDTO userForRegistration)
     {
@@ -24,7 +25,7 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         return Created();
     }
 
-    [HttpPost("login"), AllowAnonymous]
+    [HttpPost("login")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Authenticate([FromBody] UserAuthenticationDTO user)
     {
@@ -45,7 +46,7 @@ public class AuthenticationController(IServiceManager serviceManager) : Controll
         return Ok(tokenDtoToReturn);
     }
 
-    [HttpGet("emailconfirmation"), AllowAnonymous]
+    [HttpGet("emailconfirmation")]
     public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string email)
     {
         await _serviceManager.AuthenticationService.EmailConfirmation(email, token);

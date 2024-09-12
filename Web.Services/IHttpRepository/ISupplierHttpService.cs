@@ -7,7 +7,7 @@ public interface ISupplierHttpService
 {
     public Task<PagingResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParam);
     public Task<SupplierDto> GetSupplierByID(Guid supplierID);
-    public Task<HttpResponseMessage> Create(SupplierDto supplierDto);
-    public Task<HttpResponseMessage> Update(SupplierDto supplierDto);
-    public Task<HttpResponseMessage> Delete(Guid supplierID);
+    public Task Create(SupplierDto supplierDto);
+    public Task Update(SupplierDto supplierDto);
+    public Task Delete(Guid supplierID);
 }
