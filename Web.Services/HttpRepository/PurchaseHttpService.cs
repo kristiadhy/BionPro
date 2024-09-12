@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 internal class PurchaseHttpService : IPurchaseHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "purchases";
 
-    public PurchaseHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public PurchaseHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
     public async Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam)

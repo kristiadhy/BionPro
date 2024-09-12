@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 public class CustomerHttpService : ICustomerHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "customers";
 
-    public CustomerHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public CustomerHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
     public async Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter)

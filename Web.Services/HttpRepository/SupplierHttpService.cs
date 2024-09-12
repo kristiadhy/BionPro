@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 public class SupplierHttpService : ISupplierHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "suppliers";
 
-    public SupplierHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public SupplierHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
     public async Task<PagingResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParameter)

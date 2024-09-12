@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 internal class SaleHttpService : ISaleHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "sales";
 
-    public SaleHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public SaleHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
     public async Task<PagingResponse<SaleDtoForSummary>> GetSalesForSummary(SaleParam saleParam)

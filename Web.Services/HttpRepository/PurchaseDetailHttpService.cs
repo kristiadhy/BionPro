@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 internal class PurchaseDetailHttpService : IPurchaseDetailHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "purchase/details";
 
-    public PurchaseDetailHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public PurchaseDetailHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
 

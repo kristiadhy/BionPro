@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 internal class ProductCategoryHttpService : IProductCategoryHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "products/categories";
 
-    public ProductCategoryHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public ProductCategoryHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
     public async Task<PagingResponse<ProductCategoryDto>> GetProductCategories(ProductCategoryParam productCategoryParam)

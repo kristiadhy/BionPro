@@ -10,13 +10,11 @@ namespace Web.Services.HttpRepository;
 internal class SaleDetailHttpService : ISaleDetailHttpService
 {
     private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
     private readonly string additionalResourceName = "sale/details";
 
-    public SaleDetailHttpService(CustomHttpClient client, JsonSerializerSettings options)
+    public SaleDetailHttpService(CustomHttpClient client)
     {
         _client = client;
-        _options = options;
     }
 
 
