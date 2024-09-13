@@ -45,9 +45,10 @@ public partial class PurchaseDisplay
         ];
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        SetFilterButtonText();
+        //SetFilterButtonText();
+        await EvReloadData();
     }
 
     protected async Task EvReloadData()
