@@ -32,8 +32,8 @@ public class CustomerHttpService : ICustomerHttpService
 
         var pagingResponse = new PagingResponse<CustomerDTO>()
         {
-            Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+            Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content),
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
         };
 
         return pagingResponse;

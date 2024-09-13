@@ -36,15 +36,15 @@ public class ProductState
     {
         UpdateProductParametersBasedOnActiveFilters();
         var pagingResponse = await ServiceManager.ProductService.GetProducts(ProductParameter);
-        ProductList = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
+        ProductList = pagingResponse.Items ?? [];
+        MetaData = pagingResponse.MetaData ?? new();
     }
 
     public async Task LoadProductsDropDown()
     {
         ProductParam productParameter = new();
         var pagingResponse = await ServiceManager.ProductService.GetProducts(productParameter);
-        ProductListDropdown = pagingResponse.Items;
+        ProductListDropdown = pagingResponse.Items ?? [];
     }
 
     private void UpdateProductParametersBasedOnActiveFilters()

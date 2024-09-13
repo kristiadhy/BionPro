@@ -25,15 +25,15 @@ public partial class PurchaseDisplay
     [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
 
-    private RadzenDataGrid<PurchaseDtoForSummary> PurchaseGrid { get; set; } = default!;
+    internal RadzenDataGrid<PurchaseDtoForSummary> PurchaseGrid = default!;
 
-    private bool isLoading = false;
-    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
-    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+    protected bool isLoading = false;
+    protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    protected string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
 
-    private PageModel? PurchasesPageModel { get; set; }
-    private IEnumerable<PageModel> BreadCrumbs { get; set; }
-    private Pager? Pager;
+    protected PageModel? PurchasesPageModel { get; set; }
+    protected IEnumerable<PageModel> BreadCrumbs { get; set; }
+    protected Pager? Pager;
 
     public PurchaseDisplay()
     {
@@ -50,25 +50,25 @@ public partial class PurchaseDisplay
         SetFilterButtonText();
     }
 
-    private async Task EvReloadData()
+    protected async Task EvReloadData()
     {
         await EvLoadData();
         await PurchaseGrid.Reload();
     }
 
-    private async Task EvLoadData()
+    protected async Task EvLoadData()
     {
         isLoading = true;
         await PurchaseState.LoadPurchasesForSummary();
         isLoading = false;
     }
 
-    private void EvEditRow(PurchaseDtoForSummary purchases)
+    protected void EvEditRow(PurchaseDtoForSummary purchases)
     {
         NavigationManager.NavigateTo($"{PurchasesPageModel?.Path}/edit/{purchases.PurchaseID}");
     }
 
-    private async Task EvDeleteRow(PurchaseDtoForSummary purchases)
+    protected async Task EvDeleteRow(PurchaseDtoForSummary purchases)
     {
         if (purchases is null)
             return;
@@ -85,7 +85,7 @@ public partial class PurchaseDisplay
         await EvReloadData();
     }
 
-    private async Task EvSeeDetail(PurchaseDtoForSummary purchases)
+    protected async Task EvSeeDetail(PurchaseDtoForSummary purchases)
     {
         var parameters = new Dictionary<string, object>
         {
@@ -98,19 +98,19 @@ public partial class PurchaseDisplay
             );
     }
 
-    private void EvCreateNew()
+    protected void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{PurchasesPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerOnChangedEventArgs args)
+    protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
         PurchaseState.PurchaseParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
-    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
+    protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
         bool isFilterActiveBefore = PurchaseState.IsFilterActive;
 
@@ -140,7 +140,7 @@ public partial class PurchaseDisplay
         }
     }
 
-    private void SetFilterStateBasedOnItemValue(string value)
+    protected void SetFilterStateBasedOnItemValue(string value)
     {
         switch (value)
         {
@@ -156,7 +156,7 @@ public partial class PurchaseDisplay
 
 
 
-    private void SetFilterButtonText()
+    protected void SetFilterButtonText()
     {
         if (PurchaseState.IsFilterActive)
         {
@@ -170,13 +170,13 @@ public partial class PurchaseDisplay
         }
     }
 
-    private void ButtonClearFilterClicked()
+    protected void ButtonClearFilterClicked()
     {
         PurchaseState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 
-    private enum FilterCondition
+    protected enum FilterCondition
     {
         ByDate,
         BySupplier,

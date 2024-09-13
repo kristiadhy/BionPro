@@ -31,15 +31,15 @@ public class SupplierState
     {
         UpdateSupplierParametersBasedOnActiveFilters();
         var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(SupplierParameter);
-        SupplierList = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
+        SupplierList = pagingResponse.Items ?? [];
+        MetaData = pagingResponse.MetaData ?? new();
     }
 
     public async Task LoadSuppliersDropDown()
     {
         SupplierParam supplierParameter = new();
         var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(supplierParameter);
-        SupplierListDropdown = pagingResponse.Items;
+        SupplierListDropdown = pagingResponse.Items ?? [];
     }
 
     private void UpdateSupplierParametersBasedOnActiveFilters()

@@ -46,8 +46,8 @@ public class AuthenticationHttpService : IAuthenticationHttpService
     {
         var response = await _client.PostAsync($"{additionalResourceName}/login", userForAuthentication);
         var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
 
+        //We do manual error handling here because we are not in the main page yet
         var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<TokenDTO>>(content);
         if (apiResponse?.IsSuccess == true && apiResponse.Data != null)
         {
@@ -56,6 +56,8 @@ public class AuthenticationHttpService : IAuthenticationHttpService
             await _localStorage.SetItemAsync("refreshToken", tokenData.RefreshToken);
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(tokenData.AccessToken);
         }
+        else
+            throw new HttpRequestException($"{apiResponse?.ErrorMessage}");
     }
 
     public async Task Logout()
@@ -100,7 +102,7 @@ public class AuthenticationHttpService : IAuthenticationHttpService
         };
         string uri = $"{additionalResourceName}/emailconfirmation";
         var queryHelper = QueryHelpers.AddQueryString(uri, queryStringParam!);
-        HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
+        await _client.GetResponseAsync(queryHelper);
     }
 }
 

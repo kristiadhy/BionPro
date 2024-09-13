@@ -22,7 +22,7 @@ public static class ServiceExtensions
         {
             NullValueHandling = NullValueHandling.Ignore,
             MissingMemberHandling = MissingMemberHandling.Ignore,
-            DateFormatHandling = DateFormatHandling.IsoDateFormat,
+            DateFormatHandling = DateFormatHandling.IsoDateFormat
         });
 
         services.AddBlazoredLocalStorage();

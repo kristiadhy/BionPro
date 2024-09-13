@@ -17,10 +17,10 @@ public class SaleDetailState
         ServiceManager = serviceManager;
     }
 
-    public async Task LoadSaleDetails()
-    {
-        //var pagingResponse = await ServiceManager.SaleDetailService.GetSaleDetails(SaleDetailParameter);
-        //SaleDetailList = pagingResponse.Items;
-        //MetaData = pagingResponse.MetaData;
-    }
+    //public async Task LoadSaleDetails()
+    //{
+    //    //var pagingResponse = await ServiceManager.SaleDetailService.GetSaleDetails(SaleDetailParameter);
+    //    //SaleDetailList = pagingResponse.Items;
+    //    //MetaData = pagingResponse.MetaData;
+    //}
 }

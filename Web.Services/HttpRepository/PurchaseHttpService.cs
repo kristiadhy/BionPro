@@ -11,10 +11,12 @@ internal class PurchaseHttpService : IPurchaseHttpService
 {
     private readonly CustomHttpClient _client;
     private readonly string additionalResourceName = "purchases";
+    private readonly JsonSerializerSettings _options;
 
-    public PurchaseHttpService(CustomHttpClient client)
+    public PurchaseHttpService(CustomHttpClient client, JsonSerializerSettings options)
     {
         _client = client;
+        _options = options;
     }
 
     public async Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam)
@@ -35,8 +37,8 @@ internal class PurchaseHttpService : IPurchaseHttpService
 
         var pagingResponse = new PagingResponse<PurchaseDtoForSummary>()
         {
-            Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+            Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content, _options),
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
         };
 
         return pagingResponse;

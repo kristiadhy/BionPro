@@ -24,9 +24,9 @@ public partial class ProductCategoryDisplay
 
     internal static RadzenDataGrid<ProductCategoryDto> ProductCategoryGrid { get; set; } = default!;
 
-    private bool isLoading = false;
-    private PageModel? ProductCategoryPageModel { get; set; }
-    private IEnumerable<PageModel> BreadCrumbs { get; set; }
+    protected bool isLoading = false;
+    protected PageModel? ProductCategoryPageModel { get; set; }
+    protected IEnumerable<PageModel> BreadCrumbs { get; set; }
 
     public ProductCategoryDisplay()
     {
@@ -77,7 +77,7 @@ public partial class ProductCategoryDisplay
         NavigationManager.NavigateTo($"{ProductCategoryPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerOnChangedEventArgs args)
+    protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
         ProductCategoryState.ProductCategoryParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)

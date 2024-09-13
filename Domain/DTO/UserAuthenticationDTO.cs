@@ -12,5 +12,6 @@ public class UserAuthenticationDTO
     [Required(ErrorMessage = "User name is required")]
     public string? UserName { get; set; }
     [Required(ErrorMessage = "Password name is required")]
+    [MaxLength(256)]
     public string? Password { get; set; }
 }

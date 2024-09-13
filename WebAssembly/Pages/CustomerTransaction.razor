@@ -2,7 +2,7 @@
 @page "/customers/edit"
 @page "/customers/edit/{ParamCustomerID:guid}"
 
-<PageTitle>@($"{GlobalConstant.AppName} | {CustomerPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{ApplicationDetail.ApplicationName} | {CustomerPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />

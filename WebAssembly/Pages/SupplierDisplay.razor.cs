@@ -25,12 +25,12 @@ public partial class SupplierDisplay
 
     internal static RadzenDataGrid<SupplierDto> SupplierGrid { get; set; } = default!;
 
-    private bool isLoading = false;
-    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
-    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
-    private PageModel? SupplierPageModel { get; set; }
-    private IEnumerable<PageModel> BreadCrumbs { get; set; }
-    private Pager? Pager;
+    protected bool isLoading = false;
+    protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    protected string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+    protected PageModel? SupplierPageModel { get; set; }
+    protected IEnumerable<PageModel> BreadCrumbs { get; set; }
+    protected Pager? Pager;
 
     public SupplierDisplay()
     {
@@ -81,14 +81,14 @@ public partial class SupplierDisplay
         NavigationManager.NavigateTo($"{SupplierPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerOnChangedEventArgs args)
+    protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
         SupplierState.SupplierParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
-    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
+    protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
         bool isFilterActiveBefore = SupplierState.IsFilterActive;
 
@@ -119,7 +119,7 @@ public partial class SupplierDisplay
         }
     }
 
-    private void SetFilterStateBasedOnItemValue(string value)
+    protected void SetFilterStateBasedOnItemValue(string value)
     {
         switch (value)
         {
@@ -130,7 +130,7 @@ public partial class SupplierDisplay
         SupplierState.IsFilterActive = true;
     }
 
-    private void SetFilterButtonText()
+    protected void SetFilterButtonText()
     {
         if (SupplierState.IsFilterActive)
         {
@@ -144,13 +144,13 @@ public partial class SupplierDisplay
         }
     }
 
-    private void ButtonClearFilterClicked()
+    protected void ButtonClearFilterClicked()
     {
         SupplierState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 
-    private enum FilterCondition
+    protected enum FilterCondition
     {
         BySupplierName
     }

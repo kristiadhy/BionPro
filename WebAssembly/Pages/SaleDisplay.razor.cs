@@ -25,15 +25,15 @@ public partial class SaleDisplay
     [Inject]
     SaleState SaleState { get; set; } = default!;
 
-    private RadzenDataGrid<SaleDtoForSummary> SaleGrid { get; set; } = default!;
+    internal RadzenDataGrid<SaleDtoForSummary> SaleGrid { get; set; } = default!;
 
-    private bool isLoading = false;
-    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
-    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+    protected bool isLoading = false;
+    protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    protected string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
 
-    private PageModel? SalesPageModel { get; set; }
-    private IEnumerable<PageModel> BreadCrumbs { get; set; }
-    private Pager? Pager;
+    protected PageModel? SalesPageModel { get; set; }
+    protected IEnumerable<PageModel> BreadCrumbs { get; set; }
+    protected Pager? Pager;
 
     public SaleDisplay()
     {
@@ -50,25 +50,25 @@ public partial class SaleDisplay
         SetFilterButtonText();
     }
 
-    private async Task EvReloadData()
+    protected async Task EvReloadData()
     {
         await EvLoadData();
         await SaleGrid.Reload();
     }
 
-    private async Task EvLoadData()
+    protected async Task EvLoadData()
     {
         isLoading = true;
         await SaleState.LoadSalesForSummary();
         isLoading = false;
     }
 
-    private void EvEditRow(SaleDtoForSummary sales)
+    protected void EvEditRow(SaleDtoForSummary sales)
     {
         NavigationManager.NavigateTo($"{SalesPageModel?.Path}/edit/{sales.SaleID}");
     }
 
-    private async Task EvDeleteRow(SaleDtoForSummary sales)
+    protected async Task EvDeleteRow(SaleDtoForSummary sales)
     {
         if (sales is null)
             return;
@@ -85,7 +85,7 @@ public partial class SaleDisplay
         await EvReloadData();
     }
 
-    private async Task EvSeeDetail(SaleDtoForSummary sales)
+    protected async Task EvSeeDetail(SaleDtoForSummary sales)
     {
         var parameters = new Dictionary<string, object>
         {
@@ -98,19 +98,19 @@ public partial class SaleDisplay
             );
     }
 
-    private void EvCreateNew()
+    protected void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{SalesPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerOnChangedEventArgs args)
+    protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
         SaleState.SaleParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
-    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
+    protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
         bool isFilterActiveBefore = SaleState.IsFilterActive;
 
@@ -140,7 +140,7 @@ public partial class SaleDisplay
         }
     }
 
-    private void SetFilterStateBasedOnItemValue(string value)
+    protected void SetFilterStateBasedOnItemValue(string value)
     {
         switch (value)
         {
@@ -156,7 +156,7 @@ public partial class SaleDisplay
 
 
 
-    private void SetFilterButtonText()
+    protected void SetFilterButtonText()
     {
         if (SaleState.IsFilterActive)
         {
@@ -170,13 +170,13 @@ public partial class SaleDisplay
         }
     }
 
-    private void ButtonClearFilterClicked()
+    protected void ButtonClearFilterClicked()
     {
         SaleState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 
-    private enum FilterCondition
+    protected enum FilterCondition
     {
         ByDate,
         ByCustomer,

@@ -25,13 +25,13 @@ public partial class ProductDisplay
 
     internal static RadzenDataGrid<ProductDtoForProductQueries> ProductGrid { get; set; } = default!;
 
-    private bool isLoading = false;
-    private string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
-    private string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
+    protected bool isLoading = false;
+    protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
+    protected string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
 
-    private PageModel? ProductsPageModel { get; set; }
-    private IEnumerable<PageModel> BreadCrumbs { get; set; }
-    private Pager? Pager;
+    protected PageModel? ProductsPageModel { get; set; }
+    protected IEnumerable<PageModel> BreadCrumbs { get; set; }
+    protected Pager? Pager;
 
     public ProductDisplay()
     {
@@ -48,25 +48,25 @@ public partial class ProductDisplay
         SetFilterButtonText();
     }
 
-    private async Task EvReloadData()
+    protected async Task EvReloadData()
     {
         await EvLoadData();
         await ProductGrid.Reload();
     }
 
-    private async Task EvLoadData()
+    protected async Task EvLoadData()
     {
         isLoading = true;
         await ProductState.LoadProducts();
         isLoading = false;
     }
 
-    private void EvEditRow(ProductDtoForProductQueries products)
+    protected void EvEditRow(ProductDtoForProductQueries products)
     {
         NavigationManager.NavigateTo($"{ProductsPageModel?.Path}/edit/{products.ProductID}");
     }
 
-    private async Task EvDeleteRow(ProductDtoForProductQueries products)
+    protected async Task EvDeleteRow(ProductDtoForProductQueries products)
     {
         if (products is null)
             return;
@@ -85,19 +85,19 @@ public partial class ProductDisplay
         await EvReloadData();
     }
 
-    private void EvCreateNew()
+    protected void EvCreateNew()
     {
         NavigationManager.NavigateTo($"{ProductsPageModel?.Path}/create");
     }
 
-    private async Task PageChanged(PagerOnChangedEventArgs args)
+    protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
         ProductState.ProductParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
-    private async Task OnFilterButtonClick(RadzenSplitButtonItem item)
+    protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
         bool isFilterActiveBefore = ProductState.IsFilterActive;
 
@@ -128,7 +128,7 @@ public partial class ProductDisplay
         }
     }
 
-    private void SetFilterStateBasedOnItemValue(string value)
+    protected void SetFilterStateBasedOnItemValue(string value)
     {
         switch (value)
         {
@@ -142,7 +142,7 @@ public partial class ProductDisplay
         ProductState.IsFilterActive = true;
     }
 
-    private void SetFilterButtonText()
+    protected void SetFilterButtonText()
     {
         if (ProductState.IsFilterActive)
         {
@@ -156,13 +156,13 @@ public partial class ProductDisplay
         }
     }
 
-    private void ButtonClearFilterClicked()
+    protected void ButtonClearFilterClicked()
     {
         ProductState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 
-    private enum FilterCondition
+    protected enum FilterCondition
     {
         ByProductCategory,
         ByProductName,

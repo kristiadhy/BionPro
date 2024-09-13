@@ -18,9 +18,9 @@ public class PurchaseController(IServiceManager serviceManager) : ControllerBase
     [HttpGet(Name = "Purchases")]
     public async Task<IActionResult> GetSummaryByParameters(int purchaseID, [FromQuery] PurchaseParam purchaseParam, CancellationToken cancellationToken)
     {
-        var pagedResult = await _serviceManager.PurchaseService.GetSummaryByParametersAsync(purchaseID, purchaseParam, false, cancellationToken);
-        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
-        return Ok(pagedResult.purchaseDto);
+        var (purchaseDto, metaData) = await _serviceManager.PurchaseService.GetSummaryByParametersAsync(purchaseID, purchaseParam, false, cancellationToken);
+        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(metaData);
+        return Ok(purchaseDto);
     }
 
 

@@ -28,18 +28,18 @@ public partial class PurchaseTransaction
 
     [Parameter] public int? ParamPurchaseID { get; set; }
 
-    private FluentValidationValidator? PurchaseDetailValidator { get; set; }
+    internal FluentValidationValidator? PurchaseDetailValidator { get; set; }
+    protected readonly string AdditionalHeaderText = "purchase transaction";
 
-    private readonly string AdditionalHeaderText = "purchase transaction";
-    private GlobalEnum.FormStatus FormStatus;
-    private bool IsSaving = false;
+    protected GlobalEnum.FormStatus FormStatus;
+    protected bool IsSaving = false;
 
-    private int ProductSearchSelection = 2;
-    private PageModel? PurchasePageModel { get; set; }
-    private readonly Variant FieldVariant = Variant.Outlined;
-    private RadzenDataGrid<PurchaseDetailDto> PurchaseDetailGrid = default!;
-    private bool GridIsLoading = false;
-    private PurchaseDetailDto PurchaseDetail = new();
+    protected int ProductSearchSelection = 2;
+    protected PageModel? PurchasePageModel { get; set; }
+    protected readonly Variant FieldVariant = Variant.Outlined;
+    protected RadzenDataGrid<PurchaseDetailDto> PurchaseDetailGrid = default!;
+    protected bool GridIsLoading = false;
+    protected PurchaseDetailDto PurchaseDetail = new();
 
     public PurchaseTransaction()
     {
@@ -101,12 +101,12 @@ public partial class PurchaseTransaction
         }
     }
 
-    private async Task ClearField()
+    protected async Task ClearField()
     {
         PurchaseState.PurchaseForTransaction = new();
     }
 
-    private async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
+    protected async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
     {
         GridIsLoading = true;
         var product = ProductState.ProductListDropdown.Where(s => s.ProductID == purchaseDetail.ProductID).FirstOrDefault();
@@ -129,17 +129,17 @@ public partial class PurchaseTransaction
         SetPurchaseDetailDefaultValue(PurchaseDetail);
     }
 
-    private void OnDateChanged(DateTime? dateTime)
+    protected void OnDateChanged(DateTime? dateTime)
     {
         PurchaseState.PurchaseForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
     }
 
-    private void RefreshDate()
+    protected void RefreshDate()
     {
         PurchaseState.PurchaseForTransaction.Date = DateTime.Now;
     }
 
-    private async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
+    protected async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
     {
         var parameters = new Dictionary<string, object>
         {
@@ -149,7 +149,7 @@ public partial class PurchaseTransaction
         await DialogService.OpenAsync<CustomPurchaseEditProductPopUp>($"{purchaseDetail.ProductName}", parameters);
     }
 
-    private async Task EvDeleteRow(PurchaseDetailDto purchaseDetail)
+    protected async Task EvDeleteRow(PurchaseDetailDto purchaseDetail)
     {
         if (purchaseDetail is null)
             return;
@@ -158,7 +158,7 @@ public partial class PurchaseTransaction
         await PurchaseDetailGrid.Reload();
     }
 
-    private void SetPurchaseDetailDefaultValue(PurchaseDetailDto purchaseDetailDto)
+    protected void SetPurchaseDetailDefaultValue(PurchaseDetailDto purchaseDetailDto)
     {
         purchaseDetailDto.ProductID = null;
         purchaseDetailDto.ProductName = string.Empty;

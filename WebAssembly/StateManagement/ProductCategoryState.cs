@@ -21,8 +21,8 @@ public class ProductCategoryState
     public async Task LoadProductCategories()
     {
         var pagingResponse = await ServiceManager.ProductCategoryService.GetProductCategories(ProductCategoryParameter);
-        ProductCategoryList = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
+        ProductCategoryList = pagingResponse.Items ?? [];
+        MetaData = pagingResponse.MetaData ?? new();
         CopyProductCategoryToDropDown();
     }
 
@@ -30,7 +30,7 @@ public class ProductCategoryState
     {
         ProductCategoryParam productCategoryParameter = new();
         var pagingResponse = await ServiceManager.ProductCategoryService.GetProductCategories(productCategoryParameter);
-        ProductCategoryListDropdown = pagingResponse.Items;
+        ProductCategoryListDropdown = pagingResponse.Items ?? [];
     }
 
     public void CopyProductCategoryToDropDown()

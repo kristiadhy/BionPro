@@ -59,8 +59,8 @@ public class SaleState
     {
         UpdateSaleParametersBasedOnActiveFilters();
         var pagingResponse = await ServiceManager.SaleService.GetSalesForSummary(SaleParameter);
-        SaleListForSummary = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
+        SaleListForSummary = pagingResponse.Items ?? [];
+        MetaData = pagingResponse.MetaData ?? new();
     }
 
     private void UpdateSaleParametersBasedOnActiveFilters()

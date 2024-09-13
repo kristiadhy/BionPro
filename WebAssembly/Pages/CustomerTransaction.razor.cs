@@ -20,13 +20,13 @@ public partial class CustomerTransaction
     CustomerState CustomerState { get; set; } = default!;
 
     [Parameter] public Guid? ParamCustomerID { get; set; }
-    private readonly string AdditionalHeaderText = "customer";
-    private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
-    private bool IsSaving = false;
-    private CustomerParam CustomerParameter = new();
-    private RadzenTextBox? txtNameForFocus;
+    protected readonly string AdditionalHeaderText = "customer";
+    protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
+    protected bool IsSaving = false;
+    protected CustomerParam CustomerParameter = new();
+    protected RadzenTextBox? txtNameForFocus;
 
-    private PageModel? CustomerPageModel { get; set; }
+    protected PageModel? CustomerPageModel { get; set; }
 
     public CustomerTransaction()
     {

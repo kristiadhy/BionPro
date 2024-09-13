@@ -31,15 +31,15 @@ public class CustomerState
     {
         UpdateCustomerParametersBasedOnActiveFilters();
         var pagingResponse = await ServiceManager.CustomerService.GetCustomers(CustomerParameter);
-        CustomerList = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
+        CustomerList = pagingResponse.Items ?? [];
+        MetaData = pagingResponse.MetaData ?? new();
     }
 
     public async Task LoadCustomersDropDown()
     {
         CustomerParam supplierParameter = new();
         var pagingResponse = await ServiceManager.CustomerService.GetCustomers(supplierParameter);
-        CustomerListDropdown = pagingResponse.Items;
+        CustomerListDropdown = pagingResponse.Items ?? [];
     }
 
     private void UpdateCustomerParametersBasedOnActiveFilters()

@@ -32,8 +32,8 @@ public class SupplierHttpService : ISupplierHttpService
 
         var pagingResponse = new PagingResponse<SupplierDto>()
         {
-            Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+            Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content),
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
         };
 
         return pagingResponse;

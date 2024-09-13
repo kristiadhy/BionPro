@@ -23,14 +23,14 @@ public partial class ProductTransaction
     ProductState ProductState { get; set; } = default!;
 
     [Parameter] public Guid? ParamProductID { get; set; }
-    private FluentValidationValidator ProductValidator;
-    private readonly string AdditionalHeaderText = "product";
-    private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
-    private bool IsSaving = false;
-    private ProductParam? ProductParameter = new();
-    private RadzenTextBox? txtNameForFocus;
-    private ProductImageUpload? ProductImageUploadRef;
-    private PageModel? ProductPageModel { get; set; }
+    protected FluentValidationValidator ProductValidator;
+    protected readonly string AdditionalHeaderText = "product";
+    protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
+    protected bool IsSaving = false;
+    protected ProductParam? ProductParameter = new();
+    protected RadzenTextBox? txtNameForFocus;
+    protected ProductImageUpload? ProductImageUploadRef;
+    protected PageModel? ProductPageModel { get; set; }
 
     public ProductTransaction()
     {
@@ -92,12 +92,12 @@ public partial class ProductTransaction
         }
     }
 
-    //private void OnUploadFileChanged(string fileName)
+    //protected void OnUploadFileChanged(string fileName)
     //{
     //    ProductState.Product.ImageUrl = fileName;
     //}
 
-    private async Task ClearField()
+    protected async Task ClearField()
     {
         ProductState.Product = new();
         await txtNameForFocus!.FocusAsync();

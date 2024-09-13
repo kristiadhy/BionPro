@@ -20,6 +20,7 @@ public static class Startup
         services.AddCascadingAuthenticationState();
 
         //Register the local services
+        services.Configure<ApplicationDetail>(configuration.GetSection("ApplicationDetail"));
         services.ConfigureCustomComponentServices();
         services.ConfigureStateManagementServices();
 

@@ -17,10 +17,10 @@ public class PurchaseDetailState
         ServiceManager = serviceManager;
     }
 
-    public async Task LoadPurchaseDetails()
-    {
-        //var pagingResponse = await ServiceManager.PurchaseDetailService.GetPurchaseDetails(PurchaseDetailParameter);
-        //PurchaseDetailList = pagingResponse.Items;
-        //MetaData = pagingResponse.MetaData;
-    }
+    //public async Task LoadPurchaseDetails()
+    //{
+    //    //var pagingResponse = await ServiceManager.PurchaseDetailService.GetPurchaseDetails(PurchaseDetailParameter);
+    //    //PurchaseDetailList = pagingResponse.Items;
+    //    //MetaData = pagingResponse.MetaData;
+    //}
 }

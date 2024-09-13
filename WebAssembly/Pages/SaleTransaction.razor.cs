@@ -28,18 +28,18 @@ public partial class SaleTransaction
 
     [Parameter] public int? ParamSaleID { get; set; }
 
-    private FluentValidationValidator? SaleDetailValidator { get; set; }
+    protected FluentValidationValidator? SaleDetailValidator { get; set; }
 
-    private readonly string AdditionalHeaderText = "sale transaction";
-    private GlobalEnum.FormStatus FormStatus;
-    private bool IsSaving = false;
+    protected readonly string AdditionalHeaderText = "sale transaction";
+    protected GlobalEnum.FormStatus FormStatus;
+    protected bool IsSaving = false;
 
-    private int ProductSearchSelection = 2;
-    private PageModel? SalePageModel { get; set; }
-    private readonly Variant FieldVariant = Variant.Outlined;
-    private RadzenDataGrid<SaleDetailDto> SaleDetailGrid = default!;
-    private bool GridIsLoading = false;
-    private SaleDetailDto SaleDetail = new();
+    protected int ProductSearchSelection = 2;
+    protected PageModel? SalePageModel { get; set; }
+    protected readonly Variant FieldVariant = Variant.Outlined;
+    protected RadzenDataGrid<SaleDetailDto> SaleDetailGrid = default!;
+    protected bool GridIsLoading = false;
+    protected SaleDetailDto SaleDetail = new();
 
     public SaleTransaction()
     {
@@ -101,12 +101,12 @@ public partial class SaleTransaction
         }
     }
 
-    private async Task ClearField()
+    protected async Task ClearField()
     {
         SaleState.SaleForTransaction = new();
     }
 
-    private async Task AddToSaleDetailGrid(SaleDetailDto saleDetail)
+    protected async Task AddToSaleDetailGrid(SaleDetailDto saleDetail)
     {
         GridIsLoading = true;
         var product = ProductState.ProductListDropdown.Where(s => s.ProductID == saleDetail.ProductID).FirstOrDefault();
@@ -128,17 +128,17 @@ public partial class SaleTransaction
         SetSaleDetailDefaultValue(SaleDetail);
     }
 
-    private void OnDateChanged(DateTime? dateTime)
+    protected void OnDateChanged(DateTime? dateTime)
     {
         SaleState.SaleForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
     }
 
-    private void RefreshDate()
+    protected void RefreshDate()
     {
         SaleState.SaleForTransaction.Date = DateTime.Now;
     }
 
-    private async Task EvEditDetails(SaleDetailDto saleDetail)
+    protected async Task EvEditDetails(SaleDetailDto saleDetail)
     {
         var parameters = new Dictionary<string, object>
         {
@@ -148,7 +148,7 @@ public partial class SaleTransaction
         await DialogService.OpenAsync<CustomSaleEditProductPopUp>($"{saleDetail.ProductName}", parameters);
     }
 
-    private async Task EvDeleteRow(SaleDetailDto saleDetail)
+    protected async Task EvDeleteRow(SaleDetailDto saleDetail)
     {
         if (saleDetail is null)
             return;
@@ -157,7 +157,7 @@ public partial class SaleTransaction
         await SaleDetailGrid.Reload();
     }
 
-    private void SetSaleDetailDefaultValue(SaleDetailDto saleDetailDto)
+    protected void SetSaleDetailDefaultValue(SaleDetailDto saleDetailDto)
     {
         saleDetailDto.ProductID = null;
         saleDetailDto.ProductName = string.Empty;

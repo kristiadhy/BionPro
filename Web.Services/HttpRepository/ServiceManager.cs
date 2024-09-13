@@ -19,14 +19,14 @@ public sealed class ServiceManager : IServiceManager
 
     public ServiceManager(CustomHttpClient apiService, JsonSerializerSettings settings, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage)
     {
-        _lazyCustomerService = new Lazy<ICustomerHttpService>(() => new CustomerHttpService(apiService, settings));
-        _lazySupplierService = new Lazy<ISupplierHttpService>(() => new SupplierHttpService(apiService, settings));
-        _lazyProductCategoryService = new Lazy<IProductCategoryHttpService>(() => new ProductCategoryHttpService(apiService, settings));
-        _lazyProductService = new Lazy<IProductHttpService>(() => new ProductHttpService(apiService, settings));
+        _lazyCustomerService = new Lazy<ICustomerHttpService>(() => new CustomerHttpService(apiService));
+        _lazySupplierService = new Lazy<ISupplierHttpService>(() => new SupplierHttpService(apiService));
+        _lazyProductCategoryService = new Lazy<IProductCategoryHttpService>(() => new ProductCategoryHttpService(apiService));
+        _lazyProductService = new Lazy<IProductHttpService>(() => new ProductHttpService(apiService));
         _lazyPurchaseService = new Lazy<IPurchaseHttpService>(() => new PurchaseHttpService(apiService, settings));
-        _lazyPurchaseDetailService = new Lazy<IPurchaseDetailHttpService>(() => new PurchaseDetailHttpService(apiService, settings));
-        _lazySaleService = new Lazy<ISaleHttpService>(() => new SaleHttpService(apiService, settings));
-        _lazySaleDetailService = new Lazy<ISaleDetailHttpService>(() => new SaleDetailHttpService(apiService, settings));
+        _lazyPurchaseDetailService = new Lazy<IPurchaseDetailHttpService>(() => new PurchaseDetailHttpService(apiService));
+        _lazySaleService = new Lazy<ISaleHttpService>(() => new SaleHttpService(apiService));
+        _lazySaleDetailService = new Lazy<ISaleDetailHttpService>(() => new SaleDetailHttpService(apiService));
     }
 
     public ICustomerHttpService CustomerService => _lazyCustomerService.Value;

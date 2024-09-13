@@ -3,6 +3,7 @@
 @code {
     protected override void OnInitialized()
     {
+        //The returnUrl parameter is used to redirect the user back to the original page they were trying to access after they have successfully logged in. This is a common pattern in web applications to enhance user experience.
         NavigationManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
     }
 }

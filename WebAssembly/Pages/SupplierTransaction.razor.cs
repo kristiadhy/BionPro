@@ -20,12 +20,12 @@ public partial class SupplierTransaction
 
     [Parameter] public Guid? ParamSupplierID { get; set; }
 
-    private readonly string AdditionalHeaderText = "supplier";
+    protected readonly string AdditionalHeaderText = "supplier";
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     protected bool IsSaving = false;
     protected SupplierParam SupplierParameter = new();
 
-    private PageModel? SupplierPageModel { get; set; }
+    protected PageModel? SupplierPageModel { get; set; }
 
     public SupplierTransaction()
     {
@@ -72,6 +72,8 @@ public partial class SupplierTransaction
 
             string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new supplier added" : "Supplier updated";
             NotificationService.SaveNotification(notificationMessage);
+
+            await SupplierState.LoadSuppliers();
         }
         finally
         {

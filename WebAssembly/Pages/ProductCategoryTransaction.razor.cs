@@ -20,13 +20,13 @@ public partial class ProductCategoryTransaction
     ProductCategoryState ProductCategoryState { get; set; } = default!;
 
     [Parameter] public int? ParamProductCategoryID { get; set; }
-    private readonly string AdditionalHeaderText = "product category";
+    protected readonly string AdditionalHeaderText = "product category";
     protected GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
     protected bool IsSaving = false;
     protected ProductCategoryParam ProductCategoryParameter = new();
-    private RadzenTextBox? txtNameForFocus;
+    protected RadzenTextBox? txtNameForFocus;
 
-    private PageModel? ProductCategoryPageModel { get; set; }
+    protected PageModel? ProductCategoryPageModel { get; set; }
 
     public ProductCategoryTransaction()
     {
