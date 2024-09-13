@@ -1,5 +1,6 @@
 ﻿namespace WebAssembly.Constants;
 
+//TODO: Set appliication name as a global constant
 public static class GlobalConstant
 {
     public static readonly IEnumerable<PageModel> PageModels =

@@ -25,7 +25,7 @@ public partial class SaleDisplay
     [Inject]
     SaleState SaleState { get; set; } = default!;
 
-    internal RadzenDataGrid<SaleDtoForSummary> SaleGrid { get; set; } = default!;
+    internal RadzenDataGrid<SaleDtoForSummary>? SaleGrid { get; set; } = default!;
 
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
@@ -53,7 +53,7 @@ public partial class SaleDisplay
     protected async Task EvReloadData()
     {
         await EvLoadData();
-        await SaleGrid.Reload();
+        await SaleGrid?.Reload()!;
     }
 
     protected async Task EvLoadData()
@@ -74,8 +74,7 @@ public partial class SaleDisplay
             return;
 
         string transactionCode = sales.TransactionCode ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Sale", $"Code {transactionCode}");
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.DeleteConfirmation("Sale", $"Code {transactionCode}"))
             return;
 
         int saleID = (int)sales.SaleID!;

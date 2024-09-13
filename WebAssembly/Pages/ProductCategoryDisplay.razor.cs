@@ -62,13 +62,13 @@ public partial class ProductCategoryDisplay
             return;
 
         string productCategoryName = productCategory.Name ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Product Category", productCategoryName);
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.DeleteConfirmation("Product Category", productCategoryName))
             return;
 
         int productCategoryID = (int)productCategory.CategoryID!;
         await ServiceManager.ProductCategoryService.Delete(productCategoryID);
         NotificationService.DeleteNotification("Product category has been deleted");
+
         await EvReloadData();
     }
 

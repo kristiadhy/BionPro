@@ -18,7 +18,7 @@ public static class ServiceExtensions
 {
     public static IServiceCollection ConfigureHTTPServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped(sp => new JsonSerializerSettings
+        services.AddSingleton(sp => new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             MissingMemberHandling = MissingMemberHandling.Ignore,

@@ -84,6 +84,7 @@ public partial class ProductTransaction
             NotificationService.SaveNotification(notificationMessage);
 
             await ProductState.LoadProducts();
+            await ProductState.LoadProductsDropDown();
         }
         finally
         {

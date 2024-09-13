@@ -2,8 +2,8 @@
 
 public class ApplicationDetail
 {
-    public static string? ApplicationName { get; set; }
-    public static string? Developer { get; set; }
-    public static string? Website { get; set; }
-    public static string? Email { get; set; }
+    public string? ApplicationName { get; set; }
+    public string? Developer { get; set; }
+    public string? Website { get; set; }
+    public string? Email { get; set; }
 }

@@ -19,6 +19,9 @@ public static class Startup
         services.AddRadzenComponents();
         services.AddCascadingAuthenticationState();
 
+        // Configure the appsettings.json to be read
+        configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
         //Register the local services
         services.Configure<ApplicationDetail>(configuration.GetSection("ApplicationDetail"));
         services.ConfigureCustomComponentServices();

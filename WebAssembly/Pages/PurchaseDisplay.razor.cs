@@ -25,7 +25,7 @@ public partial class PurchaseDisplay
     [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
 
-    internal RadzenDataGrid<PurchaseDtoForSummary> PurchaseGrid = default!;
+    internal RadzenDataGrid<PurchaseDtoForSummary>? PurchaseGrid;
 
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
@@ -45,16 +45,15 @@ public partial class PurchaseDisplay
         ];
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        //SetFilterButtonText();
-        await EvReloadData();
+        SetFilterButtonText();
     }
 
     protected async Task EvReloadData()
     {
         await EvLoadData();
-        await PurchaseGrid.Reload();
+        await PurchaseGrid?.Reload()!;
     }
 
     protected async Task EvLoadData()
@@ -75,8 +74,8 @@ public partial class PurchaseDisplay
             return;
 
         string transactionCode = purchases.TransactionCode ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Purchase", $"Code {transactionCode}");
-        if (!confirmationStatus)
+
+        if (!await ConfirmationModalService.DeleteConfirmation("Purchase", $"Code {transactionCode}"))
             return;
 
         int purchaseID = (int)purchases.PurchaseID!;

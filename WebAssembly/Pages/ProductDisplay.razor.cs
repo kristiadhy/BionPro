@@ -72,8 +72,7 @@ public partial class ProductDisplay
             return;
 
         string productName = products.Name ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Product", productName);
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.DeleteConfirmation("Product", productName))
             return;
 
         Guid productID = (Guid)products.ProductID!;
@@ -82,7 +81,9 @@ public partial class ProductDisplay
 
         await ServiceManager.ProductService.Delete(productID);
         NotificationService.DeleteNotification("Product has been deleted");
+
         await EvReloadData();
+        await ProductState.LoadProductsDropDown();
     }
 
     protected void EvCreateNew()

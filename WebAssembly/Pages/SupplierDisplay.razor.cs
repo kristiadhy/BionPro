@@ -66,8 +66,7 @@ public partial class SupplierDisplay
             return;
 
         string supplierName = supplier.SupplierName ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Supplier", supplierName);
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.DeleteConfirmation("Supplier", supplierName))
             return;
 
         Guid supplierID = (Guid)supplier.SupplierID!;

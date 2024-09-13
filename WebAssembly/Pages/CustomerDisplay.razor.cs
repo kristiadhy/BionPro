@@ -1,10 +1,12 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
 using WebAssembly.CustomEventArgs;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -66,8 +68,7 @@ public partial class CustomerDisplay
             return;
 
         string customerName = customer.CustomerName ?? string.Empty;
-        bool confirmationStatus = await ConfirmationModalService.DeleteConfirmation("Customer", customerName);
-        if (!confirmationStatus)
+        if (!await ConfirmationModalService.DeleteConfirmation("Customer", customerName))
             return;
 
         Guid customerID = (Guid)customer.CustomerID!;
