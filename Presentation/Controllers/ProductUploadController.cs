@@ -9,8 +9,8 @@ namespace Presentation.Controllers;
 public class ProductUploadController(IServiceManager serviceManager) : ControllerBase
 {
     private readonly IServiceManager _serviceManager = serviceManager;
-    private readonly string folderPathOnServer = Path.Combine("StaticFiles", "Images", "Products");
-    private readonly string folderUrlToServer = "StaticFiles/Images/Products";
+    //private readonly string folderPathOnServer = Path.Combine("StaticFiles", "Images", "Products");
+    //private readonly string folderUrlToServer = "StaticFiles/Images/Products";
 
     //[HttpGet(Name = "GetProductImage")]
     //public async Task<IActionResult> GetProductImage(Guid productID, CancellationToken cancellationToken)
