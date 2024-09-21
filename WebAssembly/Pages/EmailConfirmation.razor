@@ -3,7 +3,7 @@
 
 @using Web.Services.IHttpRepository
 
-<PageTitle>@($"{ApplicationDetail.ApplicationName} | Email Confimation")</PageTitle>
+<PageTitle>@($"{ApplicationDetail?.ApplicationName} | Email Confimation")</PageTitle>
 
 <div class="d-flex justify-content-center align-items-center vh-100">
     @if (IsSuccess is null)
@@ -60,6 +60,8 @@
     NavigationManager Navigation { get; set; } = default!;
     [Inject]
     IAuthenticationHttpService AuthService { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     private bool? IsSuccess;
     private string ErrorMessage = string.Empty;

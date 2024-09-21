@@ -1,7 +1,7 @@
 ﻿@page "/suppliers"
 @using static WebAssembly.Shared.Enum.GlobalEnum
 
-<PageTitle>@($"{ApplicationDetail.ApplicationName} | {SupplierPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{ApplicationDetail?.ApplicationName} | {SupplierPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <RadzenText TextStyle="TextStyle.H5">@SupplierPageModel?.Title</RadzenText>

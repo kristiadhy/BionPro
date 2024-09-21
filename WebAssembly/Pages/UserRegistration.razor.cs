@@ -1,6 +1,7 @@
 ﻿using Domain.DTO;
 using Microsoft.AspNetCore.Components;
 using Web.Services.IHttpRepository;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -14,6 +15,8 @@ public partial class UserRegistration
     IAuthenticationHttpService AuthService { get; set; } = default!;
     [Inject]
     UserRegistrationState UserRegistrationState { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     protected bool IsSaving = false;
     protected bool IsSuccess = false;

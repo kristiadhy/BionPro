@@ -2,7 +2,7 @@
 @page "/products/categories/edit"
 @page "/products/categories/edit/{ParamProductCategoryID:int}"
 
-<PageTitle>@($"{ApplicationDetail.ApplicationName} | {ProductCategoryPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{ApplicationDetail?.ApplicationName} | {ProductCategoryPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />

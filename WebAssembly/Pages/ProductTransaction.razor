@@ -2,7 +2,7 @@
 @page "/products/edit"
 @page "/products/edit/{ParamProductID:guid}"
 
-<PageTitle>@($"{ApplicationDetail.ApplicationName} | {ProductPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{ApplicationDetail?.ApplicationName} | {ProductPageModel?.Title}")</PageTitle>
 
 <MainMenuContainer>
     <MainTransactionButton OnButtonBackClicked="EvBackToPrevious" />

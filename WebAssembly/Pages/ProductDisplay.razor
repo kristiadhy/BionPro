@@ -1,7 +1,7 @@
 ﻿@page "/products"
 @using static WebAssembly.Shared.Enum.GlobalEnum
 
-<PageTitle>@($"{ApplicationDetail.ApplicationName} | {ProductsPageModel?.Title}")</PageTitle>
+<PageTitle>@($"{ApplicationDetail?.ApplicationName} | {ProductsPageModel?.Title}")</PageTitle>
 
 @* <ProductSubButtons PageModel="ProductsPageModel" /> *@
 <ProductSubMenu />

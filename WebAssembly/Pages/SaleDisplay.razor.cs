@@ -5,6 +5,7 @@ using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
 using WebAssembly.CustomEventArgs;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -24,6 +25,8 @@ public partial class SaleDisplay
     DialogService DialogService { get; set; } = default!;
     [Inject]
     SaleState SaleState { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     internal RadzenDataGrid<SaleDtoForSummary>? SaleGrid { get; set; } = default!;
 

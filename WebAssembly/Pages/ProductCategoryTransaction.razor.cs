@@ -3,6 +3,7 @@ using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -18,6 +19,8 @@ public partial class ProductCategoryTransaction
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     ProductCategoryState ProductCategoryState { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     [Parameter] public int? ParamProductCategoryID { get; set; }
     protected readonly string AdditionalHeaderText = "product category";

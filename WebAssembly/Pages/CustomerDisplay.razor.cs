@@ -7,6 +7,7 @@ using Web.Services.IHttpRepository;
 using WebAssembly.Components;
 using WebAssembly.CustomEventArgs;
 using WebAssembly.Extensions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAssembly.Pages;
 
@@ -24,6 +25,9 @@ public partial class CustomerDisplay
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     CustomerState CustomerState { get; set; } = default!;
+
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     internal static RadzenDataGrid<CustomerDTO> CustomerGrid { get; set; } = default!;
 

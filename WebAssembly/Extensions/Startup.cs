@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+﻿using Extension.Services;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Options;
 using Radzen;
 using Services;
 using Web.Services.Features;
@@ -22,8 +24,10 @@ public static class Startup
         // Configure the appsettings.json to be read
         configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        //Register the local services
         services.Configure<ApplicationDetail>(configuration.GetSection("ApplicationDetail"));
+        services.AddCascadingValue(sp => sp.GetRequiredService<IOptions<ApplicationDetail>>().Value);
+
+        //Register the local services
         services.ConfigureCustomComponentServices();
         services.ConfigureStateManagementServices();
 

@@ -4,6 +4,7 @@ using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.CustomEventArgs;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -21,6 +22,8 @@ public partial class ProductCategoryDisplay
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     ProductCategoryState ProductCategoryState { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     internal static RadzenDataGrid<ProductCategoryDto> ProductCategoryGrid { get; set; } = default!;
 

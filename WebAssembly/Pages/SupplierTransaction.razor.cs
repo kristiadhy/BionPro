@@ -2,6 +2,7 @@
 using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Web.Services.IHttpRepository;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -17,6 +18,8 @@ public partial class SupplierTransaction
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     SupplierState SupplierState { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     [Parameter] public Guid? ParamSupplierID { get; set; }
 

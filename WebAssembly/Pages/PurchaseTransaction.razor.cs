@@ -6,6 +6,7 @@ using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
+using WebAssembly.Extensions;
 
 namespace WebAssembly.Pages;
 
@@ -25,6 +26,8 @@ public partial class PurchaseTransaction
     PurchaseState PurchaseState { get; set; } = default!;
     [Inject]
     ProductState ProductState { get; set; } = default!;
+    [CascadingParameter]
+    ApplicationDetail? ApplicationDetail { get; set; }
 
     [Parameter] public int? ParamPurchaseID { get; set; }
 
