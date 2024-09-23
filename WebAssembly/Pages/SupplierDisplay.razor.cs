@@ -23,6 +23,7 @@ public partial class SupplierDisplay
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
     SupplierState SupplierState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 

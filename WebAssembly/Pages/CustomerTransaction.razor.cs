@@ -18,7 +18,8 @@ public partial class CustomerTransaction
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    CustomerState CustomerState { get; set; } = default!;
+    CustomerInputState CustomerInputState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -40,13 +41,13 @@ public partial class CustomerTransaction
     {
         if (ParamCustomerID is not null)
         {
-            CustomerState.Customer = await ServiceManager.CustomerService.GetCustomerByID((Guid)ParamCustomerID);
+            CustomerInputState.Customer = await ServiceManager.CustomerService.GetCustomerByID((Guid)ParamCustomerID);
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
-            CustomerState.Customer.CustomerID = null;
+            CustomerInputState.Customer.CustomerID = null;
         }
     }
 
@@ -83,7 +84,7 @@ public partial class CustomerTransaction
 
     public async Task ClearField()
     {
-        CustomerState.Customer = new();
+        CustomerInputState.Customer = new();
         await txtNameForFocus!.FocusAsync();
     }
 }

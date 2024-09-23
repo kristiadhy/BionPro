@@ -1,14 +1,11 @@
 ﻿using Domain.DTO;
 using Domain.Parameters;
+using Web.Services.IHttpRepository;
 
 namespace WebAssembly.StateManagement;
 
-public class CustomerState
+public class CustomerDisplayFilterState()
 {
-    //private readonly IServiceManager ServiceManager;
-    public CustomerParam CustomerParameter { get; set; } = new();
-    public CustomerDTO Customer { get; set; } = new();
-
     //For filters
     public bool IsFilterActive { get; set; } = false;
 
@@ -16,29 +13,29 @@ public class CustomerState
     public string? FilterCustomerNameValue { get; set; }
     public bool IsFilterByCustomerNameActive { get; set; } = false;
 
-    public void UpdateCustomerParametersBasedOnActiveFilters()
+    public void UpdateCustomerParametersBasedOnActiveFilters(CustomerParam customerParam)
     {
         if (IsFilterActive)
             //Always set the page to 1 when filters are active
-            CustomerParameter.PageNumber = 1;
+            customerParam.PageNumber = 1;
 
         if (IsFilterByCustomerNameActive)
         {
-            CustomerParameter.SrcByName = FilterCustomerNameValue;
+            customerParam.SrcByName = FilterCustomerNameValue;
         }
         else
         {
-            CustomerParameter.SrcByName = null;
+            customerParam.SrcByName = null;
         }
     }
 
-    internal void ToggleFilterState()
+    public void ToggleFilterState()
     {
         IsFilterByCustomerNameActive = false;
         IsFilterActive = false;
     }
 
-    internal void SetGlobalFilterStateByFilters()
+    public void SetGlobalFilterStateByFilters()
     {
         if (IsFilterByCustomerNameActive)
             IsFilterActive = true;

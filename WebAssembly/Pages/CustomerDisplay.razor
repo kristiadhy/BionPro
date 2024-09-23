@@ -22,16 +22,16 @@
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
-@if (CustomerState.IsFilterByCustomerNameActive)
+@if (CustomerDisplayFilterState.IsFilterByCustomerNameActive)
 {
-    <FilterByCustomerName @bind-CustomerNameValue="CustomerState.FilterCustomerNameValue"
-                          @bind-IsFilterByCustomerNameActive="CustomerState.IsFilterByCustomerNameActive"
+    <FilterByCustomerName @bind-CustomerNameValue="CustomerDisplayFilterState.FilterCustomerNameValue"
+                          @bind-IsFilterByCustomerNameActive="CustomerDisplayFilterState.IsFilterByCustomerNameActive"
                           ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 <RadzenDataGrid @ref="CustomerGrid"
                 IsLoading=@isLoading
-                Data="@customers"
+                Data="@CustomerDisplayState.CustomerList"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -46,7 +46,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(customers.IndexOf(data) + 1)
+                @(CustomerDisplayState.CustomerList.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -111,7 +111,7 @@
 </RadzenDataGrid>
 
 <Pager @ref="Pager"
-       PageSize="@metaData.PageSize"
-       TotalCount="@metaData.TotalCount"
-       CurrentPage="metaData.CurrentPage"
+       PageSize="@CustomerDisplayState.MetaData.PageSize"
+       TotalCount="@CustomerDisplayState.MetaData.TotalCount"
+       CurrentPage="CustomerDisplayState.CustomerParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

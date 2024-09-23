@@ -43,7 +43,7 @@
     {
         if (firstRender)
         {
-            if (CustomPager != null)
+            if (CustomPager is not null)
             {
                 IsFromFirstRender = true;
                 await CustomPager.GoToPage(CurrentPage - 1, false);

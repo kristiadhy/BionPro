@@ -1,14 +1,11 @@
 ﻿using Domain.DTO;
-using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Options;
 using Radzen;
 using Radzen.Blazor;
 using Web.Services.IHttpRepository;
 using WebAssembly.Components;
 using WebAssembly.CustomEventArgs;
 using WebAssembly.Extensions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAssembly.Pages;
 
@@ -25,15 +22,14 @@ public partial class CustomerDisplay
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    CustomerState CustomerState { get; set; } = default!;
+    CustomerDisplayState CustomerDisplayState { get; set; } = default!;
+    [Inject]
+    CustomerDisplayFilterState CustomerDisplayFilterState { get; set; } = default!;
 
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
     internal static RadzenDataGrid<CustomerDTO> CustomerGrid { get; set; } = default!;
-
-    protected List<CustomerDTO> customers = [];
-    protected MetaData metaData = new();
 
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
@@ -61,10 +57,7 @@ public partial class CustomerDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-        CustomerState.UpdateCustomerParametersBasedOnActiveFilters();
-        var paginResponse = await ServiceManager.CustomerService.GetCustomers(CustomerState.CustomerParameter);
-        customers = paginResponse.Items;
-        metaData = paginResponse.MetaData;
+        await CustomerDisplayState.LoadCustomers();
         isLoading = false;
     }
 
@@ -96,26 +89,26 @@ public partial class CustomerDisplay
 
     protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        CustomerState.CustomerParameter.PageNumber = args.CurrentPage;
+        CustomerDisplayState.CustomerParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
     protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
-        bool isFilterActiveBefore = CustomerState.IsFilterActive;
+        bool isFilterActiveBefore = CustomerDisplayFilterState.IsFilterActive;
 
         //Click default filter button
         if (item is null)
         {
             //If the filter is active, then clear the filter
             if (isFilterActiveBefore)
-                CustomerState.ToggleFilterState();
+                CustomerDisplayFilterState.ToggleFilterState();
 
             else //If there is no active filter, then set filter by customer name as default
             {
-                CustomerState.IsFilterByCustomerNameActive = true;
-                CustomerState.IsFilterActive = true;
+                CustomerDisplayFilterState.IsFilterByCustomerNameActive = true;
+                CustomerDisplayFilterState.IsFilterActive = true;
             }
         }
         else
@@ -125,7 +118,7 @@ public partial class CustomerDisplay
         }
 
         // Update filter button appearance only if the filter activation state has changed
-        if (isFilterActiveBefore != CustomerState.IsFilterActive)
+        if (isFilterActiveBefore != CustomerDisplayFilterState.IsFilterActive)
         {
             SetFilterButtonText();
             await Pager?.NavigateToPage(1)!;
@@ -137,15 +130,15 @@ public partial class CustomerDisplay
         switch (value)
         {
             case nameof(FilterCondition.ByCustomerName):
-                CustomerState.IsFilterByCustomerNameActive = true;
+                CustomerDisplayFilterState.IsFilterByCustomerNameActive = true;
                 break;
         }
-        CustomerState.IsFilterActive = true;
+        CustomerDisplayFilterState.IsFilterActive = true;
     }
 
     protected void SetFilterButtonText()
     {
-        if (CustomerState.IsFilterActive)
+        if (CustomerDisplayFilterState.IsFilterActive)
         {
             filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
             filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
@@ -159,7 +152,7 @@ public partial class CustomerDisplay
 
     protected void ButtonClearFilterClicked()
     {
-        CustomerState.SetGlobalFilterStateByFilters();
+        CustomerDisplayFilterState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 
