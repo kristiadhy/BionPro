@@ -1,4 +1,5 @@
 ﻿using Domain.DTO;
+using Domain.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Radzen;
@@ -31,6 +32,9 @@ public partial class CustomerDisplay
 
     internal static RadzenDataGrid<CustomerDTO> CustomerGrid { get; set; } = default!;
 
+    protected List<CustomerDTO> customers = [];
+    protected MetaData metaData = new();
+
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
     protected string filterIcon = GlobalEnum.FilterIcon.Search.GetDisplayDescription();
@@ -57,7 +61,10 @@ public partial class CustomerDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-        await CustomerState.LoadCustomers();
+        CustomerState.UpdateCustomerParametersBasedOnActiveFilters();
+        var paginResponse = await ServiceManager.CustomerService.GetCustomers(CustomerState.CustomerParameter);
+        customers = paginResponse.Items;
+        metaData = paginResponse.MetaData;
         isLoading = false;
     }
 

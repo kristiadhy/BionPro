@@ -18,10 +18,10 @@ public class CustomerController(IServiceManager serviceManager) : ControllerBase
     [HttpGet(Name = "Customers")]
     public async Task<IActionResult> GetByParameters(Guid customerID, [FromQuery] CustomerParam customerParam, CancellationToken cancellationToken)
     {
-        var pagedResult = await _serviceManager.CustomerService.GetByParametersAsync(customerID, customerParam, false, cancellationToken);
+        var (customerDTO, metaData) = await _serviceManager.CustomerService.GetByParametersAsync(customerID, customerParam, false, cancellationToken);
         //Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
-        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
-        return Ok(pagedResult.customerDTO);
+        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(metaData);
+        return Ok(customerDTO);
     }
 
 

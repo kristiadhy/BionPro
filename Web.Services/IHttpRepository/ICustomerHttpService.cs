@@ -6,7 +6,7 @@ namespace Web.Services.IHttpRepository;
 
 public interface ICustomerHttpService
 {
-    public Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter);
+    public Task<DataResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter);
     public Task<CustomerDTO> GetCustomerByID(Guid customerID);
     public Task Create(CustomerDTO customerDTO);
     public Task Update(CustomerDTO customerDTO);

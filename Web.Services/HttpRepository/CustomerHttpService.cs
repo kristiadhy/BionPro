@@ -17,7 +17,7 @@ public class CustomerHttpService : ICustomerHttpService
         _client = client;
     }
 
-    public async Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter)
+    public async Task<DataResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -30,13 +30,13 @@ public class CustomerHttpService : ICustomerHttpService
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
 
-        var pagingResponse = new PagingResponse<CustomerDTO>()
+        var dataResponse = new DataResponse<CustomerDTO>()
         {
-            Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content),
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
+            Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
-        return pagingResponse;
+        return dataResponse;
     }
 
     public async Task<CustomerDTO> GetCustomerByID(Guid customerID)

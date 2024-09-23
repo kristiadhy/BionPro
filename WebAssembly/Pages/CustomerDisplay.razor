@@ -31,7 +31,7 @@
 
 <RadzenDataGrid @ref="CustomerGrid"
                 IsLoading=@isLoading
-                Data="@CustomerState.CustomerList"
+                Data="@customers"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -46,7 +46,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(CustomerState.CustomerList.IndexOf(data) + 1)
+                @(customers.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -111,7 +111,7 @@
 </RadzenDataGrid>
 
 <Pager @ref="Pager"
-       PageSize="@CustomerState.MetaData.PageSize"
-       TotalCount="@CustomerState.MetaData.TotalCount"
-       CurrentPage="CustomerState.CustomerParameter.PageNumber"
+       PageSize="@metaData.PageSize"
+       TotalCount="@metaData.TotalCount"
+       CurrentPage="metaData.CurrentPage"
        PageChanged="@(args => PageChanged(args))" />

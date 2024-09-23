@@ -1,10 +1,12 @@
-﻿<div class="rz-display-flex">
+﻿@using Domain.Parameters
+@using Web.Services.IHttpRepository
+<div class="rz-display-flex">
     <RadzenDropDown TValue="Guid?"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterOperator="StringFilterOperator.StartsWith"
                     AllowFiltering="true"
                     Placeholder="Select Customer"
-                    Data=@CustomerState.CustomerListDropdown
+                    Data=@customers
                     TextProperty="@nameof(CustomerDTO.CustomerName)"
                     ValueProperty="@nameof(CustomerDTO.CustomerID)"
                     AllowClear="true"
@@ -26,16 +28,20 @@
 </div>
 @code {
     [Inject]
-    CustomerState CustomerState { get; set; } = default!;
+    IServiceManager Service { get; set; } = default!;
+
+    private List<CustomerDTO> customers = [];
 
     private bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!CustomerState.CustomerListDropdown.Any())
+        if (!customers.Any())
         {
             IsLoading = true;
-            await CustomerState.LoadCustomersDropDown();
+            CustomerParam customerParam = new();
+            var dataCustomers = await Service.CustomerService.GetCustomers(customerParam);
+            customers = dataCustomers.Items;
             IsLoading = false;
         }
 

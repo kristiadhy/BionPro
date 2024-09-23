@@ -17,7 +17,7 @@ internal class ProductCategoryHttpService : IProductCategoryHttpService
         _client = client;
     }
 
-    public async Task<PagingResponse<ProductCategoryDto>> GetProductCategories(ProductCategoryParam productCategoryParam)
+    public async Task<DataResponse<ProductCategoryDto>> GetProductCategories(ProductCategoryParam productCategoryParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -30,7 +30,7 @@ internal class ProductCategoryHttpService : IProductCategoryHttpService
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
 
-        var pagingResponse = new PagingResponse<ProductCategoryDto>()
+        var pagingResponse = new DataResponse<ProductCategoryDto>()
         {
             Items = JsonConvert.DeserializeObject<List<ProductCategoryDto>>(content),
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())

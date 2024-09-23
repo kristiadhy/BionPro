@@ -5,7 +5,7 @@ using Web.Services.Features;
 namespace Web.Services.IHttpRepository;
 public interface IProductHttpService
 {
-    public Task<PagingResponse<ProductDtoForProductQueries>> GetProducts(ProductParam productParam);
+    public Task<DataResponse<ProductDtoForProductQueries>> GetProducts(ProductParam productParam);
     public Task<ProductDto> GetProductByID(Guid productID);
     public Task Create(ProductDto productDto);
     public Task Update(ProductDto productDto);

@@ -17,7 +17,7 @@ internal class SaleHttpService : ISaleHttpService
         _client = client;
     }
 
-    public async Task<PagingResponse<SaleDtoForSummary>> GetSalesForSummary(SaleParam saleParam)
+    public async Task<DataResponse<SaleDtoForSummary>> GetSalesForSummary(SaleParam saleParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -33,7 +33,7 @@ internal class SaleHttpService : ISaleHttpService
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
 
-        var pagingResponse = new PagingResponse<SaleDtoForSummary>()
+        var pagingResponse = new DataResponse<SaleDtoForSummary>()
         {
             Items = JsonConvert.DeserializeObject<List<SaleDtoForSummary>>(content),
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())

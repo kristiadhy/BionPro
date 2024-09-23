@@ -18,7 +18,7 @@ internal class PurchaseDetailHttpService : IPurchaseDetailHttpService
     }
 
 
-    public async Task<PagingResponse<PurchaseDetailDto>> GetPurchaseByID(int purchaseID, PurchaseDetailParam purchaseDetailParam)
+    public async Task<DataResponse<PurchaseDetailDto>> GetPurchaseByID(int purchaseID, PurchaseDetailParam purchaseDetailParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -31,7 +31,7 @@ internal class PurchaseDetailHttpService : IPurchaseDetailHttpService
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
 
-        var pagingResponse = new PagingResponse<PurchaseDetailDto>()
+        var pagingResponse = new DataResponse<PurchaseDetailDto>()
         {
             Items = JsonConvert.DeserializeObject<List<PurchaseDetailDto>>(content),
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())

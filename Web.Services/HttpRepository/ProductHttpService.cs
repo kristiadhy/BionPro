@@ -17,7 +17,7 @@ internal class ProductHttpService : IProductHttpService
         _client = client;
     }
 
-    public async Task<PagingResponse<ProductDtoForProductQueries>> GetProducts(ProductParam productParam)
+    public async Task<DataResponse<ProductDtoForProductQueries>> GetProducts(ProductParam productParam)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -31,7 +31,7 @@ internal class ProductHttpService : IProductHttpService
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
 
-        var pagingResponse = new PagingResponse<ProductDtoForProductQueries>()
+        var pagingResponse = new DataResponse<ProductDtoForProductQueries>()
         {
             Items = JsonConvert.DeserializeObject<List<ProductDtoForProductQueries>>(content),
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())

@@ -73,8 +73,6 @@ public partial class CustomerTransaction
 
             string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new customer added" : "Customer updated";
             NotificationService.SaveNotification(notificationMessage);
-
-            await CustomerState.LoadCustomers();
         }
         finally
         {

@@ -17,7 +17,7 @@ public class SupplierHttpService : ISupplierHttpService
         _client = client;
     }
 
-    public async Task<PagingResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParameter)
+    public async Task<DataResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParameter)
     {
         var queryStringParam = new Dictionary<string, string>
         {
@@ -30,7 +30,7 @@ public class SupplierHttpService : ISupplierHttpService
         HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
         var content = await response.Content.ReadAsStringAsync();
 
-        var pagingResponse = new PagingResponse<SupplierDto>()
+        var pagingResponse = new DataResponse<SupplierDto>()
         {
             Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content),
             MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
