@@ -59,8 +59,8 @@ public class PurchaseState
     {
         UpdatePurchaseParametersBasedOnActiveFilters();
         var pagingResponse = await ServiceManager.PurchaseService.GetPurchasesForSummary(PurchaseParameter);
-        PurchaseListForSummary = pagingResponse.Items ?? [];
-        MetaData = pagingResponse.MetaData ?? new();
+        PurchaseListForSummary = pagingResponse.Items;
+        MetaData = pagingResponse.MetaData;
     }
 
     private void UpdatePurchaseParametersBasedOnActiveFilters()

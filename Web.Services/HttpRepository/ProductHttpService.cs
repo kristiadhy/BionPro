@@ -33,8 +33,8 @@ internal class ProductHttpService : IProductHttpService
 
         var pagingResponse = new DataResponse<ProductDtoForProductQueries>()
         {
-            Items = JsonConvert.DeserializeObject<List<ProductDtoForProductQueries>>(content),
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
+            Items = JsonConvert.DeserializeObject<List<ProductDtoForProductQueries>>(content)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;

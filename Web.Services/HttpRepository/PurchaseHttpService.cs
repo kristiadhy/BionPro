@@ -37,8 +37,8 @@ internal class PurchaseHttpService : IPurchaseHttpService
 
         var pagingResponse = new DataResponse<PurchaseDtoForSummary>()
         {
-            Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content, _options),
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())
+            Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content, _options)!,
+            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
         };
 
         return pagingResponse;

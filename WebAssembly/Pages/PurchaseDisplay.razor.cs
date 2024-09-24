@@ -25,10 +25,11 @@ public partial class PurchaseDisplay
     DialogService DialogService { get; set; } = default!;
     [Inject]
     PurchaseState PurchaseState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
-    internal RadzenDataGrid<PurchaseDtoForSummary>? PurchaseGrid;
+    protected RadzenDataGrid<PurchaseDtoForSummary>? PurchaseGrid;
 
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
@@ -56,7 +57,7 @@ public partial class PurchaseDisplay
     protected async Task EvReloadData()
     {
         await EvLoadData();
-        await PurchaseGrid?.Reload()!;
+        await PurchaseGrid!.Reload();
     }
 
     protected async Task EvLoadData()

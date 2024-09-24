@@ -71,8 +71,8 @@
                               Title="#" Filterable="false"
                               Sortable="false"
                               TextAlign="TextAlign.Center">
-            <Template Context="data">
-                @(ProductState.ProductList.IndexOf(data) + 1)
+            <Template Context="rowNumber">
+                @(ProductState.ProductList.IndexOf(rowNumber) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -118,13 +118,13 @@
                               Frozen="true"
                               FrozenPosition="FrozenColumnPosition.Right">
 
-            <Template Context="dto">
+            <Template Context="action">
                 <RadzenButton Icon="edit"
                               ButtonStyle="ButtonStyle.Light"
                               Variant="Variant.Flat"
                               Size="ButtonSize.Medium"
                               MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Edit.ToString()))"
-                              Click="@(args => EvEditRow(dto))"
+                              Click="@(args => EvEditRow(action))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger"
@@ -134,7 +134,7 @@
                               Size="ButtonSize.Medium"
                               class="my-1 ms-1"
                               MouseEnter="@((args) => CustomTooltipService.ShowBottomTooltip(args, TableAction.Delete.ToString()))"
-                              Click="@(async args => await EvDeleteRow(dto))"
+                              Click="@(async args => await EvDeleteRow(action))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>
@@ -145,5 +145,5 @@
 <Pager @ref="Pager"
        PageSize="@ProductState.MetaData.PageSize"
        TotalCount="@ProductState.MetaData.TotalCount"
-       CurrentPage="ProductState.ProductParameter.PageNumber"
+       CurrentPage="@ProductState.ProductParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

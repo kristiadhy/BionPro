@@ -29,7 +29,7 @@ public partial class CustomerDisplay
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
-    internal static RadzenDataGrid<CustomerDTO> CustomerGrid { get; set; } = default!;
+    protected RadzenDataGrid<CustomerDTO>? CustomerGrid;
 
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
@@ -51,7 +51,7 @@ public partial class CustomerDisplay
     protected async Task EvReloadData()
     {
         await EvLoadData();
-        await CustomerGrid.Reload();
+        await CustomerGrid!.Reload();
     }
 
     protected async Task EvLoadData()
