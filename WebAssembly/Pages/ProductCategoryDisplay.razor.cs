@@ -21,7 +21,8 @@ public partial class ProductCategoryDisplay
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    ProductCategoryState ProductCategoryState { get; set; } = default!;
+    ProductCategoryDisplayState ProductCategoryDisplayState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -50,7 +51,7 @@ public partial class ProductCategoryDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-        await ProductCategoryState.LoadProductCategories();
+        await ProductCategoryDisplayState.LoadProductCategories();
         isLoading = false;
     }
 
@@ -82,7 +83,7 @@ public partial class ProductCategoryDisplay
 
     protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        ProductCategoryState.ProductCategoryParameter.PageNumber = args.CurrentPage;
+        ProductCategoryDisplayState.ProductCategoryParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }

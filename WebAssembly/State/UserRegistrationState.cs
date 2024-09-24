@@ -1,6 +1,6 @@
 ﻿using Domain.DTO;
 
-namespace WebAssembly.StateManagement;
+namespace WebAssembly.State;
 
 public class UserRegistrationState
 {

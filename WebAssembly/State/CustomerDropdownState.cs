@@ -2,12 +2,13 @@
 using Domain.Parameters;
 using Web.Services.IHttpRepository;
 
-namespace WebAssembly.StateManagement;
+namespace WebAssembly.State;
 
 public class CustomerDropdownState(IServiceManager serviceManager)
 {
     private readonly IServiceManager ServiceManager = serviceManager;
     public IEnumerable<CustomerDTO> CustomerListDropdown { get; set; } = [];
+
     public async Task LoadCustomersDropDown()
     {
         CustomerParam supplierParameter = new();

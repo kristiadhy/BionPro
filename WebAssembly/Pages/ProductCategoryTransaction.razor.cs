@@ -18,7 +18,9 @@ public partial class ProductCategoryTransaction
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    ProductCategoryState ProductCategoryState { get; set; } = default!;
+    ProductCategoryInputState ProductCategoryInputState { get; set; } = default!;
+    [Inject]
+    ProductCategoryDisplayState ProductCategoryDisplayState { get; set; } = default!;
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -40,13 +42,13 @@ public partial class ProductCategoryTransaction
     {
         if (ParamProductCategoryID is not null)
         {
-            ProductCategoryState.ProductCategory = await ServiceManager.ProductCategoryService.GetProductCategoryByID((int)ParamProductCategoryID);
+            ProductCategoryInputState.ProductCategory = await ServiceManager.ProductCategoryService.GetProductCategoryByID((int)ParamProductCategoryID);
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
-            ProductCategoryState.ProductCategory.CategoryID = null;
+            ProductCategoryInputState.ProductCategory.CategoryID = null;
         }
     }
 
@@ -73,7 +75,7 @@ public partial class ProductCategoryTransaction
             string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product category added" : "Product category updated";
             NotificationService.SaveNotification(notificationMessage);
 
-            await ProductCategoryState.LoadProductCategories();
+            await ProductCategoryDisplayState.LoadProductCategories();
         }
         finally
         {
@@ -85,7 +87,7 @@ public partial class ProductCategoryTransaction
 
     public async Task ClearField()
     {
-        ProductCategoryState.ProductCategory = new();
+        ProductCategoryInputState.ProductCategory = new();
         await txtNameForFocus!.FocusAsync();
     }
 }

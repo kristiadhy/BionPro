@@ -13,8 +13,11 @@ public static class StateManagementServices
         services.AddScoped<CustomerInputState>();
         services.AddScoped<CustomerDropdownState>();
 
+        services.AddScoped<ProductCategoryDisplayState>();
+        services.AddScoped<ProductCategoryDropdownState>();
+        services.AddScoped<ProductCategoryInputState>();
+
         services.AddScoped<SupplierState>();
-        services.AddScoped<ProductCategoryState>();
         services.AddScoped<ProductState>();
         services.AddScoped<PurchaseState>();
         services.AddScoped<PurchaseDetailState>();

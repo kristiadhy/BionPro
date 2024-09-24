@@ -12,13 +12,13 @@
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
         <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
-            <RadzenTemplateForm Data="@ProductCategoryState.ProductCategory" Submit="@(async (ProductCategoryDto args) => { await SubmitAsync(args); })">
+            <RadzenTemplateForm Data="@ProductCategoryInputState.ProductCategory" Submit="@(async (ProductCategoryDto args) => { await SubmitAsync(args); })">
                 <FluentValidationValidator />
 
                 <RadzenStack>
-                    <RadzenTextBox Name="@nameof(ProductCategoryState.ProductCategory.Name)"
+                    <RadzenTextBox Name="@nameof(ProductCategoryInputState.ProductCategory.Name)"
                                    Placeholder="Name"
-                                   @bind-Value="ProductCategoryState.ProductCategory.Name"
+                                   @bind-Value="ProductCategoryInputState.ProductCategory.Name"
                                    @ref="@txtNameForFocus" />
                 </RadzenStack>
 

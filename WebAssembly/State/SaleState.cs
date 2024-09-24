@@ -3,7 +3,7 @@ using Domain.Parameters;
 using Web.Services.IHttpRepository;
 using static WebAssembly.Shared.Enum.DataFilterEnum;
 
-namespace WebAssembly.StateManagement;
+namespace WebAssembly.State;
 
 public class SaleState
 {

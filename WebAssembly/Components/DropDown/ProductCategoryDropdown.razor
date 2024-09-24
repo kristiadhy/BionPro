@@ -4,7 +4,7 @@
                     FilterOperator="StringFilterOperator.StartsWith"
                     AllowFiltering="true"
                     Placeholder="Product Category"
-                    Data=@ProductCategoryState.ProductCategoryListDropdown
+                    Data=@ProductCategoryDropdownState.ProductCategoryListDropdown
                     TextProperty="@nameof(ProductCategoryDto.Name)"
                     ValueProperty="@nameof(ProductCategoryDto.CategoryID)"
                     AllowClear="true"
@@ -28,16 +28,16 @@
     //@bind-Value="@SelectedValue"
 
     [Inject]
-    ProductCategoryState ProductCategoryState { get; set; } = default!;
+    ProductCategoryDropdownState ProductCategoryDropdownState { get; set; } = default!;
 
     private bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!ProductCategoryState.ProductCategoryListDropdown.Any())
+        if (!ProductCategoryDropdownState.ProductCategoryListDropdown.Any())
         {
             IsLoading = true;
-            await ProductCategoryState.LoadProductCategoriesDropDown();
+            await ProductCategoryDropdownState.LoadProductCategoriesDropDown();
             IsLoading = false;
         }
 

@@ -1,8 +1,6 @@
-﻿using Domain.DTO;
-using Domain.Parameters;
-using Web.Services.IHttpRepository;
+﻿using Domain.Parameters;
 
-namespace WebAssembly.StateManagement;
+namespace WebAssembly.State;
 
 public class CustomerDisplayFilterState()
 {

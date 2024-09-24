@@ -3,4 +3,4 @@ global using WebAssembly.Constants;
 global using WebAssembly.Model;
 global using WebAssembly.Services;
 global using WebAssembly.Shared.Enum;
-global using WebAssembly.StateManagement;
+global using WebAssembly.State;

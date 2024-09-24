@@ -18,7 +18,7 @@
 
 <RadzenDataGrid @ref="ProductCategoryGrid"
                 IsLoading=@isLoading
-                Data="@ProductCategoryState.ProductCategoryList"
+                Data="@ProductCategoryDisplayState.ProductCategoryList"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -33,7 +33,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(ProductCategoryState.ProductCategoryList.IndexOf(data) + 1)
+                @(ProductCategoryDisplayState.ProductCategoryList.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -79,7 +79,7 @@
     </Columns>
 </RadzenDataGrid>
 
-<Pager PageSize="@ProductCategoryState.MetaData.PageSize"
-       TotalCount="@ProductCategoryState.MetaData.TotalCount"
-       CurrentPage="ProductCategoryState.ProductCategoryParameter.PageNumber"
+<Pager PageSize="@ProductCategoryDisplayState.MetaData.PageSize"
+       TotalCount="@ProductCategoryDisplayState.MetaData.TotalCount"
+       CurrentPage="ProductCategoryDisplayState.ProductCategoryParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />
