@@ -22,7 +22,12 @@ public partial class ProductDisplay
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    ProductState ProductState { get; set; } = default!;
+    ProductDisplayState ProductDisplayState { get; set; } = default!;
+    [Inject]
+    ProductDropdownState ProductDropdownState { get; set; } = default!;
+    [Inject]
+    ProductDisplayFilterState ProductDisplayFilterState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -60,7 +65,7 @@ public partial class ProductDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-        await ProductState.LoadProducts();
+        await ProductDisplayState.LoadProducts();
         isLoading = false;
     }
 
@@ -86,7 +91,7 @@ public partial class ProductDisplay
         NotificationService.DeleteNotification("Product has been deleted");
 
         await EvReloadData();
-        await ProductState.LoadProductsDropDown();
+        await ProductDropdownState.LoadProductsDropDown();
     }
 
     protected void EvCreateNew()
@@ -96,26 +101,26 @@ public partial class ProductDisplay
 
     protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        ProductState.ProductParameter.PageNumber = args.CurrentPage;
+        ProductDisplayState.ProductParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
     protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
-        bool isFilterActiveBefore = ProductState.IsFilterActive;
+        bool isFilterActiveBefore = ProductDisplayFilterState.IsFilterActive;
 
         //Click default filter button
         if (item is null)
         {
             //If the filter is active, then clear the filter
             if (isFilterActiveBefore)
-                ProductState.ToggleFilterState();
+                ProductDisplayFilterState.ToggleFilterState();
 
             else //If there is no active filter, then set filter by product category as default
             {
-                ProductState.IsFilterByProductCategoryActive = true;
-                ProductState.IsFilterActive = true;
+                ProductDisplayFilterState.IsFilterByProductCategoryActive = true;
+                ProductDisplayFilterState.IsFilterActive = true;
             }
         }
         else
@@ -125,7 +130,7 @@ public partial class ProductDisplay
         }
 
         // Update filter button appearance only if the filter activation state has changed
-        if (isFilterActiveBefore != ProductState.IsFilterActive)
+        if (isFilterActiveBefore != ProductDisplayFilterState.IsFilterActive)
         {
             SetFilterButtonText();
             await Pager?.NavigateToPage(1)!;
@@ -137,18 +142,18 @@ public partial class ProductDisplay
         switch (value)
         {
             case nameof(FilterCondition.ByProductCategory):
-                ProductState.IsFilterByProductCategoryActive = true;
+                ProductDisplayFilterState.IsFilterByProductCategoryActive = true;
                 break;
             case nameof(FilterCondition.ByProductName):
-                ProductState.IsFilterByProductNameActive = true;
+                ProductDisplayFilterState.IsFilterByProductNameActive = true;
                 break;
         }
-        ProductState.IsFilterActive = true;
+        ProductDisplayFilterState.IsFilterActive = true;
     }
 
     protected void SetFilterButtonText()
     {
-        if (ProductState.IsFilterActive)
+        if (ProductDisplayFilterState.IsFilterActive)
         {
             filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
             filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
@@ -162,7 +167,7 @@ public partial class ProductDisplay
 
     protected void ButtonClearFilterClicked()
     {
-        ProductState.SetGlobalFilterStateByFilters();
+        ProductDisplayFilterState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 

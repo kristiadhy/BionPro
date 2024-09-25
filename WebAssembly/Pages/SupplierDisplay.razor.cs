@@ -22,7 +22,9 @@ public partial class SupplierDisplay
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    SupplierState SupplierState { get; set; } = default!;
+    SupplierDisplayState SupplierDisplayState { get; set; } = default!;
+    [Inject]
+    SupplierDisplayFilterState SupplierDisplayFilterState { get; set; } = default!;
 
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
@@ -55,7 +57,7 @@ public partial class SupplierDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-        await SupplierState.LoadSuppliers();
+        await SupplierDisplayState.LoadSuppliers();
         isLoading = false;
     }
 
@@ -86,26 +88,26 @@ public partial class SupplierDisplay
 
     protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        SupplierState.SupplierParameter.PageNumber = args.CurrentPage;
+        SupplierDisplayState.SupplierParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
     protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
-        bool isFilterActiveBefore = SupplierState.IsFilterActive;
+        bool isFilterActiveBefore = SupplierDisplayFilterState.IsFilterActive;
 
         //Click default filter button
         if (item is null)
         {
             //If the filter is active, then clear the filter
             if (isFilterActiveBefore)
-                SupplierState.ToggleFilterState();
+                SupplierDisplayFilterState.ToggleFilterState();
 
             else //If there is no active filter, then set filter by customer name as default
             {
-                SupplierState.IsFilterBySupplierNameActive = true;
-                SupplierState.IsFilterActive = true;
+                SupplierDisplayFilterState.IsFilterBySupplierNameActive = true;
+                SupplierDisplayFilterState.IsFilterActive = true;
             }
         }
         else
@@ -115,7 +117,7 @@ public partial class SupplierDisplay
         }
 
         // Update filter button appearance only if the filter activation state has changed
-        if (isFilterActiveBefore != SupplierState.IsFilterActive)
+        if (isFilterActiveBefore != SupplierDisplayFilterState.IsFilterActive)
         {
             SetFilterButtonText();
             await Pager?.NavigateToPage(1)!;
@@ -127,15 +129,15 @@ public partial class SupplierDisplay
         switch (value)
         {
             case nameof(FilterCondition.BySupplierName):
-                SupplierState.IsFilterBySupplierNameActive = true;
+                SupplierDisplayFilterState.IsFilterBySupplierNameActive = true;
                 break;
         }
-        SupplierState.IsFilterActive = true;
+        SupplierDisplayFilterState.IsFilterActive = true;
     }
 
     protected void SetFilterButtonText()
     {
-        if (SupplierState.IsFilterActive)
+        if (SupplierDisplayFilterState.IsFilterActive)
         {
             filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
             filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
@@ -149,7 +151,7 @@ public partial class SupplierDisplay
 
     protected void ButtonClearFilterClicked()
     {
-        SupplierState.SetGlobalFilterStateByFilters();
+        SupplierDisplayFilterState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 

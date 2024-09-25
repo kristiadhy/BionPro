@@ -4,7 +4,7 @@
                     FilterOperator="StringFilterOperator.StartsWith"
                     AllowFiltering="true"
                     Placeholder="Select Supplier"
-                    Data=@SupplierState.SupplierListDropdown
+                    Data=@SupplierDropdownState.SupplierListDropdown
                     TextProperty="@nameof(SupplierDto.SupplierName)"
                     ValueProperty="@nameof(SupplierDto.SupplierID)"
                     AllowClear="true"
@@ -26,16 +26,16 @@
 </div>
 @code {
     [Inject]
-    SupplierState SupplierState { get; set; } = default!;
+    SupplierDropdownState SupplierDropdownState { get; set; } = default!;
 
     private bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!SupplierState.SupplierListDropdown.Any())
+        if (!SupplierDropdownState.SupplierListDropdown.Any())
         {
             IsLoading = true;
-            await SupplierState.LoadSuppliersDropDown();
+            await SupplierDropdownState.LoadSuppliersDropDown();
             IsLoading = false;
         }
 

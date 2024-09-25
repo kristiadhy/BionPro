@@ -35,28 +35,28 @@
              AlignItems="AlignItems.Start"
              Wrap="FlexWrap.Wrap"
              Gap="10px">
-    @if (ProductState.IsFilterByProductCategoryActive)
+    @if (ProductDisplayFilterState.IsFilterByProductCategoryActive)
     {
-        <FilterByProductCategory @bind-ProductCategoryIDValue="ProductState.FilterProductCategoryValue"
-                                 @bind-IsFilterByProductCategoryActive="ProductState.IsFilterByProductCategoryActive"
+        <FilterByProductCategory @bind-ProductCategoryIDValue="ProductDisplayFilterState.FilterProductCategoryValue"
+                                 @bind-IsFilterByProductCategoryActive="ProductDisplayFilterState.IsFilterByProductCategoryActive"
                                  ButtonClearFilterClicked="ButtonClearFilterClicked" />
     }
-    @if (ProductState.IsFilterByProductNameActive)
+    @if (ProductDisplayFilterState.IsFilterByProductNameActive)
     {
-        <FilterByProduct @bind-ProductNameValue="ProductState.FilterProductNameValue"
-                         @bind-IsFilterByProductNameActive="ProductState.IsFilterByProductNameActive"
+        <FilterByProduct @bind-ProductNameValue="ProductDisplayFilterState.FilterProductNameValue"
+                         @bind-IsFilterByProductNameActive="ProductDisplayFilterState.IsFilterByProductNameActive"
                          ButtonClearFilterClicked="ButtonClearFilterClicked" />
     }
 </RadzenStack>
 
-@*                 Count="@ProductState.MetaData.TotalCount"
+@*                 Count="@ProductDisplayState.MetaData.TotalCount"
                 AllowPaging="true"
-                PageSize="@ProductState.MetaData.PageSize"
+                PageSize="@ProductDisplayState.MetaData.PageSize"
                 PagerHorizontalAlign="HorizontalAlign.Center" *@
 
 <RadzenDataGrid @ref="ProductGrid"
                 IsLoading=@isLoading
-                Data="@ProductState.ProductList"
+                Data="@ProductDisplayState.ProductList"
                 TItem="ProductDtoForProductQueries"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
@@ -72,7 +72,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="rowNumber">
-                @(ProductState.ProductList.IndexOf(rowNumber) + 1)
+                @(ProductDisplayState.ProductList.IndexOf(rowNumber) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -143,7 +143,7 @@
 </RadzenDataGrid>
 
 <Pager @ref="Pager"
-       PageSize="@ProductState.MetaData.PageSize"
-       TotalCount="@ProductState.MetaData.TotalCount"
-       CurrentPage="@ProductState.ProductParameter.PageNumber"
+       PageSize="@ProductDisplayState.MetaData.PageSize"
+       TotalCount="@ProductDisplayState.MetaData.TotalCount"
+       CurrentPage="@ProductDisplayState.ProductParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

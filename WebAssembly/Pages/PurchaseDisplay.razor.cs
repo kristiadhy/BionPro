@@ -24,12 +24,14 @@ public partial class PurchaseDisplay
     [Inject]
     DialogService DialogService { get; set; } = default!;
     [Inject]
-    PurchaseState PurchaseState { get; set; } = default!;
+    PurchaseDisplayState PurchaseDisplayState { get; set; } = default!;
+    [Inject]
+    PurchaseDisplayFilterState PurchaseDisplayFilterState { get; set; } = default!;
 
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
-    protected RadzenDataGrid<PurchaseDtoForSummary>? PurchaseGrid;
+    internal RadzenDataGrid<PurchaseDtoForSummary>? PurchaseGrid;
 
     protected bool isLoading = false;
     protected string filterText = GlobalEnum.FilterText.AddFilter.GetDisplayDescription();
@@ -57,13 +59,13 @@ public partial class PurchaseDisplay
     protected async Task EvReloadData()
     {
         await EvLoadData();
-        await PurchaseGrid!.Reload();
+        await PurchaseGrid?.Reload()!;
     }
 
     protected async Task EvLoadData()
     {
         isLoading = true;
-        await PurchaseState.LoadPurchasesForSummary();
+        await PurchaseDisplayState.LoadPurchasesForSummary();
         isLoading = false;
     }
 
@@ -109,25 +111,25 @@ public partial class PurchaseDisplay
 
     protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        PurchaseState.PurchaseParameter.PageNumber = args.CurrentPage;
+        PurchaseDisplayState.PurchaseParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
     protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
-        bool isFilterActiveBefore = PurchaseState.IsFilterActive;
+        bool isFilterActiveBefore = PurchaseDisplayFilterState.IsFilterActive;
 
         if (item is null)
         {
             //If the filter is active, then clear the filter
             if (isFilterActiveBefore)
-                PurchaseState.ToggleFilterState();
+                PurchaseDisplayFilterState.ToggleFilterState();
 
             else //If there is no active filter, then set filter by transaction date as default
             {
-                PurchaseState.IsFilterByDateActive = true;
-                PurchaseState.IsFilterActive = true;
+                PurchaseDisplayFilterState.IsFilterByDateActive = true;
+                PurchaseDisplayFilterState.IsFilterActive = true;
             }
         }
         else
@@ -137,7 +139,7 @@ public partial class PurchaseDisplay
         }
 
         // Update filter button appearance only if the filter activation state has changed
-        if (isFilterActiveBefore != PurchaseState.IsFilterActive)
+        if (isFilterActiveBefore != PurchaseDisplayFilterState.IsFilterActive)
         {
             SetFilterButtonText();
             await Pager?.NavigateToPage(1)!;
@@ -149,20 +151,20 @@ public partial class PurchaseDisplay
         switch (value)
         {
             case nameof(FilterCondition.ByDate):
-                PurchaseState.IsFilterByDateActive = true;
+                PurchaseDisplayFilterState.IsFilterByDateActive = true;
                 break;
             case nameof(FilterCondition.BySupplier):
-                PurchaseState.IsFilterBySupplierActive = true;
+                PurchaseDisplayFilterState.IsFilterBySupplierActive = true;
                 break;
         }
-        PurchaseState.IsFilterActive = true;
+        PurchaseDisplayFilterState.IsFilterActive = true;
     }
 
 
 
     protected void SetFilterButtonText()
     {
-        if (PurchaseState.IsFilterActive)
+        if (PurchaseDisplayFilterState.IsFilterActive)
         {
             filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
             filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
@@ -176,7 +178,7 @@ public partial class PurchaseDisplay
 
     protected void ButtonClearFilterClicked()
     {
-        PurchaseState.SetGlobalFilterStateByFilters();
+        PurchaseDisplayFilterState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 

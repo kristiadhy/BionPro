@@ -1,20 +1,10 @@
-﻿using Domain.DTO;
-using Domain.Parameters;
-using Web.Services.IHttpRepository;
+﻿using Domain.Parameters;
 using static WebAssembly.Shared.Enum.DataFilterEnum;
 
 namespace WebAssembly.State;
 
-public class PurchaseState
+public class PurchaseDisplayFilterState()
 {
-    private readonly IServiceManager ServiceManager;
-
-    public List<PurchaseDtoForSummary> PurchaseListForSummary { get; set; } = [];
-    public MetaData MetaData { get; set; } = new();
-    public PurchaseParam PurchaseParameter { get; set; } = new();
-
-    public PurchaseDto PurchaseForTransaction { get; set; } = new();
-
     //For filters
     public bool IsFilterSet { get; set; } = false;
     public bool IsFilterActive { get; set; } = false;
@@ -48,54 +38,35 @@ public class PurchaseState
     public Guid? FilterSupplierByID { get; set; }
     public string? FilterSupplierByName { get; set; }
     public bool IsFilterBySupplierActive { get; set; } = false;
-    //----------------------------------------------
 
-    public PurchaseState(IServiceManager serviceManager)
-    {
-        ServiceManager = serviceManager;
-    }
 
-    public async Task LoadPurchasesForSummary()
-    {
-        UpdatePurchaseParametersBasedOnActiveFilters();
-        var pagingResponse = await ServiceManager.PurchaseService.GetPurchasesForSummary(PurchaseParameter);
-        PurchaseListForSummary = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
-    }
-
-    private void UpdatePurchaseParametersBasedOnActiveFilters()
+    public void UpdatePurchaseParametersBasedOnActiveFilters(PurchaseParam purchaseParam)
     {
         if (IsFilterActive)
             //Always set the page to 1 when filters are active
-            PurchaseParameter.PageNumber = 1;
+            purchaseParam.PageNumber = 1;
 
         if (_isFilterByDateActive)
         {
-            PurchaseParameter.SrcDateFrom = FilterDateStartDate;
-            PurchaseParameter.SrcDateTo = FilterDateEndDate;
+            purchaseParam.SrcDateFrom = FilterDateStartDate;
+            purchaseParam.SrcDateTo = FilterDateEndDate;
         }
         else
         {
-            PurchaseParameter.SrcDateFrom = null;
-            PurchaseParameter.SrcDateTo = null;
+            purchaseParam.SrcDateFrom = null;
+            purchaseParam.SrcDateTo = null;
         }
 
         if (IsFilterBySupplierActive)
         {
-            PurchaseParameter.SrcSupplierID = FilterSupplierByID;
-            PurchaseParameter.SrcSupplierName = FilterSupplierByName;
+            purchaseParam.SrcSupplierID = FilterSupplierByID;
+            purchaseParam.SrcSupplierName = FilterSupplierByName;
         }
         else
         {
-            PurchaseParameter.SrcSupplierID = null;
-            PurchaseParameter.SrcSupplierName = null;
+            purchaseParam.SrcSupplierID = null;
+            purchaseParam.SrcSupplierName = null;
         }
-    }
-
-    public void ResetPurchaseData()
-    {
-        PurchaseListForSummary = [];
-        MetaData = new();
     }
 
     internal void ToggleFilterState()

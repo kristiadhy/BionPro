@@ -29,29 +29,29 @@
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
-@if (PurchaseState.IsFilterByDateActive)
+@if (PurchaseDisplayFilterState.IsFilterByDateActive)
 {
-    <FilterByTransactionDate @bind-ParentSelectedValue="PurchaseState.FilterDateParentValue"
-                             @bind-DetailSelectedValue="PurchaseState.FilterDateDetailValue"
-                             @bind-StartDateValue="PurchaseState.FilterDateStartDate"
-                             @bind-EndDateValue="PurchaseState.FilterDateEndDate"
-                             @bind-IsFilterSet="PurchaseState.IsFilterSet"
-                             @bind-IsFilterByDateActive="PurchaseState.IsFilterByDateActive"
+    <FilterByTransactionDate @bind-ParentSelectedValue="PurchaseDisplayFilterState.FilterDateParentValue"
+                             @bind-DetailSelectedValue="PurchaseDisplayFilterState.FilterDateDetailValue"
+                             @bind-StartDateValue="PurchaseDisplayFilterState.FilterDateStartDate"
+                             @bind-EndDateValue="PurchaseDisplayFilterState.FilterDateEndDate"
+                             @bind-IsFilterSet="PurchaseDisplayFilterState.IsFilterSet"
+                             @bind-IsFilterByDateActive="PurchaseDisplayFilterState.IsFilterByDateActive"
                              ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 
-@if (PurchaseState.IsFilterBySupplierActive)
+@if (PurchaseDisplayFilterState.IsFilterBySupplierActive)
 {
-    <FilterBySupplier @bind-SupplierIDValue="PurchaseState.FilterSupplierByID"
-                      @bind-SupplierNameValue="PurchaseState.FilterSupplierByName"
-                      @bind-IsFilterBySupplierActive="PurchaseState.IsFilterBySupplierActive"
+    <FilterBySupplier @bind-SupplierIDValue="PurchaseDisplayFilterState.FilterSupplierByID"
+                      @bind-SupplierNameValue="PurchaseDisplayFilterState.FilterSupplierByName"
+                      @bind-IsFilterBySupplierActive="PurchaseDisplayFilterState.IsFilterBySupplierActive"
                       ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 <RadzenDataGrid @ref="PurchaseGrid"
                 IsLoading=@isLoading
-                Data="@PurchaseState.PurchaseListForSummary"
+                Data="@PurchaseDisplayState.PurchaseListForSummary"
                 TItem="PurchaseDtoForSummary"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
@@ -67,7 +67,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(PurchaseState.PurchaseListForSummary.IndexOf(data) + 1)
+                @(PurchaseDisplayState.PurchaseListForSummary.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -167,7 +167,7 @@
 </RadzenDataGrid>
 
 <Pager @ref="Pager"
-       PageSize="@PurchaseState.MetaData.PageSize"
-       TotalCount="@PurchaseState.MetaData.TotalCount"
-       CurrentPage="PurchaseState.PurchaseParameter.PageNumber"
+       PageSize="@PurchaseDisplayState.MetaData.PageSize"
+       TotalCount="@PurchaseDisplayState.MetaData.TotalCount"
+       CurrentPage="PurchaseDisplayState.PurchaseParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

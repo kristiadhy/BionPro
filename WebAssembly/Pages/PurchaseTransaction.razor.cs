@@ -23,9 +23,12 @@ public partial class PurchaseTransaction
     [Inject]
     DialogService DialogService { get; set; } = default!;
     [Inject]
-    PurchaseState PurchaseState { get; set; } = default!;
+    PurchaseInputState PurchaseInputState { get; set; } = default!;
     [Inject]
-    ProductState ProductState { get; set; } = default!;
+    PurchaseDisplayState PurchaseDisplayState { get; set; } = default!;
+    [Inject]
+    ProductDropdownState ProductDropdownState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -58,14 +61,14 @@ public partial class PurchaseTransaction
     {
         if (ParamPurchaseID is not null)
         {
-            PurchaseState.PurchaseForTransaction = await ServiceManager.PurchaseService.GetPurchaseByID((int)ParamPurchaseID);
+            PurchaseInputState.PurchaseForTransaction = await ServiceManager.PurchaseService.GetPurchaseByID((int)ParamPurchaseID);
             FormStatus = GlobalEnum.FormStatus.Edit;
             await PurchaseDetailGrid.Reload();
         }
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
-            PurchaseState.PurchaseForTransaction.PurchaseID = null;
+            PurchaseInputState.PurchaseForTransaction.PurchaseID = null;
         }
     }
 
@@ -89,13 +92,13 @@ public partial class PurchaseTransaction
             {
                 await ServiceManager.PurchaseService.Update(purchase);
                 //IMPORTANT : After updating the purchase, PurchaseID need to be assigned to all of the purchase details. It's important because EF Core determine the the entity state of each details based on the ID. If there is no ID on the details, it will be identified as ADD state, otherwise it will be identified as UPDATE state. Since the new details are already added after update is executed, then the data model should be updated too.
-                PurchaseState.PurchaseForTransaction.PurchaseDetails.ForEach(s => s.PurchaseID = PurchaseState.PurchaseForTransaction.PurchaseID);
+                PurchaseInputState.PurchaseForTransaction.PurchaseDetails.ForEach(s => s.PurchaseID = PurchaseInputState.PurchaseForTransaction.PurchaseID);
             }
 
             var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new purchase added" : "Purchase updated";
             NotificationService.SaveNotification(notificationMessage);
 
-            await PurchaseState.LoadPurchasesForSummary();
+            await PurchaseDisplayState.LoadPurchasesForSummary();
         }
         finally
         {
@@ -106,20 +109,20 @@ public partial class PurchaseTransaction
 
     protected async Task ClearField()
     {
-        PurchaseState.PurchaseForTransaction = new();
+        PurchaseInputState.PurchaseForTransaction = new();
     }
 
     protected async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
     {
         GridIsLoading = true;
-        var product = ProductState.ProductListDropdown.Where(s => s.ProductID == purchaseDetail.ProductID).FirstOrDefault();
+        var product = ProductDropdownState.ProductListDropdown.Where(s => s.ProductID == purchaseDetail.ProductID).FirstOrDefault();
         if (product != null)
         {
             purchaseDetail.ProductID = product.ProductID;
             purchaseDetail.ProductName = product.Name;
             purchaseDetail.Price = product.Price;
 
-            PurchaseState.PurchaseForTransaction.PurchaseDetails.Add(purchaseDetail);
+            PurchaseInputState.PurchaseForTransaction.PurchaseDetails.Add(purchaseDetail);
         }
         GridIsLoading = false;
 
@@ -134,12 +137,12 @@ public partial class PurchaseTransaction
 
     protected void OnDateChanged(DateTime? dateTime)
     {
-        PurchaseState.PurchaseForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
+        PurchaseInputState.PurchaseForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
     }
 
     protected void RefreshDate()
     {
-        PurchaseState.PurchaseForTransaction.Date = DateTime.Now;
+        PurchaseInputState.PurchaseForTransaction.Date = DateTime.Now;
     }
 
     protected async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
@@ -157,7 +160,7 @@ public partial class PurchaseTransaction
         if (purchaseDetail is null)
             return;
 
-        PurchaseState.PurchaseForTransaction.PurchaseDetails.Remove(purchaseDetail);
+        PurchaseInputState.PurchaseForTransaction.PurchaseDetails.Remove(purchaseDetail);
         await PurchaseDetailGrid.Reload();
     }
 

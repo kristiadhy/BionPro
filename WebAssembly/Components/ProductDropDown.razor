@@ -2,7 +2,7 @@
 
 <div class="rz-display-flex">
     <RadzenFormField Text="Product" Variant="Variant.Outlined">
-        <RadzenDropDownDataGrid Data=@ProductState.ProductListDropdown
+        <RadzenDropDownDataGrid Data=@ProductDropdownState.ProductListDropdown
                                 @bind-Value="SelectedValue"
                                 TextProperty="@nameof(ProductDto.Name)"
                                 ValueProperty="@nameof(ProductDto.ProductID)"
@@ -37,16 +37,16 @@
 
 @code {
     [Inject]
-    ProductState ProductState { get; set; } = default!;
+    ProductDropdownState ProductDropdownState { get; set; } = default!;
 
     private bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!ProductState.ProductListDropdown.Any())
+        if (!ProductDropdownState.ProductListDropdown.Any())
         {
             IsLoading = true;
-            await ProductState.LoadProductsDropDown();
+            await ProductDropdownState.LoadProductsDropDown();
             IsLoading = false;
         }
 

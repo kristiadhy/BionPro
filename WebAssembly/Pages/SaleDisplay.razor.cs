@@ -24,7 +24,10 @@ public partial class SaleDisplay
     [Inject]
     DialogService DialogService { get; set; } = default!;
     [Inject]
-    SaleState SaleState { get; set; } = default!;
+    SaleDisplayState SaleDisplayState { get; set; } = default!;
+    [Inject]
+    SaleDisplayFilterState SaleDisplayFilterState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -62,7 +65,7 @@ public partial class SaleDisplay
     protected async Task EvLoadData()
     {
         isLoading = true;
-        await SaleState.LoadSalesForSummary();
+        await SaleDisplayState.LoadSalesForSummary();
         isLoading = false;
     }
 
@@ -107,25 +110,25 @@ public partial class SaleDisplay
 
     protected async Task PageChanged(PagerOnChangedEventArgs args)
     {
-        SaleState.SaleParameter.PageNumber = args.CurrentPage;
+        SaleDisplayState.SaleParameter.PageNumber = args.CurrentPage;
         if (!args.IsFromFirstRender)
             await EvReloadData();
     }
 
     protected async Task OnFilterButtonClick(RadzenSplitButtonItem item)
     {
-        bool isFilterActiveBefore = SaleState.IsFilterActive;
+        bool isFilterActiveBefore = SaleDisplayFilterState.IsFilterActive;
 
         if (item is null)
         {
             //If the filter is active, then clear the filter
             if (isFilterActiveBefore)
-                SaleState.ToggleFilterState();
+                SaleDisplayFilterState.ToggleFilterState();
 
             else //If there is no active filter, then set filter by transaction date as default
             {
-                SaleState.IsFilterByDateActive = true;
-                SaleState.IsFilterActive = true;
+                SaleDisplayFilterState.IsFilterByDateActive = true;
+                SaleDisplayFilterState.IsFilterActive = true;
             }
         }
         else
@@ -135,7 +138,7 @@ public partial class SaleDisplay
         }
 
         // Update filter button appearance only if the filter activation state has changed
-        if (isFilterActiveBefore != SaleState.IsFilterActive)
+        if (isFilterActiveBefore != SaleDisplayFilterState.IsFilterActive)
         {
             SetFilterButtonText();
             await Pager?.NavigateToPage(1)!;
@@ -147,20 +150,20 @@ public partial class SaleDisplay
         switch (value)
         {
             case nameof(FilterCondition.ByDate):
-                SaleState.IsFilterByDateActive = true;
+                SaleDisplayFilterState.IsFilterByDateActive = true;
                 break;
             case nameof(FilterCondition.ByCustomer):
-                SaleState.IsFilterByCustomerActive = true;
+                SaleDisplayFilterState.IsFilterByCustomerActive = true;
                 break;
         }
-        SaleState.IsFilterActive = true;
+        SaleDisplayFilterState.IsFilterActive = true;
     }
 
 
 
     protected void SetFilterButtonText()
     {
-        if (SaleState.IsFilterActive)
+        if (SaleDisplayFilterState.IsFilterActive)
         {
             filterText = GlobalEnum.FilterText.ClearFilters.GetDisplayDescription();
             filterIcon = GlobalEnum.FilterIcon.Cancel.GetDisplayDescription();
@@ -174,7 +177,7 @@ public partial class SaleDisplay
 
     protected void ButtonClearFilterClicked()
     {
-        SaleState.SetGlobalFilterStateByFilters();
+        SaleDisplayFilterState.SetGlobalFilterStateByFilters();
         SetFilterButtonText();
     }
 

@@ -21,7 +21,12 @@ public partial class ProductTransaction
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    ProductState ProductState { get; set; } = default!;
+    ProductInputState ProductInputState { get; set; } = default!;
+    [Inject]
+    ProductDisplayState ProductDisplayState { get; set; } = default!;
+    [Inject]
+    ProductDropdownState ProductDropdownState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -45,13 +50,13 @@ public partial class ProductTransaction
     {
         if (ParamProductID is not null)
         {
-            ProductState.Product = await ServiceManager.ProductService.GetProductByID((Guid)ParamProductID);
+            ProductInputState.Product = await ServiceManager.ProductService.GetProductByID((Guid)ParamProductID);
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
-            ProductState.Product.ProductID = null;
+            ProductInputState.Product.ProductID = null;
         }
     }
 
@@ -86,8 +91,8 @@ public partial class ProductTransaction
             var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new product added" : "Product updated";
             NotificationService.SaveNotification(notificationMessage);
 
-            await ProductState.LoadProducts();
-            await ProductState.LoadProductsDropDown();
+            await ProductDisplayState.LoadProducts();
+            await ProductDropdownState.LoadProductsDropDown();
         }
         finally
         {
@@ -103,7 +108,7 @@ public partial class ProductTransaction
 
     protected async Task ClearField()
     {
-        ProductState.Product = new();
+        ProductInputState.Product = new();
         await txtNameForFocus!.FocusAsync();
     }
 }

@@ -22,16 +22,16 @@
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
-@if (SupplierState.IsFilterBySupplierNameActive)
+@if (SupplierDisplayFilterState.IsFilterBySupplierNameActive)
 {
-    <FilterBySupplierName @bind-SupplierNameValue="SupplierState.FilterSupplierNameValue"
-                          @bind-IsFilterBySupplierNameActive="SupplierState.IsFilterBySupplierNameActive"
+    <FilterBySupplierName @bind-SupplierNameValue="SupplierDisplayFilterState.FilterSupplierNameValue"
+                          @bind-IsFilterBySupplierNameActive="SupplierDisplayFilterState.IsFilterBySupplierNameActive"
                           ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 <RadzenDataGrid @ref="SupplierGrid"
                 IsLoading=@isLoading
-                Data="@SupplierState.SupplierList"
+                Data="@SupplierDisplayState.SupplierList"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
                 AllowFiltering="false"
@@ -46,7 +46,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(SupplierState.SupplierList.IndexOf(data) + 1)
+                @(SupplierDisplayState.SupplierList.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -111,7 +111,7 @@
 </RadzenDataGrid>
 
 <Pager @ref="Pager"
-       PageSize="@SupplierState.MetaData.PageSize"
-       TotalCount="@SupplierState.MetaData.TotalCount"
-       CurrentPage="SupplierState.SupplierParameter.PageNumber"
+       PageSize="@SupplierDisplayState.MetaData.PageSize"
+       TotalCount="@SupplierDisplayState.MetaData.TotalCount"
+       CurrentPage="SupplierDisplayState.SupplierParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

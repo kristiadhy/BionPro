@@ -12,34 +12,34 @@
     <RadzenColumn SizeLG="6" SizeMD="12" class="rz-pb-5">
         <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
-            <RadzenTemplateForm Data="@ProductState.Product" Submit="@((ProductDto args) =>SubmitAsync(args))">
+            <RadzenTemplateForm Data="@ProductInputState.Product" Submit="@((ProductDto args) =>SubmitAsync(args))">
                 <FluentValidationValidator @ref="ProductValidator" />
 
                 <RadzenStack Gap="1rem">
-                    <ProductCategoryDropdown @bind-SelectedValue="ProductState.Product.CategoryID" />
+                    <ProductCategoryDropdown @bind-SelectedValue="ProductInputState.Product.CategoryID" />
 
-                    <RadzenTextBox Name="@nameof(ProductState.Product.Name)"
+                    <RadzenTextBox Name="@nameof(ProductInputState.Product.Name)"
                                    Placeholder="Name"
-                                   @bind-Value="ProductState.Product.Name"
+                                   @bind-Value="ProductInputState.Product.Name"
                                    @ref="@txtNameForFocus" />
 
-                    <RadzenTextBox Name="@nameof(ProductState.Product.SKU)"
+                    <RadzenTextBox Name="@nameof(ProductInputState.Product.SKU)"
                                    Placeholder="SKU"
-                                   @bind-Value="ProductState.Product.SKU" />
+                                   @bind-Value="ProductInputState.Product.SKU" />
 
                     <RadzenNumeric TValue="decimal"
-                                   Format="" @bind-Value="ProductState.Product.Price"
+                                   Format="" @bind-Value="ProductInputState.Product.Price"
                                    Placeholder="Price"
                                    InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 
                     <ProductImageUpload @ref="ProductImageUploadRef"
-                                        ImageFromServer=@ProductState.Product.ImageUrl />
+                                        ImageFromServer=@ProductInputState.Product.ImageUrl />
 
-                    <RadzenTextArea Name="@nameof(ProductState.Product.Description)"
+                    <RadzenTextArea Name="@nameof(ProductInputState.Product.Description)"
                                     Placeholder="Description"
                                     class="w-100"
                                     aria-label="TextArea"
-                                    @bind-Value="ProductState.Product.Description" />
+                                    @bind-Value="ProductInputState.Product.Description" />
                 </RadzenStack>
 
                 <ValidationSummary />

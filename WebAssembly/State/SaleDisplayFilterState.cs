@@ -1,20 +1,10 @@
-﻿using Domain.DTO;
-using Domain.Parameters;
-using Web.Services.IHttpRepository;
+﻿using Domain.Parameters;
 using static WebAssembly.Shared.Enum.DataFilterEnum;
 
 namespace WebAssembly.State;
 
-public class SaleState
+public class SaleDisplayFilterState
 {
-    private readonly IServiceManager ServiceManager;
-
-    public List<SaleDtoForSummary> SaleListForSummary { get; set; } = [];
-    public MetaData MetaData { get; set; } = new();
-    public SaleParam SaleParameter { get; set; } = new();
-
-    public SaleDto SaleForTransaction { get; set; } = new();
-
     //For filters
     public bool IsFilterSet { get; set; } = false;
     public bool IsFilterActive { get; set; } = false;
@@ -50,52 +40,33 @@ public class SaleState
     public bool IsFilterByCustomerActive { get; set; } = false;
     //----------------------------------------------
 
-    public SaleState(IServiceManager serviceManager)
-    {
-        ServiceManager = serviceManager;
-    }
-
-    public async Task LoadSalesForSummary()
-    {
-        UpdateSaleParametersBasedOnActiveFilters();
-        var pagingResponse = await ServiceManager.SaleService.GetSalesForSummary(SaleParameter);
-        SaleListForSummary = pagingResponse.Items ?? [];
-        MetaData = pagingResponse.MetaData ?? new();
-    }
-
-    private void UpdateSaleParametersBasedOnActiveFilters()
+    public void UpdateSaleParametersBasedOnActiveFilters(SaleParam saleParam)
     {
         if (IsFilterActive)
             //Always set the page to 1 when filters are active
-            SaleParameter.PageNumber = 1;
+            saleParam.PageNumber = 1;
 
         if (_isFilterByDateActive)
         {
-            SaleParameter.SrcDateFrom = FilterDateStartDate;
-            SaleParameter.SrcDateTo = FilterDateEndDate;
+            saleParam.SrcDateFrom = FilterDateStartDate;
+            saleParam.SrcDateTo = FilterDateEndDate;
         }
         else
         {
-            SaleParameter.SrcDateFrom = null;
-            SaleParameter.SrcDateTo = null;
+            saleParam.SrcDateFrom = null;
+            saleParam.SrcDateTo = null;
         }
 
         if (IsFilterByCustomerActive)
         {
-            SaleParameter.SrcCustomerID = FilterCustomerByID;
-            SaleParameter.SrcCustomerName = FilterCustomerByName;
+            saleParam.SrcCustomerID = FilterCustomerByID;
+            saleParam.SrcCustomerName = FilterCustomerByName;
         }
         else
         {
-            SaleParameter.SrcCustomerID = null;
-            SaleParameter.SrcCustomerName = null;
+            saleParam.SrcCustomerID = null;
+            saleParam.SrcCustomerName = null;
         }
-    }
-
-    public void ResetSaleData()
-    {
-        SaleListForSummary = [];
-        MetaData = new();
     }
 
     internal void ToggleFilterState()

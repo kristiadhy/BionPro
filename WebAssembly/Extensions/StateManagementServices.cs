@@ -13,16 +13,30 @@ public static class StateManagementServices
         services.AddScoped<CustomerInputState>();
         services.AddScoped<CustomerDropdownState>();
 
-        services.AddScoped<ProductCategoryDropdownState>();
         services.AddScoped<ProductCategoryDisplayState>();
+        services.AddScoped<ProductCategoryDropdownState>();
         services.AddScoped<ProductCategoryInputState>();
 
-        services.AddScoped<SupplierState>();
-        services.AddScoped<ProductState>();
-        services.AddScoped<PurchaseState>();
+        services.AddScoped<ProductDisplayState>();
+        services.AddScoped<ProductDisplayFilterState>();
+        services.AddScoped<ProductInputState>();
+        services.AddScoped<ProductDropdownState>();
+
+        services.AddScoped<PurchaseDisplayState>();
+        services.AddScoped<PurchaseDisplayFilterState>();
         services.AddScoped<PurchaseDetailState>();
-        services.AddScoped<SaleState>();
+        services.AddScoped<PurchaseInputState>();
+
+        services.AddScoped<SaleDisplayState>();
+        services.AddScoped<SaleDisplayFilterState>();
         services.AddScoped<SaleDetailState>();
+        services.AddScoped<SaleInputState>();
+
+        services.AddScoped<SupplierDisplayState>();
+        services.AddScoped<SupplierDisplayFilterState>();
+        services.AddScoped<SupplierInputState>();
+        services.AddScoped<SupplierDropdownState>();
+
         services.AddScoped<UserRegistrationState>();
 
         return services;

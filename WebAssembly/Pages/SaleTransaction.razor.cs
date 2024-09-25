@@ -23,9 +23,12 @@ public partial class SaleTransaction
     [Inject]
     DialogService DialogService { get; set; } = default!;
     [Inject]
-    SaleState SaleState { get; set; } = default!;
+    SaleDisplayState SaleDisplayState { get; set; } = default!;
     [Inject]
-    ProductState ProductState { get; set; } = default!;
+    SaleInputState SaleInputState { get; set; } = default!;
+    [Inject]
+    ProductDropdownState ProductDropdownState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -58,14 +61,14 @@ public partial class SaleTransaction
     {
         if (ParamSaleID is not null)
         {
-            SaleState.SaleForTransaction = await ServiceManager.SaleService.GetSaleByID((int)ParamSaleID);
+            SaleInputState.SaleForTransaction = await ServiceManager.SaleService.GetSaleByID((int)ParamSaleID);
             FormStatus = GlobalEnum.FormStatus.Edit;
             await SaleDetailGrid.Reload();
         }
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
-            SaleState.SaleForTransaction.SaleID = null;
+            SaleInputState.SaleForTransaction.SaleID = null;
         }
     }
 
@@ -89,13 +92,13 @@ public partial class SaleTransaction
             {
                 await ServiceManager.SaleService.Update(sale);
                 //IMPORTANT : After updating the sale, SaleID need to be assigned to all of the sale details. It's important because EF Core determine the the entity state of each details based on the ID. If there is no ID on the details, it will be identified as ADD state, otherwise it will be identified as UPDATE state. Since the new details are already added after update is executed, then the data model should be updated too.
-                SaleState.SaleForTransaction.SaleDetails.ForEach(s => s.SaleID = SaleState.SaleForTransaction.SaleID);
+                SaleInputState.SaleForTransaction.SaleDetails.ForEach(s => s.SaleID = SaleInputState.SaleForTransaction.SaleID);
             }
 
             var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new sale added" : "Sale updated";
             NotificationService.SaveNotification(notificationMessage);
 
-            await SaleState.LoadSalesForSummary();
+            await SaleDisplayState.LoadSalesForSummary();
         }
         finally
         {
@@ -106,19 +109,19 @@ public partial class SaleTransaction
 
     protected async Task ClearField()
     {
-        SaleState.SaleForTransaction = new();
+        SaleInputState.SaleForTransaction = new();
     }
 
     protected async Task AddToSaleDetailGrid(SaleDetailDto saleDetail)
     {
         GridIsLoading = true;
-        var product = ProductState.ProductListDropdown.Where(s => s.ProductID == saleDetail.ProductID).FirstOrDefault();
+        var product = ProductDropdownState.ProductListDropdown.Where(s => s.ProductID == saleDetail.ProductID).FirstOrDefault();
         if (product != null)
         {
             saleDetail.ProductID = product.ProductID;
             saleDetail.ProductName = product.Name;
             saleDetail.Price = product.Price;
-            SaleState.SaleForTransaction.SaleDetails.Add(saleDetail);
+            SaleInputState.SaleForTransaction.SaleDetails.Add(saleDetail);
         }
         GridIsLoading = false;
 
@@ -133,12 +136,12 @@ public partial class SaleTransaction
 
     protected void OnDateChanged(DateTime? dateTime)
     {
-        SaleState.SaleForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
+        SaleInputState.SaleForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
     }
 
     protected void RefreshDate()
     {
-        SaleState.SaleForTransaction.Date = DateTime.Now;
+        SaleInputState.SaleForTransaction.Date = DateTime.Now;
     }
 
     protected async Task EvEditDetails(SaleDetailDto saleDetail)
@@ -156,7 +159,7 @@ public partial class SaleTransaction
         if (saleDetail is null)
             return;
 
-        SaleState.SaleForTransaction.SaleDetails.Remove(saleDetail);
+        SaleInputState.SaleForTransaction.SaleDetails.Remove(saleDetail);
         await SaleDetailGrid.Reload();
     }
 

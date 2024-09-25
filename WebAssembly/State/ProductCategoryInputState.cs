@@ -1,6 +1,4 @@
 ﻿using Domain.DTO;
-using Domain.Parameters;
-using Web.Services.IHttpRepository;
 
 namespace WebAssembly.State;
 

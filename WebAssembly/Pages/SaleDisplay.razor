@@ -29,29 +29,29 @@
                     CreateNewClicked="EvCreateNew" />
 </MainMenuContainer>
 
-@if (SaleState.IsFilterByDateActive)
+@if (SaleDisplayFilterState.IsFilterByDateActive)
 {
-    <FilterByTransactionDate @bind-ParentSelectedValue="SaleState.FilterDateParentValue"
-                             @bind-DetailSelectedValue="SaleState.FilterDateDetailValue"
-                             @bind-StartDateValue="SaleState.FilterDateStartDate"
-                             @bind-EndDateValue="SaleState.FilterDateEndDate"
-                             @bind-IsFilterSet="SaleState.IsFilterSet"
-                             @bind-IsFilterByDateActive="SaleState.IsFilterByDateActive"
+    <FilterByTransactionDate @bind-ParentSelectedValue="SaleDisplayFilterState.FilterDateParentValue"
+                             @bind-DetailSelectedValue="SaleDisplayFilterState.FilterDateDetailValue"
+                             @bind-StartDateValue="SaleDisplayFilterState.FilterDateStartDate"
+                             @bind-EndDateValue="SaleDisplayFilterState.FilterDateEndDate"
+                             @bind-IsFilterSet="SaleDisplayFilterState.IsFilterSet"
+                             @bind-IsFilterByDateActive="SaleDisplayFilterState.IsFilterByDateActive"
                              ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 
-@if (SaleState.IsFilterByCustomerActive)
+@if (SaleDisplayFilterState.IsFilterByCustomerActive)
 {
-    <FilterByCustomer @bind-CustomerIDValue="SaleState.FilterCustomerByID"
-                      @bind-CustomerNameValue="SaleState.FilterCustomerByName"
-                      @bind-IsFilterByCustomerActive="SaleState.IsFilterByCustomerActive"
+    <FilterByCustomer @bind-CustomerIDValue="SaleDisplayFilterState.FilterCustomerByID"
+                      @bind-CustomerNameValue="SaleDisplayFilterState.FilterCustomerByName"
+                      @bind-IsFilterByCustomerActive="SaleDisplayFilterState.IsFilterByCustomerActive"
                       ButtonClearFilterClicked="ButtonClearFilterClicked" />
 }
 
 <RadzenDataGrid @ref="SaleGrid"
                 IsLoading=@isLoading
-                Data="@SaleState.SaleListForSummary"
+                Data="@SaleDisplayState.SaleListForSummary"
                 TItem="SaleDtoForSummary"
                 SelectionMode="DataGridSelectionMode.Single"
                 AllowSorting="true"
@@ -67,7 +67,7 @@
                               Sortable="false"
                               TextAlign="TextAlign.Center">
             <Template Context="data">
-                @(SaleState.SaleListForSummary.IndexOf(data) + 1)
+                @(SaleDisplayState.SaleListForSummary.IndexOf(data) + 1)
             </Template>
         </RadzenDataGridColumn>
 
@@ -167,7 +167,7 @@
 </RadzenDataGrid>
 
 <Pager @ref="Pager"
-       PageSize="@SaleState.MetaData.PageSize"
-       TotalCount="@SaleState.MetaData.TotalCount"
-       CurrentPage="SaleState.SaleParameter.PageNumber"
+       PageSize="@SaleDisplayState.MetaData.PageSize"
+       TotalCount="@SaleDisplayState.MetaData.TotalCount"
+       CurrentPage="SaleDisplayState.SaleParameter.PageNumber"
        PageChanged="@(args => PageChanged(args))" />

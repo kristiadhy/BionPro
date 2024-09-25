@@ -4,18 +4,12 @@ using Web.Services.IHttpRepository;
 
 namespace WebAssembly.State;
 
-public class SaleDetailState
+public class SaleDetailState(IServiceManager serviceManager)
 {
-    private readonly IServiceManager ServiceManager;
+    private readonly IServiceManager _serviceManager = serviceManager;
     public List<SaleDetailDto> SaleDetailList { get; set; } = [];
     public MetaData MetaData { get; set; } = new();
-    //public SaleDetailParam SaleDetailParameter { get; set; } = new();
     public SaleDetailDto SaleDetail { get; set; } = new();
-
-    public SaleDetailState(IServiceManager serviceManager)
-    {
-        ServiceManager = serviceManager;
-    }
 
     //public async Task LoadSaleDetails()
     //{

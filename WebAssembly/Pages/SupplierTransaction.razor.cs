@@ -17,7 +17,10 @@ public partial class SupplierTransaction
     [Inject]
     IServiceManager ServiceManager { get; set; } = default!;
     [Inject]
-    SupplierState SupplierState { get; set; } = default!;
+    SupplierDisplayState SupplierDisplayState { get; set; } = default!;
+    [Inject]
+    SupplierInputState SupplierInputState { get; set; } = default!;
+
     [CascadingParameter]
     ApplicationDetail? ApplicationDetail { get; set; }
 
@@ -39,13 +42,13 @@ public partial class SupplierTransaction
     {
         if (ParamSupplierID is not null)
         {
-            SupplierState.Supplier = await ServiceManager.SupplierService.GetSupplierByID((Guid)ParamSupplierID);
+            SupplierInputState.Supplier = await ServiceManager.SupplierService.GetSupplierByID((Guid)ParamSupplierID);
             FormStatus = GlobalEnum.FormStatus.Edit;
         }
         else
         {
             FormStatus = GlobalEnum.FormStatus.New;
-            SupplierState.Supplier.SupplierID = null;
+            SupplierInputState.Supplier.SupplierID = null;
         }
     }
 
@@ -76,7 +79,7 @@ public partial class SupplierTransaction
             string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new supplier added" : "Supplier updated";
             NotificationService.SaveNotification(notificationMessage);
 
-            await SupplierState.LoadSuppliers();
+            await SupplierDisplayState.LoadSuppliers();
         }
         finally
         {
@@ -87,6 +90,6 @@ public partial class SupplierTransaction
 
     public void ClearField()
     {
-        SupplierState.Supplier = new();
+        SupplierInputState.Supplier = new();
     }
 }
