@@ -10,17 +10,17 @@
 </MainMenuContainer>
 
 <RadzenRow Gap="0.5rem" RowGap="0.5rem">
-    <RadzenColumn SizeLG="8" SizeMD="12" class="rz-pb-5">
+    <RadzenColumn Size="12" class="rz-pb-5">
         <TransactionPageHeader FormStatus="@FormStatus" AdditionalText="@AdditionalHeaderText" />
         <RadzenCard class="my-2">
             <RadzenTemplateForm Context="PurchaseFormContext" Data="@PurchaseInputState.PurchaseForTransaction" Submit="@((PurchaseDto args) => SubmitAsync(args))">
                 <FluentValidationValidator />
 
                 <RadzenStack Gap="1rem">
-                    <RadzenColumn SizeLG="12" SizeMD="12">
+                    <RadzenColumn SizeLG="4" SizeMD="12">
                         <SupplierDropdown @bind-SelectedValue="PurchaseInputState.PurchaseForTransaction.SupplierID" />
                     </RadzenColumn>
-                    <RadzenColumn SizeLG="12" SizeMD="12">
+                    <RadzenColumn SizeLG="4" SizeMD="12">
                         <CustomDatePicker Value="@(PurchaseInputState.PurchaseForTransaction.Date.DateTime)"
                                           OnChange="@(args => OnDateChanged(args))"
                                           OnRefreshClick="@(args => RefreshDate())" />
