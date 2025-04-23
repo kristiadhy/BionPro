@@ -2,5 +2,5 @@
 
 public interface IServiceInstallers
 {
-    public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host);
+  public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host);
 }

@@ -4,13 +4,13 @@ namespace Api.ServiceInstallers;
 
 public class ApiVersioningInstaller : IServiceInstallers
 {
-    public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
+  public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
+  {
+    services.AddApiVersioning(opt =>
     {
-        services.AddApiVersioning(opt =>
-        {
-            opt.ReportApiVersions = true;
-            opt.AssumeDefaultVersionWhenUnspecified = true;
-            opt.DefaultApiVersion = new ApiVersion(1, 0);
-        });
-    }
+      opt.ReportApiVersions = true;
+      opt.AssumeDefaultVersionWhenUnspecified = true;
+      opt.DefaultApiVersion = new ApiVersion(1, 0);
+    });
+  }
 }

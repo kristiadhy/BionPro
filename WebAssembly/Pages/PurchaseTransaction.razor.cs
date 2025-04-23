@@ -11,158 +11,158 @@ namespace WebAssembly.Pages;
 
 public partial class PurchaseTransaction
 {
-    [Inject]
-    NavigationManager NavigationManager { get; set; } = default!;
-    [Inject]
-    CustomModalService ConfirmationModalService { get; set; } = default!;
-    [Inject]
-    CustomNotificationService NotificationService { get; set; } = default!;
-    [Inject]
-    IServiceManager ServiceManager { get; set; } = default!;
-    [Inject]
-    DialogService DialogService { get; set; } = default!;
-    [Inject]
-    PurchaseState PurchaseState { get; set; } = default!;
-    [Inject]
-    ProductState ProductState { get; set; } = default!;
+  [Inject]
+  NavigationManager NavigationManager { get; set; } = default!;
+  [Inject]
+  CustomModalService ConfirmationModalService { get; set; } = default!;
+  [Inject]
+  CustomNotificationService NotificationService { get; set; } = default!;
+  [Inject]
+  IServiceManager ServiceManager { get; set; } = default!;
+  [Inject]
+  DialogService DialogService { get; set; } = default!;
+  [Inject]
+  PurchaseState PurchaseState { get; set; } = default!;
+  [Inject]
+  ProductState ProductState { get; set; } = default!;
 
-    [Parameter] public int? ParamPurchaseID { get; set; }
+  [Parameter] public int? ParamPurchaseID { get; set; }
 
-    private FluentValidationValidator? PurchaseDetailValidator { get; set; }
+  private FluentValidationValidator? PurchaseDetailValidator { get; set; }
 
-    private readonly string AdditionalHeaderText = "purchase transaction";
-    private GlobalEnum.FormStatus FormStatus;
-    private bool IsSaving = false;
+  private readonly string AdditionalHeaderText = "purchase transaction";
+  private GlobalEnum.FormStatus FormStatus;
+  private bool IsSaving = false;
 
-    private int ProductSearchSelection = 2;
-    private PageModel? PurchasePageModel { get; set; }
-    private readonly Variant FieldVariant = Variant.Outlined;
-    private RadzenDataGrid<PurchaseDetailDto> PurchaseDetailGrid = default!;
-    private bool GridIsLoading = false;
-    private PurchaseDetailDto PurchaseDetail = new();
+  private int ProductSearchSelection = 2;
+  private PageModel? PurchasePageModel { get; set; }
+  private readonly Variant FieldVariant = Variant.Outlined;
+  private RadzenDataGrid<PurchaseDetailDto> PurchaseDetailGrid = default!;
+  private bool GridIsLoading = false;
+  private PurchaseDetailDto PurchaseDetail = new();
 
-    public PurchaseTransaction()
+  public PurchaseTransaction()
+  {
+    PurchasePageModel = GlobalConstant.PageModels.Where(s => s.ID == 5).FirstOrDefault();
+  }
+
+  protected override void OnInitialized()
+  {
+    SetPurchaseDetailDefaultValue(PurchaseDetail);
+  }
+
+  protected override async Task OnParametersSetAsync()
+  {
+    if (ParamPurchaseID is not null)
     {
-        PurchasePageModel = GlobalConstant.PageModels.Where(s => s.ID == 5).FirstOrDefault();
+      PurchaseState.PurchaseForTransaction = await ServiceManager.PurchaseService.GetPurchaseByID((int)ParamPurchaseID);
+      FormStatus = GlobalEnum.FormStatus.Edit;
+      await PurchaseDetailGrid.Reload();
     }
-
-    protected override void OnInitialized()
+    else
     {
-        SetPurchaseDetailDefaultValue(PurchaseDetail);
+      FormStatus = GlobalEnum.FormStatus.New;
+      PurchaseState.PurchaseForTransaction.PurchaseID = null;
     }
+  }
 
-    protected override async Task OnParametersSetAsync()
+  public void EvBackToPrevious()
+  {
+    NavigationManager.NavigateTo($"{PurchasePageModel?.Path}");
+  }
+
+  public async Task SubmitAsync(PurchaseDto purchase)
+  {
+    if (!await ConfirmationModalService.SavingConfirmation("Purchase"))
+      return;
+
+    IsSaving = true;
+
+    try
     {
-        if (ParamPurchaseID is not null)
-        {
-            PurchaseState.PurchaseForTransaction = await ServiceManager.PurchaseService.GetPurchaseByID((int)ParamPurchaseID);
-            FormStatus = GlobalEnum.FormStatus.Edit;
-            await PurchaseDetailGrid.Reload();
-        }
-        else
-        {
-            FormStatus = GlobalEnum.FormStatus.New;
-            PurchaseState.PurchaseForTransaction.PurchaseID = null;
-        }
+      if (FormStatus == GlobalEnum.FormStatus.New)
+        await ServiceManager.PurchaseService.Create(purchase);
+      else
+      {
+        await ServiceManager.PurchaseService.Update(purchase);
+        //IMPORTANT : After updating the purchase, PurchaseID need to be assigned to all of the purchase details. It's important because EF Core determine the the entity state of each details based on the ID. If there is no ID on the details, it will be identified as ADD state, otherwise it will be identified as UPDATE state. Since the new details are already added after update is executed, then the data model should be updated too.
+        PurchaseState.PurchaseForTransaction.PurchaseDetails.ForEach(s => s.PurchaseID = PurchaseState.PurchaseForTransaction.PurchaseID);
+      }
+
+      var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new purchase added" : "Purchase updated";
+      NotificationService.SaveNotification(notificationMessage);
+
+      await PurchaseState.LoadPurchasesForSummary();
     }
-
-    public void EvBackToPrevious()
+    finally
     {
-        NavigationManager.NavigateTo($"{PurchasePageModel?.Path}");
+      IsSaving = false;
+      StateHasChanged();
     }
+  }
 
-    public async Task SubmitAsync(PurchaseDto purchase)
+  private async Task ClearField()
+  {
+    PurchaseState.PurchaseForTransaction = new();
+  }
+
+  private async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
+  {
+    GridIsLoading = true;
+    var product = ProductState.ProductListDropdown.Where(s => s.ProductID == purchaseDetail.ProductID).FirstOrDefault();
+    if (product != null)
     {
-        if (!await ConfirmationModalService.SavingConfirmation("Purchase"))
-            return;
+      purchaseDetail.ProductID = product.ProductID;
+      purchaseDetail.ProductName = product.Name;
+      purchaseDetail.Price = product.Price;
 
-        IsSaving = true;
-
-        try
-        {
-            if (FormStatus == GlobalEnum.FormStatus.New)
-                await ServiceManager.PurchaseService.Create(purchase);
-            else
-            {
-                await ServiceManager.PurchaseService.Update(purchase);
-                //IMPORTANT : After updating the purchase, PurchaseID need to be assigned to all of the purchase details. It's important because EF Core determine the the entity state of each details based on the ID. If there is no ID on the details, it will be identified as ADD state, otherwise it will be identified as UPDATE state. Since the new details are already added after update is executed, then the data model should be updated too.
-                PurchaseState.PurchaseForTransaction.PurchaseDetails.ForEach(s => s.PurchaseID = PurchaseState.PurchaseForTransaction.PurchaseID);
-            }
-
-            var notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new purchase added" : "Purchase updated";
-            NotificationService.SaveNotification(notificationMessage);
-
-            await PurchaseState.LoadPurchasesForSummary();
-        }
-        finally
-        {
-            IsSaving = false;
-            StateHasChanged();
-        }
+      PurchaseState.PurchaseForTransaction.PurchaseDetails.Add(purchaseDetail);
     }
+    GridIsLoading = false;
 
-    private async Task ClearField()
-    {
-        PurchaseState.PurchaseForTransaction = new();
-    }
+    //This is used to re-validate the DataGrid, ensuring that error messages for non-existent products are not displayed.
+    await PurchaseDetailValidator!.ValidateAsync();
 
-    private async Task AddToPurchaseDetailGrid(PurchaseDetailDto purchaseDetail)
-    {
-        GridIsLoading = true;
-        var product = ProductState.ProductListDropdown.Where(s => s.ProductID == purchaseDetail.ProductID).FirstOrDefault();
-        if (product != null)
-        {
-            purchaseDetail.ProductID = product.ProductID;
-            purchaseDetail.ProductName = product.Name;
-            purchaseDetail.Price = product.Price;
+    await PurchaseDetailGrid.Reload();
 
-            PurchaseState.PurchaseForTransaction.PurchaseDetails.Add(purchaseDetail);
-        }
-        GridIsLoading = false;
+    PurchaseDetail = new();
+    SetPurchaseDetailDefaultValue(PurchaseDetail);
+  }
 
-        //This is used to re-validate the DataGrid, ensuring that error messages for non-existent products are not displayed.
-        await PurchaseDetailValidator!.ValidateAsync();
+  private void OnDateChanged(DateTime? dateTime)
+  {
+    PurchaseState.PurchaseForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
+  }
 
-        await PurchaseDetailGrid.Reload();
+  private void RefreshDate()
+  {
+    PurchaseState.PurchaseForTransaction.Date = DateTime.Now;
+  }
 
-        PurchaseDetail = new();
-        SetPurchaseDetailDefaultValue(PurchaseDetail);
-    }
-
-    private void OnDateChanged(DateTime? dateTime)
-    {
-        PurchaseState.PurchaseForTransaction.Date = dateTime.HasValue ? new DateTimeOffset(dateTime.Value) : default;
-    }
-
-    private void RefreshDate()
-    {
-        PurchaseState.PurchaseForTransaction.Date = DateTime.Now;
-    }
-
-    private async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
-    {
-        var parameters = new Dictionary<string, object>
+  private async Task EvEditDetails(PurchaseDetailDto purchaseDetail)
+  {
+    var parameters = new Dictionary<string, object>
         {
             { "PurchaseDetail", purchaseDetail }
         };
 
-        await DialogService.OpenAsync<CustomPurchaseEditProductPopUp>($"{purchaseDetail.ProductName}", parameters);
-    }
+    await DialogService.OpenAsync<CustomPurchaseEditProductPopUp>($"{purchaseDetail.ProductName}", parameters);
+  }
 
-    private async Task EvDeleteRow(PurchaseDetailDto purchaseDetail)
-    {
-        if (purchaseDetail is null)
-            return;
+  private async Task EvDeleteRow(PurchaseDetailDto purchaseDetail)
+  {
+    if (purchaseDetail is null)
+      return;
 
-        PurchaseState.PurchaseForTransaction.PurchaseDetails.Remove(purchaseDetail);
-        await PurchaseDetailGrid.Reload();
-    }
+    PurchaseState.PurchaseForTransaction.PurchaseDetails.Remove(purchaseDetail);
+    await PurchaseDetailGrid.Reload();
+  }
 
-    private void SetPurchaseDetailDefaultValue(PurchaseDetailDto purchaseDetailDto)
-    {
-        purchaseDetailDto.ProductID = null;
-        purchaseDetailDto.ProductName = string.Empty;
-        purchaseDetailDto.Quantity = 1;
-        purchaseDetailDto.DiscountPercentage = 0;
-    }
+  private void SetPurchaseDetailDefaultValue(PurchaseDetailDto purchaseDetailDto)
+  {
+    purchaseDetailDto.ProductID = null;
+    purchaseDetailDto.ProductName = string.Empty;
+    purchaseDetailDto.Quantity = 1;
+    purchaseDetailDto.DiscountPercentage = 0;
+  }
 }

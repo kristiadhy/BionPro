@@ -9,14 +9,14 @@ namespace Presentation.Controllers;
 [Route("api/purchase/details")]
 public class PurchaseDetailController(IServiceManager serviceManager) : ControllerBase
 {
-    private readonly IServiceManager _serviceManager = serviceManager;
+  private readonly IServiceManager _serviceManager = serviceManager;
 
 
-    [HttpGet("{id:int}", Name = "PurchaseDetailByID")]
-    public async Task<IActionResult> GetByID(int id, [FromQuery] PurchaseDetailParam purchaseDetailParam, CancellationToken cancellationToken)
-    {
-        var pagedResult = await _serviceManager.PurchaseDetailService.GetByPurchaseDetailByIDAsync(id, purchaseDetailParam, false, cancellationToken);
-        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
-        return Ok(pagedResult.purchaseDetailDto);
-    }
+  [HttpGet("{id:int}", Name = "PurchaseDetailByID")]
+  public async Task<IActionResult> GetByID(int id, [FromQuery] PurchaseDetailParam purchaseDetailParam, CancellationToken cancellationToken)
+  {
+    var pagedResult = await _serviceManager.PurchaseDetailService.GetByPurchaseDetailByIDAsync(id, purchaseDetailParam, false, cancellationToken);
+    Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
+    return Ok(pagedResult.purchaseDetailDto);
+  }
 }

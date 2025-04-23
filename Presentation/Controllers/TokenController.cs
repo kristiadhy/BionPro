@@ -8,6 +8,6 @@ namespace Presentation.Controllers;
 [ApiController]
 public class TokenController(IServiceManager serviceManager) : ControllerBase
 {
-    private readonly IServiceManager _serviceManager = serviceManager;
+  private readonly IServiceManager _serviceManager = serviceManager;
 
 }

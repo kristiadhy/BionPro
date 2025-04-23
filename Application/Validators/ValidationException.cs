@@ -4,13 +4,13 @@ namespace Application.Validators;
 
 public class ValidationException : ApplicationException
 {
-    public List<string> Errors { get; set; } = [];
+  public List<string> Errors { get; set; } = [];
 
-    public ValidationException(ValidationResult validationResult)
+  public ValidationException(ValidationResult validationResult)
+  {
+    foreach (var error in validationResult.Errors)
     {
-        foreach (var error in validationResult.Errors)
-        {
-            Errors.Add(error.ErrorMessage);
-        }
+      Errors.Add(error.ErrorMessage);
     }
+  }
 }

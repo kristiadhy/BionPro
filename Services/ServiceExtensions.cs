@@ -7,10 +7,10 @@ namespace Services;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection ConfigureServiceServices(this IServiceCollection services)
-    {
-        services.AddScoped<IServiceManager, ServiceManager>();
+  public static IServiceCollection ConfigureServiceServices(this IServiceCollection services)
+  {
+    services.AddScoped<IServiceManager, ServiceManager>();
 
-        return services;
-    }
+    return services;
+  }
 }

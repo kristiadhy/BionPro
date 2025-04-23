@@ -5,20 +5,20 @@ namespace WebAssembly.Services;
 
 public class CustomTooltipService
 {
-    private readonly TooltipService _tooltipService;
-    public CustomTooltipService(TooltipService tooltipService)
-    {
-        _tooltipService = tooltipService;
-    }
+  private readonly TooltipService _tooltipService;
+  public CustomTooltipService(TooltipService tooltipService)
+  {
+    _tooltipService = tooltipService;
+  }
 
-    internal void ShowBottomTooltip(ElementReference elementReference, string title)
+  internal void ShowBottomTooltip(ElementReference elementReference, string title)
+  {
+    TooltipOptions options = new()
     {
-        TooltipOptions options = new()
-        {
-            Position = TooltipPosition.Bottom,
-            Style = "background: var(--rz-base-600); color: white; opacity: 0.5;"
-        };
+      Position = TooltipPosition.Bottom,
+      Style = "background: var(--rz-base-600); color: white; opacity: 0.5;"
+    };
 
-        _tooltipService.Open(elementReference, title, options);
-    }
+    _tooltipService.Open(elementReference, title, options);
+  }
 }

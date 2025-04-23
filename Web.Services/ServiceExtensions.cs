@@ -16,40 +16,40 @@ namespace Services;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection ConfigureHTTPServices(this IServiceCollection services, IConfiguration configuration)
+  public static IServiceCollection ConfigureHTTPServices(this IServiceCollection services, IConfiguration configuration)
+  {
+    services.AddScoped(sp => new JsonSerializerSettings
     {
-        services.AddScoped(sp => new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            MissingMemberHandling = MissingMemberHandling.Ignore,
-            DateFormatHandling = DateFormatHandling.IsoDateFormat,
-        });
+      NullValueHandling = NullValueHandling.Ignore,
+      MissingMemberHandling = MissingMemberHandling.Ignore,
+      DateFormatHandling = DateFormatHandling.IsoDateFormat,
+    });
 
-        services.AddBlazoredLocalStorage();
+    services.AddBlazoredLocalStorage();
 
-        services.Configure<ApiConfiguration>(configuration.GetSection("ApiConfiguration"));
-        services.AddHttpClient<CustomHttpClient>((sp, cl) =>
-        {
-            var apiConfiguration = sp.GetRequiredService<IOptions<ApiConfiguration>>();
-            cl.BaseAddress = new Uri($"{apiConfiguration.Value.BaseAddress}/api/");
-        });
-        services.AddHttpClientInterceptor(); //Should be put below the http client registration
-        services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-        services.AddScoped<IAuthenticationHttpService, AuthenticationHttpService>();
-        services.AddScoped<RefreshTokenHttpService>();
-        services.AddScoped<HttpInterceptorService>();
-        services.AddScoped<IServiceManager, ServiceManager>();
+    services.Configure<ApiConfiguration>(configuration.GetSection("ApiConfiguration"));
+    services.AddHttpClient<CustomHttpClient>((sp, cl) =>
+    {
+      var apiConfiguration = sp.GetRequiredService<IOptions<ApiConfiguration>>();
+      cl.BaseAddress = new Uri($"{apiConfiguration.Value.BaseAddress}/api/");
+    });
+    services.AddHttpClientInterceptor(); //Should be put below the http client registration
+    services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+    services.AddScoped<IAuthenticationHttpService, AuthenticationHttpService>();
+    services.AddScoped<RefreshTokenHttpService>();
+    services.AddScoped<HttpInterceptorService>();
+    services.AddScoped<IServiceManager, ServiceManager>();
 
-        services.AddAuthorizationCore();
+    services.AddAuthorizationCore();
 
-        return services;
+    return services;
 
-        //services.AddHttpClient("_", options =>
-        //{
-        //    options.BaseAddress = new Uri("https://localhost:7229/api/");
-        //    options.DefaultRequestHeaders.Clear();
-        //}
-        //);
-        //services.AddScoped(sp => sp.GetService<IHttpClientFactory>()!.CreateClient("_"));
-    }
+    //services.AddHttpClient("_", options =>
+    //{
+    //    options.BaseAddress = new Uri("https://localhost:7229/api/");
+    //    options.DefaultRequestHeaders.Clear();
+    //}
+    //);
+    //services.AddScoped(sp => sp.GetService<IHttpClientFactory>()!.CreateClient("_"));
+  }
 }

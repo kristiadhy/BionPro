@@ -6,76 +6,76 @@ namespace WebAssembly.StateManagement;
 
 public class SupplierState
 {
-    private IServiceManager ServiceManager;
-    public List<SupplierDto> SupplierList { get; set; } = [];
-    public IEnumerable<SupplierDto> SupplierListDropdown { get; set; } = [];
-    public MetaData MetaData { get; set; } = new();
-    public SupplierParam SupplierParameter { get; set; } = new();
-    public SupplierDto Supplier { get; set; } = new();
+  private IServiceManager ServiceManager;
+  public List<SupplierDto> SupplierList { get; set; } = [];
+  public IEnumerable<SupplierDto> SupplierListDropdown { get; set; } = [];
+  public MetaData MetaData { get; set; } = new();
+  public SupplierParam SupplierParameter { get; set; } = new();
+  public SupplierDto Supplier { get; set; } = new();
 
-    //For filters
-    public bool IsFilterSet { get; set; } = false;
-    public bool IsFilterActive { get; set; } = false;
+  //For filters
+  public bool IsFilterSet { get; set; } = false;
+  public bool IsFilterActive { get; set; } = false;
 
-    //Set for filter by customer name
-    public string? FilterSupplierNameValue { get; set; }
-    public bool IsFilterBySupplierNameActive { get; set; } = false;
-    //----------------------------------------------
+  //Set for filter by customer name
+  public string? FilterSupplierNameValue { get; set; }
+  public bool IsFilterBySupplierNameActive { get; set; } = false;
+  //----------------------------------------------
 
-    public SupplierState(IServiceManager serviceManager)
+  public SupplierState(IServiceManager serviceManager)
+  {
+    ServiceManager = serviceManager;
+  }
+
+  public async Task LoadSuppliers()
+  {
+    UpdateSupplierParametersBasedOnActiveFilters();
+    var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(SupplierParameter);
+    SupplierList = pagingResponse.Items;
+    MetaData = pagingResponse.MetaData;
+  }
+
+  public async Task LoadSuppliersDropDown()
+  {
+    SupplierParam supplierParameter = new();
+    var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(supplierParameter);
+    SupplierListDropdown = pagingResponse.Items;
+  }
+
+  private void UpdateSupplierParametersBasedOnActiveFilters()
+  {
+    if (IsFilterActive)
+      //Always set the page to 1 when filters are active
+      SupplierParameter.PageNumber = 1;
+
+    if (IsFilterBySupplierNameActive)
     {
-        ServiceManager = serviceManager;
+      SupplierParameter.SrcByName = FilterSupplierNameValue;
     }
-
-    public async Task LoadSuppliers()
+    else
     {
-        UpdateSupplierParametersBasedOnActiveFilters();
-        var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(SupplierParameter);
-        SupplierList = pagingResponse.Items;
-        MetaData = pagingResponse.MetaData;
+      SupplierParameter.SrcByName = null;
     }
+  }
 
-    public async Task LoadSuppliersDropDown()
-    {
-        SupplierParam supplierParameter = new();
-        var pagingResponse = await ServiceManager.SupplierService.GetSuppliers(supplierParameter);
-        SupplierListDropdown = pagingResponse.Items;
-    }
+  public void ResetSupplierData()
+  {
+    SupplierList = [];
+    MetaData = new();
+  }
 
-    private void UpdateSupplierParametersBasedOnActiveFilters()
-    {
-        if (IsFilterActive)
-            //Always set the page to 1 when filters are active
-            SupplierParameter.PageNumber = 1;
+  internal void ToggleFilterState()
+  {
+    IsFilterBySupplierNameActive = false;
 
-        if (IsFilterBySupplierNameActive)
-        {
-            SupplierParameter.SrcByName = FilterSupplierNameValue;
-        }
-        else
-        {
-            SupplierParameter.SrcByName = null;
-        }
-    }
+    IsFilterActive = false;
+  }
 
-    public void ResetSupplierData()
-    {
-        SupplierList = [];
-        MetaData = new();
-    }
-
-    internal void ToggleFilterState()
-    {
-        IsFilterBySupplierNameActive = false;
-
-        IsFilterActive = false;
-    }
-
-    internal void SetGlobalFilterStateByFilters()
-    {
-        if (IsFilterBySupplierNameActive)
-            IsFilterActive = true;
-        else
-            IsFilterActive = false;
-    }
+  internal void SetGlobalFilterStateByFilters()
+  {
+    if (IsFilterBySupplierNameActive)
+      IsFilterActive = true;
+    else
+      IsFilterActive = false;
+  }
 }

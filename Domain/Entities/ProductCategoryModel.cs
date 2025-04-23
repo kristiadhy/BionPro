@@ -1,7 +1,7 @@
 ﻿namespace Domain.Entities;
 public class ProductCategoryModel : BaseEntity
 {
-    public int? CategoryID { get; set; }
-    public string? Name { get; set; }
-    public ICollection<ProductModel>? Products { get; set; }
+  public int? CategoryID { get; set; }
+  public string? Name { get; set; }
+  public ICollection<ProductModel>? Products { get; set; }
 }

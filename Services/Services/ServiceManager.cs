@@ -13,37 +13,37 @@ namespace Services;
 
 public sealed class ServiceManager : IServiceManager
 {
-    private readonly Lazy<ICustomerService> _lazyCustomerService;
-    private readonly Lazy<ISupplierService> _lazySupplierService;
-    private readonly Lazy<IProductCategoryService> _lazyProductCategoryService;
-    private readonly Lazy<IProductService> _lazyProductService;
-    private readonly Lazy<IAuthenticationService> _lazyAuthenticationService;
-    private readonly Lazy<IPurchaseService> _lazyPurchaseService;
-    private readonly Lazy<IPurchaseDetailService> _lazyPurchaseDetailService;
-    private readonly Lazy<ISaleService> _lazySaleService;
-    private readonly Lazy<ISaleDetailService> _lazySaleDetailService;
+  private readonly Lazy<ICustomerService> _lazyCustomerService;
+  private readonly Lazy<ISupplierService> _lazySupplierService;
+  private readonly Lazy<IProductCategoryService> _lazyProductCategoryService;
+  private readonly Lazy<IProductService> _lazyProductService;
+  private readonly Lazy<IAuthenticationService> _lazyAuthenticationService;
+  private readonly Lazy<IPurchaseService> _lazyPurchaseService;
+  private readonly Lazy<IPurchaseDetailService> _lazyPurchaseDetailService;
+  private readonly Lazy<ISaleService> _lazySaleService;
+  private readonly Lazy<ISaleDetailService> _lazySaleDetailService;
 
-    //We use DI service to inject userManager and roleManager. Please take a look at the IdentityInstaller class for more details.
-    public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, ILogger logger, UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IConfiguration configuration)
-    {
-        _lazyCustomerService = new Lazy<ICustomerService>(() => new CustomerService(repositoryManager, mapper, logger));
-        _lazySupplierService = new Lazy<ISupplierService>(() => new SupplierService(repositoryManager, mapper, logger));
-        _lazyProductCategoryService = new Lazy<IProductCategoryService>(() => new ProductCategoryService(repositoryManager, mapper, logger));
-        _lazyProductService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper, logger));
-        _lazyAuthenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(repositoryManager, mapper, logger, userManager, roleManager, configuration, emailSender));
-        _lazyPurchaseService = new Lazy<IPurchaseService>(() => new PurchaseService(repositoryManager, mapper, logger));
-        _lazyPurchaseDetailService = new Lazy<IPurchaseDetailService>(() => new PurchaseDetailService(repositoryManager, mapper, logger));
-        _lazySaleService = new Lazy<ISaleService>(() => new SaleService(repositoryManager, mapper, logger));
-        _lazySaleDetailService = new Lazy<ISaleDetailService>(() => new SaleDetailService(repositoryManager, mapper, logger));
-    }
+  //We use DI service to inject userManager and roleManager. Please take a look at the IdentityInstaller class for more details.
+  public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, ILogger logger, UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IConfiguration configuration)
+  {
+    _lazyCustomerService = new Lazy<ICustomerService>(() => new CustomerService(repositoryManager, mapper, logger));
+    _lazySupplierService = new Lazy<ISupplierService>(() => new SupplierService(repositoryManager, mapper, logger));
+    _lazyProductCategoryService = new Lazy<IProductCategoryService>(() => new ProductCategoryService(repositoryManager, mapper, logger));
+    _lazyProductService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper, logger));
+    _lazyAuthenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(repositoryManager, mapper, logger, userManager, roleManager, configuration, emailSender));
+    _lazyPurchaseService = new Lazy<IPurchaseService>(() => new PurchaseService(repositoryManager, mapper, logger));
+    _lazyPurchaseDetailService = new Lazy<IPurchaseDetailService>(() => new PurchaseDetailService(repositoryManager, mapper, logger));
+    _lazySaleService = new Lazy<ISaleService>(() => new SaleService(repositoryManager, mapper, logger));
+    _lazySaleDetailService = new Lazy<ISaleDetailService>(() => new SaleDetailService(repositoryManager, mapper, logger));
+  }
 
-    public ICustomerService CustomerService => _lazyCustomerService.Value;
-    public ISupplierService SupplierService => _lazySupplierService.Value;
-    public IProductCategoryService ProductCategoryService => _lazyProductCategoryService.Value;
-    public IProductService ProductService => _lazyProductService.Value;
-    public IAuthenticationService AuthenticationService => _lazyAuthenticationService.Value;
-    public IPurchaseService PurchaseService => _lazyPurchaseService.Value;
-    public IPurchaseDetailService PurchaseDetailService => _lazyPurchaseDetailService.Value;
-    public ISaleService SaleService => _lazySaleService.Value;
-    public ISaleDetailService SaleDetailService => _lazySaleDetailService.Value;
+  public ICustomerService CustomerService => _lazyCustomerService.Value;
+  public ISupplierService SupplierService => _lazySupplierService.Value;
+  public IProductCategoryService ProductCategoryService => _lazyProductCategoryService.Value;
+  public IProductService ProductService => _lazyProductService.Value;
+  public IAuthenticationService AuthenticationService => _lazyAuthenticationService.Value;
+  public IPurchaseService PurchaseService => _lazyPurchaseService.Value;
+  public IPurchaseDetailService PurchaseDetailService => _lazyPurchaseDetailService.Value;
+  public ISaleService SaleService => _lazySaleService.Value;
+  public ISaleDetailService SaleDetailService => _lazySaleDetailService.Value;
 }

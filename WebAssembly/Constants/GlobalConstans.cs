@@ -2,9 +2,9 @@
 
 public static class GlobalConstant
 {
-    public static string AppName = "BionPro";
-    public static string LoggedUser = "Admin";
-    public static IEnumerable<PageModel> PageModels = new List<PageModel>
+  public static string AppName = "BionPro";
+  public static string LoggedUser = "Admin";
+  public static IEnumerable<PageModel> PageModels = new List<PageModel>
     {
         new() { ID =1, Title ="Customers", Path="/customers" },
         new() { ID =2, Title ="Suppliers", Path="/suppliers" },

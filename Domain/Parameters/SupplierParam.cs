@@ -2,6 +2,6 @@
 
 public class SupplierParam : RequestParameters
 {
-    public SupplierParam() => OrderBy = "SupplierName";
-    public string? SrcByName { get; set; }
+  public SupplierParam() => OrderBy = "SupplierName";
+  public string? SrcByName { get; set; }
 }

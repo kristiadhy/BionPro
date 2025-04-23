@@ -9,114 +9,114 @@ using Web.Services.Features;
 namespace Services.Extensions;
 public class CustomHttpClient
 {
-    //IMPORTANT : Here is the logic of how we use the httpclient service
-    //1. We register httpclient as class/service and set all of the configuration here in the constructor.
+  //IMPORTANT : Here is the logic of how we use the httpclient service
+  //1. We register httpclient as class/service and set all of the configuration here in the constructor.
 
-    //IMPORTANT : We don't need to add JWT header in the http client request as it is already handled by Interceptor Service
-    //Please look into HttpInterceptorService class
+  //IMPORTANT : We don't need to add JWT header in the http client request as it is already handled by Interceptor Service
+  //Please look into HttpInterceptorService class
 
-    private readonly HttpClient HttpClient;
-    private readonly ILocalStorageService _localStorage;
-    private readonly WebHostEnvironment _hostEnvironment;
-    private readonly JsonSerializerSettings _options;
+  private readonly HttpClient HttpClient;
+  private readonly ILocalStorageService _localStorage;
+  private readonly WebHostEnvironment _hostEnvironment;
+  private readonly JsonSerializerSettings _options;
 
-    public CustomHttpClient(HttpClient httpClient, ILocalStorageService localStorage, IServiceProvider sp, WebHostEnvironment hostEnvironment, JsonSerializerSettings options)
+  public CustomHttpClient(HttpClient httpClient, ILocalStorageService localStorage, IServiceProvider sp, WebHostEnvironment hostEnvironment, JsonSerializerSettings options)
+  {
+    HttpClient = httpClient;
+    //We move address config setting in the service registration
+    //HttpClient.BaseAddress = new Uri("https://localhost:7229/api/");
+    HttpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+    HttpClient.EnableIntercept(sp);
+
+    _localStorage = localStorage;
+    _hostEnvironment = hostEnvironment;
+    _options = options;
+  }
+
+  public async Task<HttpResponseMessage> GetResponseAsync(string uriRequest)
+  {
+    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
+    var content = await response.Content.ReadAsStringAsync();
+    CheckErrorResponse(response, content);
+    return response;
+  }
+
+  //public async Task<string> GetResponseAndContentAsync(string uriRequest)
+  //{
+  //    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
+  //    var content = await response.Content.ReadAsStringAsync();
+  //    CheckErrorResponseForGetMethod(response);
+
+  //    return content!;
+  //}
+
+  //public async Task<IEnumerable<T1>> GetAsync<T1>(JsonSerializerSettings options, string uriRequest)
+  //{
+  //    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
+  //    var content = await response.Content.ReadAsStringAsync();
+  //    if (!CheckErrorResponseForGetMethod(response))
+  //        return [];
+
+  //    var result = JsonConvert.DeserializeObject<IEnumerable<T1>>(content, options);
+  //    if (string.IsNullOrEmpty(content))
+  //        return [];
+
+  //    return result!;
+  //}
+
+  public async Task<HttpResponseMessage> PostAsync<T>(string uriRequest, T bodyContent)
+  {
+    HttpResponseMessage response = await HttpClient.PostAsJsonAsync(uriRequest, bodyContent);
+    return response;
+  }
+
+  public async Task<HttpResponseMessage> PostContentAsync<T>(string uriRequest, HttpContent content)
+  {
+    HttpResponseMessage response = await HttpClient.PostAsync(uriRequest, content);
+    return response;
+  }
+
+  public async Task<HttpResponseMessage> PostMultiContentAsync(string uriRequest, MultipartFormDataContent multiContent)
+  {
+    HttpResponseMessage response = await HttpClient.PostAsync(uriRequest, multiContent);
+    return response;
+  }
+
+
+  public async Task<HttpResponseMessage> PutAsync<T>(string uriRequest, T bodyContent)
+  {
+    HttpResponseMessage response = await HttpClient.PutAsJsonAsync(uriRequest, bodyContent);
+    return response;
+  }
+
+  public async Task<HttpResponseMessage> DeleteAsync(string additionalResourceName)
+  {
+    HttpResponseMessage response = await HttpClient.DeleteAsync(additionalResourceName);
+    return response;
+  }
+
+  public void RemoveAuthorizationHeader()
+  {
+    HttpClient.DefaultRequestHeaders.Authorization = null;
+  }
+
+  public void CheckErrorResponse(HttpResponseMessage response, string content)
+  {
+    if (!response.IsSuccessStatusCode)
     {
-        HttpClient = httpClient;
-        //We move address config setting in the service registration
-        //HttpClient.BaseAddress = new Uri("https://localhost:7229/api/");
-        HttpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-        HttpClient.EnableIntercept(sp);
-
-        _localStorage = localStorage;
-        _hostEnvironment = hostEnvironment;
-        _options = options;
+      string errorResponse = $"{response?.ReasonPhrase}";
+      if (_hostEnvironment.IsDevelopment)
+      {
+        var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<List<string>>>(content, _options);
+        if (apiResponse is not null)
+          errorResponse += $" - {apiResponse.ErrorMessage}";
+      }
+      throw new HttpRequestException($"{errorResponse}");
     }
+  }
 
-    public async Task<HttpResponseMessage> GetResponseAsync(string uriRequest)
-    {
-        HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
-        var content = await response.Content.ReadAsStringAsync();
-        CheckErrorResponse(response, content);
-        return response;
-    }
-
-    //public async Task<string> GetResponseAndContentAsync(string uriRequest)
-    //{
-    //    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
-    //    var content = await response.Content.ReadAsStringAsync();
-    //    CheckErrorResponseForGetMethod(response);
-
-    //    return content!;
-    //}
-
-    //public async Task<IEnumerable<T1>> GetAsync<T1>(JsonSerializerSettings options, string uriRequest)
-    //{
-    //    HttpResponseMessage response = await HttpClient.GetAsync(uriRequest);
-    //    var content = await response.Content.ReadAsStringAsync();
-    //    if (!CheckErrorResponseForGetMethod(response))
-    //        return [];
-
-    //    var result = JsonConvert.DeserializeObject<IEnumerable<T1>>(content, options);
-    //    if (string.IsNullOrEmpty(content))
-    //        return [];
-
-    //    return result!;
-    //}
-
-    public async Task<HttpResponseMessage> PostAsync<T>(string uriRequest, T bodyContent)
-    {
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync(uriRequest, bodyContent);
-        return response;
-    }
-
-    public async Task<HttpResponseMessage> PostContentAsync<T>(string uriRequest, HttpContent content)
-    {
-        HttpResponseMessage response = await HttpClient.PostAsync(uriRequest, content);
-        return response;
-    }
-
-    public async Task<HttpResponseMessage> PostMultiContentAsync(string uriRequest, MultipartFormDataContent multiContent)
-    {
-        HttpResponseMessage response = await HttpClient.PostAsync(uriRequest, multiContent);
-        return response;
-    }
-
-
-    public async Task<HttpResponseMessage> PutAsync<T>(string uriRequest, T bodyContent)
-    {
-        HttpResponseMessage response = await HttpClient.PutAsJsonAsync(uriRequest, bodyContent);
-        return response;
-    }
-
-    public async Task<HttpResponseMessage> DeleteAsync(string additionalResourceName)
-    {
-        HttpResponseMessage response = await HttpClient.DeleteAsync(additionalResourceName);
-        return response;
-    }
-
-    public void RemoveAuthorizationHeader()
-    {
-        HttpClient.DefaultRequestHeaders.Authorization = null;
-    }
-
-    public void CheckErrorResponse(HttpResponseMessage response, string content)
-    {
-        if (!response.IsSuccessStatusCode)
-        {
-            string errorResponse = $"{response?.ReasonPhrase}";
-            if (_hostEnvironment.IsDevelopment)
-            {
-                var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<List<string>>>(content, _options);
-                if (apiResponse is not null)
-                    errorResponse += $" - {apiResponse.ErrorMessage}";
-            }
-            throw new HttpRequestException($"{errorResponse}");
-        }
-    }
-
-    public string GetBaseAddress()
-    {
-        return HttpClient.BaseAddress!.ToString();
-    }
+  public string GetBaseAddress()
+  {
+    return HttpClient.BaseAddress!.ToString();
+  }
 }
