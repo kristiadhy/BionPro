@@ -5,5 +5,5 @@ using Web.Services.Features;
 namespace Web.Services.IHttpRepository;
 public interface IPurchaseDetailHttpService
 {
-    public Task<PagingResponse<PurchaseDetailDto>> GetPurchaseByID(int purchaseID, PurchaseDetailParam purchaseDetailParam);
+  public Task<PagingResponse<PurchaseDetailDto>> GetPurchaseByID(int purchaseID, PurchaseDetailParam purchaseDetailParam);
 }

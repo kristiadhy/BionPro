@@ -13,56 +13,56 @@ namespace Presentation.Controllers;
 [Route("api/purchases")]
 public class PurchaseController(IServiceManager serviceManager) : ControllerBase
 {
-    private readonly IServiceManager _serviceManager = serviceManager;
+  private readonly IServiceManager _serviceManager = serviceManager;
 
-    [HttpGet(Name = "Purchases")]
-    public async Task<IActionResult> GetSummaryByParameters(int purchaseID, [FromQuery] PurchaseParam purchaseParam, CancellationToken cancellationToken)
-    {
-        var pagedResult = await _serviceManager.PurchaseService.GetSummaryByParametersAsync(purchaseID, purchaseParam, false, cancellationToken);
-        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
-        return Ok(pagedResult.purchaseDto);
-    }
+  [HttpGet(Name = "Purchases")]
+  public async Task<IActionResult> GetSummaryByParameters(int purchaseID, [FromQuery] PurchaseParam purchaseParam, CancellationToken cancellationToken)
+  {
+    var pagedResult = await _serviceManager.PurchaseService.GetSummaryByParametersAsync(purchaseID, purchaseParam, false, cancellationToken);
+    Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
+    return Ok(pagedResult.purchaseDto);
+  }
 
 
-    [HttpGet("{id:int}", Name = "PurchaseByID")]
-    public async Task<IActionResult> GetByID(int id, CancellationToken cancellationToken)
-    {
-        var purchases = await _serviceManager.PurchaseService.GetByPurchaseIDAsync(id, false, cancellationToken);
-        return Ok(purchases);
-    }
+  [HttpGet("{id:int}", Name = "PurchaseByID")]
+  public async Task<IActionResult> GetByID(int id, CancellationToken cancellationToken)
+  {
+    var purchases = await _serviceManager.PurchaseService.GetByPurchaseIDAsync(id, false, cancellationToken);
+    return Ok(purchases);
+  }
 
-    [HttpPost(Name = "CreatePurchase")]
-    [ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> Create([FromBody] PurchaseDto purchaseDto, CancellationToken cancellationToken)
-    {
-        var createdPurchase = await _serviceManager.PurchaseService.CreateAsync(purchaseDto, false, cancellationToken);
-        return CreatedAtRoute("PurchaseByID", new { id = createdPurchase.PurchaseID }, createdPurchase);
-    }
+  [HttpPost(Name = "CreatePurchase")]
+  [ServiceFilter(typeof(ValidationFilterAttribute))]
+  public async Task<IActionResult> Create([FromBody] PurchaseDto purchaseDto, CancellationToken cancellationToken)
+  {
+    var createdPurchase = await _serviceManager.PurchaseService.CreateAsync(purchaseDto, false, cancellationToken);
+    return CreatedAtRoute("PurchaseByID", new { id = createdPurchase.PurchaseID }, createdPurchase);
+  }
 
-    [HttpPut(Name = "UpdatePurchase")]
-    [ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> Update([FromBody] PurchaseDto purchaseDto, CancellationToken cancellationToken)
-    {
-        await _serviceManager.PurchaseService.UpdateAsync(purchaseDto, true, cancellationToken);
-        return NoContent();
-    }
+  [HttpPut(Name = "UpdatePurchase")]
+  [ServiceFilter(typeof(ValidationFilterAttribute))]
+  public async Task<IActionResult> Update([FromBody] PurchaseDto purchaseDto, CancellationToken cancellationToken)
+  {
+    await _serviceManager.PurchaseService.UpdateAsync(purchaseDto, true, cancellationToken);
+    return NoContent();
+  }
 
-    [HttpPatch("{id:int}", Name = "PartiallyUpdatePurchase")]
-    public async Task<IActionResult> PartiallyUpdatePurchase(int id, [FromBody] JsonPatchDocument<PurchaseDto> patchDoc)
-    {
-        if (patchDoc is null)
-            return BadRequest("patchDoc object sent from client is null.");
+  [HttpPatch("{id:int}", Name = "PartiallyUpdatePurchase")]
+  public async Task<IActionResult> PartiallyUpdatePurchase(int id, [FromBody] JsonPatchDocument<PurchaseDto> patchDoc)
+  {
+    if (patchDoc is null)
+      return BadRequest("patchDoc object sent from client is null.");
 
-        var result = await _serviceManager.PurchaseService.GetPurchaseForPatchAsync(id, true);
-        patchDoc.ApplyTo(result.purchaseToPatch);
-        await _serviceManager.PurchaseService.SaveChangesForPatchAsync(result.purchaseToPatch, result.purchase);
-        return NoContent();
-    }
+    var result = await _serviceManager.PurchaseService.GetPurchaseForPatchAsync(id, true);
+    patchDoc.ApplyTo(result.purchaseToPatch);
+    await _serviceManager.PurchaseService.SaveChangesForPatchAsync(result.purchaseToPatch, result.purchase);
+    return NoContent();
+  }
 
-    [HttpDelete("{id:int}", Name = "DeletePurchase")]
-    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
-    {
-        await _serviceManager.PurchaseService.DeleteAsync(id, false, cancellationToken);
-        return NoContent();
-    }
+  [HttpDelete("{id:int}", Name = "DeletePurchase")]
+  public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+  {
+    await _serviceManager.PurchaseService.DeleteAsync(id, false, cancellationToken);
+    return NoContent();
+  }
 }

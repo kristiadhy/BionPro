@@ -9,70 +9,70 @@ using Web.Services.IHttpRepository;
 namespace Web.Services.HttpRepository;
 internal class PurchaseHttpService : IPurchaseHttpService
 {
-    private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
-    private readonly string additionalResourceName = "purchases";
+  private readonly CustomHttpClient _client;
+  private readonly JsonSerializerSettings _options;
+  private readonly string additionalResourceName = "purchases";
 
-    public PurchaseHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  public PurchaseHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  {
+    _client = client;
+    _options = options;
+  }
+
+  public async Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam)
+  {
+    var queryStringParam = new Dictionary<string, string>
     {
-        _client = client;
-        _options = options;
-    }
+      [$"{nameof(PurchaseParam.PageNumber)}"] = purchaseParam.PageNumber.ToString(),
+      [$"{nameof(PurchaseParam.SrcSupplierID)}"] = purchaseParam.SrcSupplierID.ToString() ?? "",
+      [$"{nameof(PurchaseParam.SrcSupplierName)}"] = purchaseParam.SrcSupplierName ?? "",
+      [$"{nameof(PurchaseParam.SrcDateFrom)}"] = purchaseParam.SrcDateFrom.ToString() ?? "",
+      [$"{nameof(PurchaseParam.SrcDateTo)}"] = purchaseParam.SrcDateTo.ToString() ?? "",
+      [$"{nameof(PurchaseParam.OrderBy)}"] = purchaseParam.OrderBy ?? ""
+    };
 
-    public async Task<PagingResponse<PurchaseDtoForSummary>> GetPurchasesForSummary(PurchaseParam purchaseParam)
+    var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
+    HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
+    var content = await response.Content.ReadAsStringAsync();
+
+    var pagingResponse = new PagingResponse<PurchaseDtoForSummary>()
     {
-        var queryStringParam = new Dictionary<string, string>
-        {
-            [$"{nameof(PurchaseParam.PageNumber)}"] = purchaseParam.PageNumber.ToString(),
-            [$"{nameof(PurchaseParam.SrcSupplierID)}"] = purchaseParam.SrcSupplierID.ToString() ?? "",
-            [$"{nameof(PurchaseParam.SrcSupplierName)}"] = purchaseParam.SrcSupplierName ?? "",
-            [$"{nameof(PurchaseParam.SrcDateFrom)}"] = purchaseParam.SrcDateFrom.ToString() ?? "",
-            [$"{nameof(PurchaseParam.SrcDateTo)}"] = purchaseParam.SrcDateTo.ToString() ?? "",
-            [$"{nameof(PurchaseParam.OrderBy)}"] = purchaseParam.OrderBy ?? ""
-        };
+      Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content)!,
+      MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+    };
 
-        var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
-        HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
-        var content = await response.Content.ReadAsStringAsync();
+    return pagingResponse;
+  }
 
-        var pagingResponse = new PagingResponse<PurchaseDtoForSummary>()
-        {
-            Items = JsonConvert.DeserializeObject<List<PurchaseDtoForSummary>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
-        };
+  public async Task<PurchaseDto> GetPurchaseByID(int purchaseID)
+  {
+    var response = await _client.GetResponseAsync($"{additionalResourceName}/{purchaseID}");
+    var content = await response.Content.ReadAsStringAsync();
+    var result = JsonConvert.DeserializeObject<PurchaseDto>(content);
+    if (result is not null)
+      return result;
+    else
+      return new();
+  }
 
-        return pagingResponse;
-    }
+  public async Task Create(PurchaseDto purchaseDto)
+  {
+    var response = await _client.PostAsync(additionalResourceName, purchaseDto);
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 
-    public async Task<PurchaseDto> GetPurchaseByID(int purchaseID)
-    {
-        var response = await _client.GetResponseAsync($"{additionalResourceName}/{purchaseID}");
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<PurchaseDto>(content);
-        if (result is not null)
-            return result;
-        else
-            return new();
-    }
+  public async Task Update(PurchaseDto purchaseDto)
+  {
+    var response = await _client.PutAsync(additionalResourceName, purchaseDto);
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 
-    public async Task Create(PurchaseDto purchaseDto)
-    {
-        var response = await _client.PostAsync(additionalResourceName, purchaseDto);
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
-
-    public async Task Update(PurchaseDto purchaseDto)
-    {
-        var response = await _client.PutAsync(additionalResourceName, purchaseDto);
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
-
-    public async Task Delete(int purchaseID)
-    {
-        var response = await _client.DeleteAsync($"{additionalResourceName}/{purchaseID}");
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
+  public async Task Delete(int purchaseID)
+  {
+    var response = await _client.DeleteAsync($"{additionalResourceName}/{purchaseID}");
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 }

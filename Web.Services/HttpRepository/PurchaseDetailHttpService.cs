@@ -9,36 +9,36 @@ using Web.Services.IHttpRepository;
 namespace Web.Services.HttpRepository;
 internal class PurchaseDetailHttpService : IPurchaseDetailHttpService
 {
-    private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
-    private readonly string additionalResourceName = "purchase/details";
+  private readonly CustomHttpClient _client;
+  private readonly JsonSerializerSettings _options;
+  private readonly string additionalResourceName = "purchase/details";
 
-    public PurchaseDetailHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  public PurchaseDetailHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  {
+    _client = client;
+    _options = options;
+  }
+
+
+  public async Task<PagingResponse<PurchaseDetailDto>> GetPurchaseByID(int purchaseID, PurchaseDetailParam purchaseDetailParam)
+  {
+    var queryStringParam = new Dictionary<string, string>
     {
-        _client = client;
-        _options = options;
-    }
+      [$"{nameof(PurchaseDetailParam.PageNumber)}"] = purchaseDetailParam.PageNumber.ToString(),
+      [$"{nameof(PurchaseDetailParam.SrcProduct)}"] = purchaseDetailParam.SrcProduct ?? "",
+      [$"{nameof(PurchaseDetailParam.OrderBy)}"] = purchaseDetailParam.OrderBy!
+    };
 
+    var queryHelper = QueryHelpers.AddQueryString($"{additionalResourceName}/{purchaseID}", queryStringParam!);
+    HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
+    var content = await response.Content.ReadAsStringAsync();
 
-    public async Task<PagingResponse<PurchaseDetailDto>> GetPurchaseByID(int purchaseID, PurchaseDetailParam purchaseDetailParam)
+    var pagingResponse = new PagingResponse<PurchaseDetailDto>()
     {
-        var queryStringParam = new Dictionary<string, string>
-        {
-            [$"{nameof(PurchaseDetailParam.PageNumber)}"] = purchaseDetailParam.PageNumber.ToString(),
-            [$"{nameof(PurchaseDetailParam.SrcProduct)}"] = purchaseDetailParam.SrcProduct ?? "",
-            [$"{nameof(PurchaseDetailParam.OrderBy)}"] = purchaseDetailParam.OrderBy!
-        };
+      Items = JsonConvert.DeserializeObject<List<PurchaseDetailDto>>(content)!,
+      MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+    };
 
-        var queryHelper = QueryHelpers.AddQueryString($"{additionalResourceName}/{purchaseID}", queryStringParam!);
-        HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
-        var content = await response.Content.ReadAsStringAsync();
-
-        var pagingResponse = new PagingResponse<PurchaseDetailDto>()
-        {
-            Items = JsonConvert.DeserializeObject<List<PurchaseDetailDto>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
-        };
-
-        return pagingResponse;
-    }
+    return pagingResponse;
+  }
 }

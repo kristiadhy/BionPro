@@ -19,102 +19,102 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class Startup
 {
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, IHostBuilder host)
+  // This method gets called by the runtime. Use this method to add services to the container.
+  public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, IHostBuilder host)
+  {
+    //We use another approach to register the services. I Get it from Milan Jovanovic on his youtube channel : https://youtu.be/tKEF6xaeoig?si=o82cy17HOxpjDtAU 
+    services.InstallServices(configuration, host, typeof(IServiceInstallers).Assembly);
+
+    //Use the code below if you want to use configuration from appsettings.json
+    //Reference : Milan Jovanovic's youtube video about serilog : https://www.youtube.com/watch?v=nVAkSBpsuTk
+    host.UseSerilog((context, options) => options.ReadFrom.Configuration(context.Configuration));
+
+    services.AddEndpointsApiExplorer();
+    services.AddHttpContextAccessor();
+
+    //Configure service on another layers
+    services.ConfigureApplicationServices();
+    services.ConfigureInfrastructureServices();
+    services.ConfigureServiceServices();
+
+    //Local function for patch
+    NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
+        new ServiceCollection()
+        .AddLogging()
+        .AddMvc()
+        .AddNewtonsoftJson()
+        .Services.BuildServiceProvider()
+        .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>()
+        .First();
+
+    services.AddScoped<ValidationFilterAttribute>();
+
+    //Register the controllers.It is the third layer of Clean Architecture
+    services.AddControllers(config =>
     {
-        //We use another approach to register the services. I Get it from Milan Jovanovic on his youtube channel : https://youtu.be/tKEF6xaeoig?si=o82cy17HOxpjDtAU 
-        services.InstallServices(configuration, host, typeof(IServiceInstallers).Assembly);
+      config.RespectBrowserAcceptHeader = true;
+      config.ReturnHttpNotAcceptable = true;
+      config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+    }).AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
-        //Use the code below if you want to use configuration from appsettings.json
-        //Reference : Milan Jovanovic's youtube video about serilog : https://www.youtube.com/watch?v=nVAkSBpsuTk
-        host.UseSerilog((context, options) => options.ReadFrom.Configuration(context.Configuration));
+    //See the explanation of this code below in this E-Book : ultimate in asp.Net Core web API by Code Maze, page 115 
+    services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-        services.AddEndpointsApiExplorer();
-        services.AddHttpContextAccessor();
+    //Register global exception handling
+    services.AddTransient<ExceptionHandlingMiddleware>();
 
-        //Configure service on another layers
-        services.ConfigureApplicationServices();
-        services.ConfigureInfrastructureServices();
-        services.ConfigureServiceServices();
+    host.UseDefaultServiceProvider(sp => sp.ValidateOnBuild = true);
 
-        //Local function for patch
-        NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
-            new ServiceCollection()
-            .AddLogging()
-            .AddMvc()
-            .AddNewtonsoftJson()
-            .Services.BuildServiceProvider()
-            .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>()
-            .First();
+    //We use services.AddAuthentication() in Jwt installer service
 
-        services.AddScoped<ValidationFilterAttribute>();
+    return services;
+  }
 
-        //Register the controllers.It is the third layer of Clean Architecture
-        services.AddControllers(config =>
-        {
-            config.RespectBrowserAcceptHeader = true;
-            config.ReturnHttpNotAcceptable = true;
-            config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-        }).AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
-
-        //See the explanation of this code below in this E-Book : ultimate in asp.Net Core web API by Code Maze, page 115 
-        services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-
-        //Register global exception handling
-        services.AddTransient<ExceptionHandlingMiddleware>();
-
-        host.UseDefaultServiceProvider(sp => sp.ValidateOnBuild = true);
-
-        //We use services.AddAuthentication() in Jwt installer service
-
-        return services;
+  // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+  public static WebApplication UseAppConfigurations(this WebApplication app)
+  {
+    if (app.Environment.IsDevelopment())
+    {
+      app.UseDeveloperExceptionPage();
+      app.UseWebAssemblyDebugging();
+      app.UseSwagger();
+      app.UseSwaggerUI();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public static WebApplication UseAppConfigurations(this WebApplication app)
+    //Use global exception handling middleware
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    //This middleware automatically logs information about each incoming HTTP request and its corresponding response. This includes details like the HTTP method, URL, response status code, and the time taken to process the request.
+    app.UseSerilogRequestLogging();
+
+    app.UseHttpsRedirection();
+
+    //We use below configuration to hosted the blazor webassembly in our asp net core project
+    app.UseBlazorFrameworkFiles();
+    app.UseStaticFiles();
+    app.UseStaticFiles(new StaticFileOptions
     {
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-            app.UseWebAssemblyDebugging();
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+      FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),
+            @"StaticFiles")),
+      RequestPath = new PathString("/StaticFiles")
+    });
 
-        //Use global exception handling middleware
-        app.UseMiddleware<ExceptionHandlingMiddleware>();
+    app.UseCors("CorsPolicy");
 
-        //This middleware automatically logs information about each incoming HTTP request and its corresponding response. This includes details like the HTTP method, URL, response status code, and the time taken to process the request.
-        app.UseSerilogRequestLogging();
+    app.UseRouting();
 
-        app.UseHttpsRedirection();
+    //Authentication and Authorization should be placed here between app.UseRouting() and  app.UseEndpoints()
+    app.UseAuthentication();
+    app.UseAuthorization();
 
-        //We use below configuration to hosted the blazor webassembly in our asp net core project
-        app.UseBlazorFrameworkFiles();
-        app.UseStaticFiles();
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),
-                @"StaticFiles")),
-            RequestPath = new PathString("/StaticFiles")
-        });
+    //By using .RequireAuthorization() we don't need to put [Authorize] on every controller, it's implemented by default.
+    //If you want to allow controller to be access publicly, you can set [AllowAnonymous] on controller.
+    app.MapControllers().RequireAuthorization();
 
-        app.UseCors("CorsPolicy");
+    app.MapRazorPages();
 
-        app.UseRouting();
+    app.MapFallbackToFile("index.html");
 
-        //Authentication and Authorization should be placed here between app.UseRouting() and  app.UseEndpoints()
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        //By using .RequireAuthorization() we don't need to put [Authorize] on every controller, it's implemented by default.
-        //If you want to allow controller to be access publicly, you can set [AllowAnonymous] on controller.
-        app.MapControllers().RequireAuthorization();
-
-        app.MapRazorPages();
-
-        app.MapFallbackToFile("index.html");
-
-        return app;
-    }
+    return app;
+  }
 }

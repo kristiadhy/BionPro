@@ -9,67 +9,67 @@ using Web.Services.IHttpRepository;
 namespace Web.Services.HttpRepository;
 public class SupplierHttpService : ISupplierHttpService
 {
-    private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
-    private readonly string additionalResourceName = "suppliers";
+  private readonly CustomHttpClient _client;
+  private readonly JsonSerializerSettings _options;
+  private readonly string additionalResourceName = "suppliers";
 
-    public SupplierHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  public SupplierHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  {
+    _client = client;
+    _options = options;
+  }
+
+  public async Task<PagingResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParameter)
+  {
+    var queryStringParam = new Dictionary<string, string>
     {
-        _client = client;
-        _options = options;
-    }
+      [$"{nameof(SupplierParam.PageNumber)}"] = supplierParameter.PageNumber.ToString(),
+      [$"{nameof(SupplierParam.SrcByName)}"] = supplierParameter.SrcByName ?? "",
+      [$"{nameof(SupplierParam.OrderBy)}"] = supplierParameter.OrderBy!
+    };
 
-    public async Task<PagingResponse<SupplierDto>> GetSuppliers(SupplierParam supplierParameter)
+    var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
+    HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
+    var content = await response.Content.ReadAsStringAsync();
+
+    var pagingResponse = new PagingResponse<SupplierDto>()
     {
-        var queryStringParam = new Dictionary<string, string>
-        {
-            [$"{nameof(SupplierParam.PageNumber)}"] = supplierParameter.PageNumber.ToString(),
-            [$"{nameof(SupplierParam.SrcByName)}"] = supplierParameter.SrcByName ?? "",
-            [$"{nameof(SupplierParam.OrderBy)}"] = supplierParameter.OrderBy!
-        };
+      Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content)!,
+      MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+    };
 
-        var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
-        HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
-        var content = await response.Content.ReadAsStringAsync();
+    return pagingResponse;
+  }
 
-        var pagingResponse = new PagingResponse<SupplierDto>()
-        {
-            Items = JsonConvert.DeserializeObject<List<SupplierDto>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
-        };
+  public async Task<SupplierDto> GetSupplierByID(Guid supplierID)
+  {
+    var response = await _client.GetResponseAsync($"{additionalResourceName}/{supplierID}");
+    var content = await response.Content.ReadAsStringAsync();
+    var result = JsonConvert.DeserializeObject<SupplierDto>(content);
+    if (result is not null)
+      return result;
+    else
+      return new();
+  }
 
-        return pagingResponse;
-    }
+  public async Task Create(SupplierDto supplierDto)
+  {
+    var response = await _client.PostAsync(additionalResourceName, supplierDto);
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 
-    public async Task<SupplierDto> GetSupplierByID(Guid supplierID)
-    {
-        var response = await _client.GetResponseAsync($"{additionalResourceName}/{supplierID}");
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<SupplierDto>(content);
-        if (result is not null)
-            return result;
-        else
-            return new();
-    }
+  public async Task Update(SupplierDto supplierDto)
+  {
+    var response = await _client.PutAsync(additionalResourceName, supplierDto);
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 
-    public async Task Create(SupplierDto supplierDto)
-    {
-        var response = await _client.PostAsync(additionalResourceName, supplierDto);
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
-
-    public async Task Update(SupplierDto supplierDto)
-    {
-        var response = await _client.PutAsync(additionalResourceName, supplierDto);
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
-
-    public async Task Delete(Guid supplierID)
-    {
-        var response = await _client.DeleteAsync($"{additionalResourceName}/{supplierID}");
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
+  public async Task Delete(Guid supplierID)
+  {
+    var response = await _client.DeleteAsync($"{additionalResourceName}/{supplierID}");
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 }

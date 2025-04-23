@@ -9,11 +9,11 @@ namespace Application;
 
 public static class ApplicationExtensions
 {
-    public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
-    {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddValidatorsFromAssemblyContaining<UserValidator>();
+  public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
+  {
+    services.AddAutoMapper(Assembly.GetExecutingAssembly());
+    services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
-        return services;
-    }
+    return services;
+  }
 }

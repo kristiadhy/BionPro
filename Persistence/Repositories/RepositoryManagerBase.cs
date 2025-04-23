@@ -4,5 +4,5 @@ namespace Persistence.Repositories;
 
 public class RepositoryManagerBase
 {
-    private readonly Lazy<IPurchaseRepo> _lazyPurchaseRepo;
+  private readonly Lazy<IPurchaseRepo> _lazyPurchaseRepo;
 }

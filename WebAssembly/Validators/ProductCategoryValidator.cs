@@ -5,11 +5,11 @@ namespace WebAssembly.Validators;
 
 public class ProductCategoryValidator : AbstractValidator<ProductCategoryDto>
 {
-    public ProductCategoryValidator()
-    {
-        RuleFor(prop => prop.Name)
-            .NotEmpty()
-            .MaximumLength(200)
-            ;
-    }
+  public ProductCategoryValidator()
+  {
+    RuleFor(prop => prop.Name)
+        .NotEmpty()
+        .MaximumLength(200)
+        ;
+  }
 }

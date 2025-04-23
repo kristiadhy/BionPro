@@ -5,24 +5,24 @@ namespace WebAssembly.Validators;
 
 public class SupplierValidator : AbstractValidator<SupplierDto>
 {
-    public SupplierValidator()
-    {
-        RuleFor(prop => prop.SupplierName)
-            .NotEmpty()
-            .MaximumLength(200)
-            ;
+  public SupplierValidator()
+  {
+    RuleFor(prop => prop.SupplierName)
+        .NotEmpty()
+        .MaximumLength(200)
+        ;
 
-        RuleFor(prop => prop.PhoneNumber)
-            .MaximumLength(50)
-            ;
+    RuleFor(prop => prop.PhoneNumber)
+        .MaximumLength(50)
+        ;
 
-        RuleFor(prop => prop.Email)
-           .MaximumLength(100)
-           .EmailAddress()
-           ;
+    RuleFor(prop => prop.Email)
+       .MaximumLength(100)
+       .EmailAddress()
+       ;
 
-        RuleFor(prop => prop.ContactPerson)
-           .MaximumLength(100)
-           ;
-    }
+    RuleFor(prop => prop.ContactPerson)
+       .MaximumLength(100)
+       ;
+  }
 }

@@ -4,10 +4,10 @@ namespace WebAssembly.Shared.Extensions;
 
 public class CustomDatePeriodList
 {
-    public TimePeriod TimePeriod { get; }
+  public TimePeriod TimePeriod { get; }
 
-    public CustomDatePeriodList(TimePeriod timePeriod)
-    {
-        TimePeriod = timePeriod;
-    }
+  public CustomDatePeriodList(TimePeriod timePeriod)
+  {
+    TimePeriod = timePeriod;
+  }
 }

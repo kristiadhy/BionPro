@@ -6,55 +6,55 @@ namespace Web.Services.HttpRepository;
 
 public class RefreshTokenHttpService
 {
-    private readonly AuthenticationStateProvider _authStateProvider;
-    private readonly IAuthenticationHttpService _authService;
+  private readonly AuthenticationStateProvider _authStateProvider;
+  private readonly IAuthenticationHttpService _authService;
 
-    public RefreshTokenHttpService(AuthenticationStateProvider authStateProvider, IAuthenticationHttpService authService)
+  public RefreshTokenHttpService(AuthenticationStateProvider authStateProvider, IAuthenticationHttpService authService)
+  {
+    _authStateProvider = authStateProvider;
+    _authService = authService;
+  }
+
+  //public async Task<string> TryRefreshToken()
+  //{
+  //    var authState = await _authStateProvider.GetAuthenticationStateAsync();
+  //    var user = authState.User;
+  //    if (user.Identity is not null)
+  //        if (user.Identity.IsAuthenticated)
+  //        {
+  //            var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
+  //            var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
+  //            var timeUTC = DateTime.UtcNow;
+  //            var diff = expTime - timeUTC;
+
+  //            if (diff.TotalMinutes <= 5)
+  //                await _authService.RefreshToken();
+  //        }
+
+  //    return await _authService.GetCurrentTokenFromLocalStorage();
+  //}
+
+  public async Task<string> TryRefreshToken()
+  {
+    var authState = await _authStateProvider.GetAuthenticationStateAsync();
+    var user = authState.User;
+
+    if (user.Identity?.IsAuthenticated == true)
     {
-        _authStateProvider = authStateProvider;
-        _authService = authService;
-    }
+      var expClaim = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
+      if (long.TryParse(expClaim, out var exp))
+      {
+        var expTime = DateTimeOffset.FromUnixTimeSeconds(exp);
+        var timeUTC = DateTimeOffset.UtcNow;
+        var diff = expTime - timeUTC;
 
-    //public async Task<string> TryRefreshToken()
-    //{
-    //    var authState = await _authStateProvider.GetAuthenticationStateAsync();
-    //    var user = authState.User;
-    //    if (user.Identity is not null)
-    //        if (user.Identity.IsAuthenticated)
-    //        {
-    //            var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
-    //            var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
-    //            var timeUTC = DateTime.UtcNow;
-    //            var diff = expTime - timeUTC;
-
-    //            if (diff.TotalMinutes <= 5)
-    //                await _authService.RefreshToken();
-    //        }
-
-    //    return await _authService.GetCurrentTokenFromLocalStorage();
-    //}
-
-    public async Task<string> TryRefreshToken()
-    {
-        var authState = await _authStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity?.IsAuthenticated == true)
+        if (diff.TotalMinutes <= 5)
         {
-            var expClaim = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
-            if (long.TryParse(expClaim, out var exp))
-            {
-                var expTime = DateTimeOffset.FromUnixTimeSeconds(exp);
-                var timeUTC = DateTimeOffset.UtcNow;
-                var diff = expTime - timeUTC;
-
-                if (diff.TotalMinutes <= 5)
-                {
-                    await _authService.RefreshToken();
-                }
-            }
+          await _authService.RefreshToken();
         }
-
-        return await _authService.GetCurrentTokenFromLocalStorage();
+      }
     }
+
+    return await _authService.GetCurrentTokenFromLocalStorage();
+  }
 }

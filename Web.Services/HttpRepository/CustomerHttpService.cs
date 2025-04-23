@@ -9,67 +9,67 @@ using Web.Services.IHttpRepository;
 namespace Web.Services.HttpRepository;
 public class CustomerHttpService : ICustomerHttpService
 {
-    private readonly CustomHttpClient _client;
-    private readonly JsonSerializerSettings _options;
-    private readonly string additionalResourceName = "customers";
+  private readonly CustomHttpClient _client;
+  private readonly JsonSerializerSettings _options;
+  private readonly string additionalResourceName = "customers";
 
-    public CustomerHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  public CustomerHttpService(CustomHttpClient client, JsonSerializerSettings options)
+  {
+    _client = client;
+    _options = options;
+  }
+
+  public async Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter)
+  {
+    var queryStringParam = new Dictionary<string, string>
     {
-        _client = client;
-        _options = options;
-    }
+      [$"{nameof(CustomerParam.PageNumber)}"] = customerParameter.PageNumber.ToString(),
+      [$"{nameof(CustomerParam.SrcByName)}"] = customerParameter.SrcByName ?? "",
+      [$"{nameof(CustomerParam.OrderBy)}"] = customerParameter.OrderBy!
+    };
 
-    public async Task<PagingResponse<CustomerDTO>> GetCustomers(CustomerParam customerParameter)
+    var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
+    HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
+    var content = await response.Content.ReadAsStringAsync();
+
+    var pagingResponse = new PagingResponse<CustomerDTO>()
     {
-        var queryStringParam = new Dictionary<string, string>
-        {
-            [$"{nameof(CustomerParam.PageNumber)}"] = customerParameter.PageNumber.ToString(),
-            [$"{nameof(CustomerParam.SrcByName)}"] = customerParameter.SrcByName ?? "",
-            [$"{nameof(CustomerParam.OrderBy)}"] = customerParameter.OrderBy!
-        };
+      Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content)!,
+      MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
+    };
 
-        var queryHelper = QueryHelpers.AddQueryString(additionalResourceName, queryStringParam!);
-        HttpResponseMessage response = await _client.GetResponseAsync(queryHelper);
-        var content = await response.Content.ReadAsStringAsync();
+    return pagingResponse;
+  }
 
-        var pagingResponse = new PagingResponse<CustomerDTO>()
-        {
-            Items = JsonConvert.DeserializeObject<List<CustomerDTO>>(content)!,
-            MetaData = JsonConvert.DeserializeObject<MetaData>(response.Headers.GetValues("X-Pagination").First())!
-        };
+  public async Task<CustomerDTO> GetCustomerByID(Guid customerID)
+  {
+    var response = await _client.GetResponseAsync($"{additionalResourceName}/{customerID}");
+    var content = await response.Content.ReadAsStringAsync();
+    var result = JsonConvert.DeserializeObject<CustomerDTO>(content);
+    if (result is not null)
+      return result;
+    else
+      return new();
+  }
 
-        return pagingResponse;
-    }
+  public async Task Create(CustomerDTO customerDTO)
+  {
+    var response = await _client.PostAsync(additionalResourceName, customerDTO);
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 
-    public async Task<CustomerDTO> GetCustomerByID(Guid customerID)
-    {
-        var response = await _client.GetResponseAsync($"{additionalResourceName}/{customerID}");
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<CustomerDTO>(content);
-        if (result is not null)
-            return result;
-        else
-            return new();
-    }
+  public async Task Update(CustomerDTO customerDTO)
+  {
+    var response = await _client.PutAsync(additionalResourceName, customerDTO);
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 
-    public async Task Create(CustomerDTO customerDTO)
-    {
-        var response = await _client.PostAsync(additionalResourceName, customerDTO);
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
-
-    public async Task Update(CustomerDTO customerDTO)
-    {
-        var response = await _client.PutAsync(additionalResourceName, customerDTO);
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
-
-    public async Task Delete(Guid customerID)
-    {
-        var response = await _client.DeleteAsync($"{additionalResourceName}/{customerID}");
-        var content = await response.Content.ReadAsStringAsync();
-        _client.CheckErrorResponse(response, content);
-    }
+  public async Task Delete(Guid customerID)
+  {
+    var response = await _client.DeleteAsync($"{additionalResourceName}/{customerID}");
+    var content = await response.Content.ReadAsStringAsync();
+    _client.CheckErrorResponse(response, content);
+  }
 }

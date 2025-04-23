@@ -8,81 +8,81 @@ namespace WebAssembly.Pages;
 
 public partial class CustomerTransaction
 {
-    [Inject]
-    NavigationManager NavigationManager { get; set; } = default!;
-    [Inject]
-    CustomModalService ConfirmationModalService { get; set; } = default!;
-    [Inject]
-    CustomNotificationService NotificationService { get; set; } = default!;
-    [Inject]
-    IServiceManager ServiceManager { get; set; } = default!;
-    [Inject]
-    CustomerState CustomerState { get; set; } = default!;
+  [Inject]
+  NavigationManager NavigationManager { get; set; } = default!;
+  [Inject]
+  CustomModalService ConfirmationModalService { get; set; } = default!;
+  [Inject]
+  CustomNotificationService NotificationService { get; set; } = default!;
+  [Inject]
+  IServiceManager ServiceManager { get; set; } = default!;
+  [Inject]
+  CustomerState CustomerState { get; set; } = default!;
 
-    [Parameter] public Guid? ParamCustomerID { get; set; }
-    private readonly string AdditionalHeaderText = "customer";
-    private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
-    private bool IsSaving = false;
-    private CustomerParam CustomerParameter = new();
-    private RadzenTextBox? txtNameForFocus;
+  [Parameter] public Guid? ParamCustomerID { get; set; }
+  private readonly string AdditionalHeaderText = "customer";
+  private GlobalEnum.FormStatus FormStatus = GlobalEnum.FormStatus.New;
+  private bool IsSaving = false;
+  private CustomerParam CustomerParameter = new();
+  private RadzenTextBox? txtNameForFocus;
 
-    private PageModel? CustomerPageModel { get; set; }
+  private PageModel? CustomerPageModel { get; set; }
 
-    public CustomerTransaction()
+  public CustomerTransaction()
+  {
+    CustomerPageModel = GlobalConstant.PageModels.Where(s => s.ID == 1).FirstOrDefault();
+  }
+
+  protected override async Task OnParametersSetAsync()
+  {
+    if (ParamCustomerID is not null)
     {
-        CustomerPageModel = GlobalConstant.PageModels.Where(s => s.ID == 1).FirstOrDefault();
+      CustomerState.Customer = await ServiceManager.CustomerService.GetCustomerByID((Guid)ParamCustomerID);
+      FormStatus = GlobalEnum.FormStatus.Edit;
     }
-
-    protected override async Task OnParametersSetAsync()
+    else
     {
-        if (ParamCustomerID is not null)
-        {
-            CustomerState.Customer = await ServiceManager.CustomerService.GetCustomerByID((Guid)ParamCustomerID);
-            FormStatus = GlobalEnum.FormStatus.Edit;
-        }
-        else
-        {
-            FormStatus = GlobalEnum.FormStatus.New;
-            CustomerState.Customer.CustomerID = null;
-        }
+      FormStatus = GlobalEnum.FormStatus.New;
+      CustomerState.Customer.CustomerID = null;
     }
+  }
 
-    public void EvBackToPrevious()
+  public void EvBackToPrevious()
+  {
+    NavigationManager.NavigateTo($"{CustomerPageModel?.Path}");
+  }
+
+  public async Task SubmitAsync(CustomerDTO customer)
+  {
+    if (!await ConfirmationModalService.SavingConfirmation("Customer"))
+      return;
+
+    IsSaving = true;
+    try
     {
-        NavigationManager.NavigateTo($"{CustomerPageModel?.Path}");
-    }
+      if (FormStatus == GlobalEnum.FormStatus.New)
+      {
+        customer.CustomerID = null;
+        await ServiceManager.CustomerService.Create(customer);
+      }
+      else
+        await ServiceManager.CustomerService.Update(customer);
 
-    public async Task SubmitAsync(CustomerDTO customer)
+      string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new customer added" : "Customer updated";
+      NotificationService.SaveNotification(notificationMessage);
+
+      await CustomerState.LoadCustomers();
+    }
+    finally
     {
-        if (!await ConfirmationModalService.SavingConfirmation("Customer"))
-            return;
-
-        IsSaving = true;
-        try
-        {
-            if (FormStatus == GlobalEnum.FormStatus.New)
-            {
-                customer.CustomerID = null;
-                await ServiceManager.CustomerService.Create(customer);
-            }
-            else
-                await ServiceManager.CustomerService.Update(customer);
-
-            string notificationMessage = FormStatus == GlobalEnum.FormStatus.New ? "A new customer added" : "Customer updated";
-            NotificationService.SaveNotification(notificationMessage);
-
-            await CustomerState.LoadCustomers();
-        }
-        finally
-        {
-            IsSaving = false;
-            StateHasChanged();
-        }
+      IsSaving = false;
+      StateHasChanged();
     }
+  }
 
-    public async Task ClearField()
-    {
-        CustomerState.Customer = new();
-        await txtNameForFocus!.FocusAsync();
-    }
+  public async Task ClearField()
+  {
+    CustomerState.Customer = new();
+    await txtNameForFocus!.FocusAsync();
+  }
 }
